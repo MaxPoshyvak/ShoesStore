@@ -1,0 +1,12 @@
+.brend {
+    background-color: #000;
+
+}
+.brandsStrip{
+    max-width: 1557px; /* Така ж ширина, як у Hero, щоб все було на одній лінії */
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-evenly; /* Автоматично робить рівні відступи між усіма логотипами */
+    align-items: center;
+    padding: 0 5%;
+}

@@ -1,0 +1,64 @@
+/* ГОЛОВНИЙ КОНТЕЙНЕР ШАПКИ */
+.navbar {
+    position: absolute; /* Відриваємо шапку від звичайного потоку */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50; /* Робимо так, щоб шапка завжди була НАД усім */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 5%;
+    max-width: 1557px;
+    margin: 0 auto;
+}
+
+/* ЛОГОТИП */
+.navbar__logo {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 31px;
+  text-decoration: none;
+  color: #000;
+}
+
+/* КОНТЕЙНЕР ДЛЯ ПОСИЛАНЬ */
+.navbar__nav {
+  display: flex;
+  align-items: center;
+  gap: 40px; /* Ось що робить магію! Це відстань між посиланнями */
+}
+
+/* САМІ ПОСИЛАННЯ */
+.navbar__link {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 19px;
+  text-decoration: none;
+  color: #000;
+  transition: color 0.3s ease;
+}
+
+.navbar__link:hover {
+  color: #6b7280;
+}
+
+/* КОНТЕЙНЕР ДЛЯ ІКОНОК */
+.navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 30px; /* Відстань між іконками */
+}
+
+/* КНОПКИ З ІКОНКАМИ */
+.navbar__btn-search,
+.navbar__btn-cart,
+.navbar__btn-menu {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}

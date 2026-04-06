@@ -1,0 +1,198 @@
+.hero {
+    display: flex;
+    max-width: 1557px;
+    margin: 0 auto;
+    min-height: 100vh;
+    align-items: stretch;
+}
+
+.hero__left {
+    flex: 0 0 45%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 100px 5% 0 5%;
+    background-color: #ffffff;
+}
+
+.hero__title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 72px;
+    font-weight: 600;
+    line-height: 112.00000000000001%;
+    color: #000;
+    margin-bottom: 24px;
+}
+
+.hero__description {
+    font-family: 'Poppins', sans-serif;
+    font-size: 19px;
+    color: rgba(0, 0, 0, 0.75);
+    line-height: 154%;
+    margin-bottom: 40px;
+    max-width: 400px;
+
+
+}
+
+.hero__btn {
+    background-color: #000;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 16px 40px;
+    border: none;
+    cursor: pointer;
+    width: fit-content;
+    /* Кнопка підлаштовується під текст, а не тягнеться */
+    transition: transform 0.2s, background-color 0.2s;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    /* Легка тінь як у Figma */
+}
+
+.hero__right {
+    flex: 1;
+    background: linear-gradient(90deg, #E4E4E4 0%, #FAFAFA 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding-top: 100px;
+    overflow: hidden;
+
+}
+
+
+
+.hero__imageContainer:hover {
+    transform: scale(1.05) rotate(-2deg);
+}
+
+
+.hero__priceTag {
+    text-align: center;
+    z-index: 2;
+}
+
+.hero__shoeName {
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 5px;
+}
+
+.hero__shoePrice {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    color: #6b7280;
+}
+
+.hero__ultimate {
+    position: absolute;
+    top: 720px;
+    /* Починаємо трохи нижче шапки */
+    left: -30px;
+    /* Суваємо вправо, ближче до кросівка (було -200px) */
+
+    transform: rotate(-90deg);
+    /* ТІЛЬКИ поворот, без translateY */
+    transform-origin: left top;
+    /* Точка обертання - лівий верхній кут, це дуже важливо для точного позиціювання */
+
+    font-family: 'Poppins', sans-serif;
+    font-size: 130px;
+    /* Робимо його гігантським, як у Фігмі (там Size 200px) */
+    font-weight: 750;
+    /* У Фігмі стоїть Bold, а не ExtraBold (700 замість 800) */
+    color: #ffffff;
+    letter-spacing: 0px;
+    /* Знімаємо зсув літер, він тут не потрібен */
+    z-index: 2;
+    user-select: none;
+    white-space: nowrap;
+    line-height: 1;
+    /* Робимо висоту рядка мінімальною, щоб легше було позиціювати */
+}
+
+/* КОНТЕЙНЕР ДЛЯ ФОНОВИХ ЛІНІЙ */
+.hero__bgLines {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    /* ЗА кросівком */
+}
+
+.hero__graphic {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Ідеально по центру */
+    opacity: 1;
+    /* Робимо видимими, бо png зазвичай вже прозорі */
+}
+
+.hero__graphic--circles {
+    width: 80%;
+    height: 80%;
+
+    left: 440px;
+    top: 300px;
+    z-index: 1;
+    /* Найзадніший план */
+}
+
+.hero__graphic--lines {
+    width: 70%;
+    height:70%;
+    top: 350px;
+    left: 400px;
+    z-index: 2;
+    /* На над колами, під ULTIMATE і кросівком */
+}
+
+.hero__graphic--shadows {
+    width: 60%;
+    height: 60%;
+    top: 380px;
+    left: 316px;
+
+    margin-top: 100px;
+    /* Трохи опускаємо, щоб тіні були під підошвою */
+    z-index: 3;
+    /* Трохи вище ліній, але все ще під кросівком */
+}
+
+/* Піднімаємо кросівок вище фону */
+.hero__imageContainer {
+    /* margin-bottom: -220px; */
+    top: -80px;
+    /* Залишаємо, щоб він був піднятий */
+
+    left: -100px;
+    /* Магія: посуне кросівок наліво на 120px */
+    z-index: 4;
+    /* НАД фоном і текстом ULTIMATE */
+    position: relative;
+    transition: transform 0.5s ease-in-out;
+}
+
+/* Відриваємо цінник і ставимо в правий нижній кут */
+
+
+.hero__priceTag {
+    position: absolute;
+    bottom: 95px; /* Висота від низу залишається */
+    left: 40%; 
+    transform: translateX(-50%); 
+    
+    text-align: center;
+    z-index: 5;
+}
