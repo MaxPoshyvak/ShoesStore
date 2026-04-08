@@ -1,0 +1,212 @@
+.promo {
+    max-width: 1557px;
+    margin: 0 auto;
+    padding: 20px 5%;
+}
+
+.promo__container {
+
+   transition: background-color 0.5s ease-in-out;
+
+    position: relative;
+    min-height: 420px;
+    display: flex;
+    align-items: center;
+    border-radius: 20px;
+}
+
+/* ФОНОВИЙ ТЕКСТ SLICK */
+.promo__bgText {
+    position: absolute;
+    left: -10px;
+    top: 74%;
+
+    transform: translateY(-50%)  scaleY(1.2);
+    font-family: 'Poppins', sans-serif;
+    font-size: 320px;
+    /* Зробили величезним, як у Фігмі */
+    font-weight: 800;
+    color: #ffffff;
+    opacity: 0.15;
+    z-index: 1;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -10px;
+
+    transition: color 0.5s ease-in-out;
+}
+
+/* СТРІЛОЧКИ ПО БОКАХ */
+.promo__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 5;
+    padding: 10px;
+}
+
+.promo__arrowLeft {
+    left: 20px;
+}
+
+.promo__arrowRight {
+    right: 20px;
+}
+
+/* ЛІВА ЧАСТИНА (НОГИ) */
+.promo__left {
+    flex: 1;
+    position: relative;
+    z-index: 3;
+    height: 100%;
+}
+
+.promo__legs {
+    position: absolute;
+    bottom: -549px;
+    left: -15%;
+    z-index: 3;
+
+}
+
+/* ПРАВА ЧАСТИНА (ТЕКСТ) */
+.promo__right {
+    flex: 0 0 40%;
+    color: #ffffff;
+    padding: 60px 40px 60px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.promo__title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 52px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 15px;
+}
+
+.promo__desc {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+/* КНОПКА ТА МІНІАТЮРИ */
+.promo__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+.promo__btn {
+    background-color: #ffffff;
+    color: var(--theme-color, #FD8B92);
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    /* Прибрали фіксовану висоту (height: 70px), повертаємо звичайні відступи */
+    padding: 15px 60px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.promo__btn:hover {
+    transform: scale(1.05);
+}
+
+.promo__miniSlider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.promo__thumbnails {
+    display: flex;
+    gap: 35px;
+}
+
+.thumbnail {
+    background-color: #ffffff;
+    border-radius: 8px;
+    width: 90px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+    flex-shrink: 0;
+}
+
+.miniShoe {
+  width: 100%;
+    height: 100%;
+    object-fit: contain;
+    
+    /* Зберегли твою круту анімацію кросівок */
+    transform: rotate(-15deg) scale(1.35); 
+    filter: drop-shadow(0px 15px 15px rgba(0, 0, 0, 0.15));
+    transition: transform 0.3s ease;
+    
+    /* Додали плавну зміну для проявлення нових кросівок */
+    transition: transform 0.3s ease, opacity 0.5s ease-in-out;
+}
+.thumbnail:hover .miniShoe {
+    transform: rotate(-5deg) scale(1.5);
+}
+
+/* ПАГІНАЦІЯ */
+.promo__pagination {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+
+cursor: pointer;
+    
+  
+    transition: all 0.3s ease-in-out;
+}
+
+.dotActive {
+    opacity: 1;
+    width: 20px;
+    border-radius: 4px;
+}
+
+.promo__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.promo__content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    width: 100%;
+    height: 100%;
+}

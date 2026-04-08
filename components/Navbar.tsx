@@ -14,9 +14,9 @@ export default function Navbar() {
 
       <nav className={styles.navbar__nav}>
         <Link href="/" className={styles.navbar__link}>Home</Link>
-        <Link href="/shop" className={styles.navbar__link}>Shop</Link>
-        <Link href="/collection" className={styles.navbar__link}>Collection</Link>
-        <Link href="/customize" className={styles.navbar__link}>Customize</Link>
+        <Link href="/#trending" className={styles.navbar__link}>Popular</Link>
+        <Link href="/#best-selling" className={styles.navbar__link}>Best Selling</Link>
+        <Link href="/#reviews" className={styles.navbar__link}>Review</Link>
       </nav>
 
       <div className={styles.navbar__actions}>

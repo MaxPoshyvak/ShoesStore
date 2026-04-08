@@ -1,0 +1,120 @@
+.reviewsSection {
+    max-width: 1557px;
+    /* Трохи вужче, щоб картки не були занадто довгими */
+    margin: 80px auto;
+    padding: 0 5%;
+}
+
+/* === ЗАГОЛОВОК === */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 50px;
+}
+
+.line {
+    width: 30px;
+    height: 2px;
+    background-color: #000;
+}
+
+.title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: #000;
+    margin: 0;
+}
+
+.sliderWindow {
+    width: 100%;
+    overflow: hidden;
+    padding: 20px 0;
+}
+
+.sliderTrack {
+    display: flex;
+    gap: 30px;
+    transition: transform 0.5s ease-in-out;
+}
+
+.card {
+    flex: 0 0 calc(50% - 15px);
+    background-color: #F8F8F8;
+    /* Світло-сірий фон як у Фігмі */
+    border-radius: 12px;
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    border: 1px solid #EAEAEA;
+}
+
+
+
+.imageWrapper {
+    flex-shrink: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    /* Крута тінь від самої фотографії, як на макеті */
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.avatar {
+    display: block;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #000;
+    margin: 0 0 5px 0;
+}
+
+.stars {
+    color: #FFC107;
+    /* Жовто-золотий колір зірочок */
+    font-size: 16px;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+.text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* === ПАГІНАЦІЯ === */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 40px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background-color: #C4C4C4;
+    /* Світло-сірі неактивні крапочки */
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dotActive {
+    background-color: #333333;
+    /* Темно-сіра активна крапочка */
+}

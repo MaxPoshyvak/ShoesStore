@@ -1,0 +1,139 @@
+.trending {
+    max-width: 1557px;
+    margin: 0 auto;
+    padding: 100px 5%;
+    display: flex;
+    align-items: center;
+    gap: 50px
+}
+
+.trending__left {
+    flex: 0 0 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.trending__subtitle {
+    font-family: Poppins, sans-serif;
+    font-size: 19px;
+    font-weight: 500;
+    color: #000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.trending__line {
+    display: inline-block;
+    width: 30px;
+    height: 2px;
+    background-color: #000;
+}
+
+.trending__title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #000;
+    margin-bottom: 20px;
+}
+
+.trending__desc {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    color: #000;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+.trending__explore {
+    background-color: #000;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 14px 35px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s;
+}
+
+.trending__explore:hover {
+    background-color: #333;
+}
+
+/* ПРАВА ЧАСТИНА (СЛАЙДЕР) */
+.trending__right {
+    flex: 0 0 70%;
+    /* Займає 70% ширини */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    /* Ховаємо те, що не влізло */
+}
+
+.trending__cards {
+    display: flex;
+    gap: 30px;
+    flex-wrap: nowrap;
+
+    overflow-x: auto;
+    /* Дозволяє контенту прокручуватись по горизонталі */
+    scroll-behavior: smooth;
+    /* Робить прокрутку плавною */
+    width: 100%;
+    /* Обмежуємо ширину */
+    padding-bottom: 20px;
+
+    -ms-overflow-style: none;
+    /* Для Internet Explorer та Edge */
+    scrollbar-width: none;
+}
+
+.slider__btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    transition: opacity 0.2s;
+}
+
+.slider__btn:hover {
+    opacity: 0.6;
+}
+
+
+.trending__pagination {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.dot {
+    width: 11px;
+    height: 11px;
+    background-color: #000000;
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dotActive {
+    width: 30px;
+    border-radius: 10px;
+}
+
+.trending__sliderWrapper {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+}
