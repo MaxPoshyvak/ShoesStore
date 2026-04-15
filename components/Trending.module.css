@@ -117,8 +117,8 @@
 }
 
 .dot {
-    width: 11px;
-    height: 11px;
+    width: 10px;
+    height: 10px;
     background-color: #000000;
     border-radius: 50%;
     display: inline-block;
@@ -137,3 +137,4 @@
     gap: 20px;
     width: 100%;
 }
+

@@ -63,8 +63,7 @@ export default function CustomerReviews() {
                             {reviews.map((review, index) => (
                                 <div key={review.id || index} className={styles.card}>
                                     <div className={styles.imageWrapper}>
-                                        {/* Якщо Максим не повертає фото юзера, ставимо заглушку */}
-                                        <Image src={"/ava.png"} alt="User" width={120} height={150} className={styles.avatar} style={{ objectFit: 'cover' }} />
+                                        <Image src={"/ava-cropped.jpg"} alt="User" width={120} height={150} className={styles.avatar} style={{ objectFit: 'cover' }} />
                                     </div>
 
                                     <div className={styles.content}>

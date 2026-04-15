@@ -9,15 +9,16 @@ const categories = ["Man", "Woman", "Boy", "Child"];
 
 
 export default function BestSelling() {
-  interface Good {
-    id: string;
-    name: string;
-    price: number;
-    old_price: number | null;
-    category: string;
-    is_new: boolean;
-    main_image_url: string;
-}
+    interface Good {
+        id: string;
+        name: string;
+        price: number;
+        old_price: number | null;
+        category: string;
+        is_new: boolean;
+        main_image_url: string;
+        stock_quantity: number;
+    }
 
     const [activeCategory, setActiveCategory] = useState("Man")
 
@@ -74,10 +75,11 @@ export default function BestSelling() {
             <div className={styles.grid}>
 
                 {isLoading ? (
-                <p style={{ textAlign: 'center', gridColumn: 'span 3', fontFamily: 'Poppins, sans-serif' }}>Завантаження товарів...</p>
+                    <p style={{ textAlign: 'center', gridColumn: 'span 3', fontFamily: 'Poppins, sans-serif' }}>Завантаження товарів...</p>
                 ) : filteredGoods.length > 0 ? (
                     filteredGoods.map((good) => (
                         <ProductCard
+                            id={good.id}
                             key={good.id}
                             image={good.main_image_url}
                             name={good.name}
@@ -87,6 +89,7 @@ export default function BestSelling() {
                             showHeart={true}
                             fullWidth={true}
                             bestSellingStyle={true}
+                            stockQuantity={good.stock_quantity}
                         />
                     ))
                 ) : (

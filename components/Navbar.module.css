@@ -62,3 +62,38 @@
   justify-content: center;
   padding: 0;
 }
+
+.cartWrapper {
+    position: relative; 
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Сам кружечок з цифрою */
+.cartBadge {
+    position: absolute;
+    top: -8px; /* Піднімаємо вгору */
+    right: -15px; /* Зсуваємо вправо */
+    
+    background-color: #ffffff;
+    color: #000000;
+    border: 2px solid #000000; /* Чорна рамка, як на макеті */
+    border-radius: 50%; /* Робимо ідеальне коло */
+    
+    /* Розміри кружечка */
+    width: 27px;
+    height: 27px;
+    padding: 0 4px; /* Додаємо трохи місця по боках, якщо буде 2 або 3 цифри (напр. 11) */
+    
+    /* Вирівнюємо цифру рівно по центру кружечка */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* Стиль тексту */
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Alata', sans-serif;
+    z-index: 2; /* Щоб цифра точно була поверх кошика */
+}

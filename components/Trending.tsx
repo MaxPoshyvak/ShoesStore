@@ -1,35 +1,58 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import styles from "./Trending.module.css";
 import ProductCard from "./ProductCard";
 
-// Тимчасовий масив товарів (скоро ми замінимо його на дані з API)
-const mockProducts = [
-    { id: 1, image: "/shoe-black.png", name: "Black sport shoe", price: "₹ 3999.00" },
-    { id: 2, image: "/shoe-gray.png", name: "Gray sport shoe", price: "₹ 3999.00" },
-    { id: 3, image: "/shoe-multi.png", name: "Multi sport shoe", price: "₹ 3999.00" },
-    { id: 4, image: "/shoe-black.png", name: "Black sport shoe 2", price: "₹ 3999.00" },
-    { id: 5, image: "/shoe-gray.png", name: "Gray sport shoe 2", price: "₹ 3999.00" },
-    { id: 6, image: "/shoe-multi.png", name: "Multi sport shoe 2", price: "₹ 3999.00" },
-    // { id: 7, image: "/shoe-black.png", name: "Black sport shoe 3", price: "₹ 3999.00" },
-    // { id: 8, image: "/shoe-gray.png", name: "Gray sport shoe 3", price: "₹ 3999.00" },
-    // { id: 9, image: "/shoe-multi.png", name: "Multi sport shoe 3", price: "₹ 3999.00" },
- 
-];
+// Описуємо інтерфейс товару, який приходить від API
+interface Good {
+    id: string;
+    name: string;
+    price: number;
+    old_price?: number | null;
+    main_image_url: string;
+    stock_quantity: number;
+}
 
 export default function Trending() {
     const sliderRef = useRef<HTMLDivElement>(null);
 
-    // СТАН: зберігаємо поточну "сторінку" (від 0 до 2)
+    // СТАНИ ДЛЯ API ТА СЛАЙДЕРА
+    const [goods, setGoods] = useState<Good[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [activeIndex, setActiveIndex] = useState(0);
-    const totalPages = 3; // Оскільки в нас 9 карток, по 3 на сторінку
+
+    // Підтягуємо дані з сервера при завантаженні компонента
+    useEffect(() => {
+        const fetchGoods = async () => {
+            try {
+                const response = await fetch('https://shoesstore-server.onrender.com/api/goods');
+                if (!response.ok) {
+                    throw new Error('Помилка мережі');
+                }
+                const data = await response.json();
+                setGoods(data);
+            } catch (error) {
+                console.error('Помилка завантаження товарів:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        fetchGoods();
+    }, []);
+
+    // Динамічно рахуємо кількість сторінок (по 3 картки на сторінку)
+    const totalPages = Math.ceil(goods.length / 3) || 1;
 
     const goToPage = (pageIndex: number) => {
         setActiveIndex(pageIndex);
         if (sliderRef.current) {
-            const scrollAmount = 990 * pageIndex;
+            // Ширина картки (250px) + відступ (30px) = 280px. 
+            // Три картки: 280 * 3 = 840px.
+            const scrollAmount = 840 * pageIndex;
+
             sliderRef.current.scrollTo({
                 left: scrollAmount,
                 behavior: "smooth"
@@ -49,7 +72,6 @@ export default function Trending() {
 
     return (
         <section id="trending" className={styles.trending}>
-            {/* Ліва частина з текстом */}
             <div className={styles.trending__left}>
                 <div className={styles.trending__subtitle}>
                     <span className={styles.trending__line}></span>
@@ -63,7 +85,6 @@ export default function Trending() {
                 <button className={styles.trending__explore}>Explore</button>
             </div>
 
-            {/* Права частина зі слайдером */}
             <div className={styles.trending__right}>
                 <div className={styles.trending__sliderWrapper}>
                     <button className={styles.slider__btn} onClick={scrollLeft}>
@@ -71,15 +92,25 @@ export default function Trending() {
                     </button>
 
                     <div className={styles.trending__cards} ref={sliderRef}>
-                        {/* МАГІЯ REACT: Виводимо масив карток через .map() */}
-                        {mockProducts.map((product) => (
-                            <ProductCard
-                                key={product.id}
-                                image={product.image}
-                                name={product.name}
-                                price={product.price}
-                            />
-                        ))}
+                        {isLoading ? (
+                            <p style={{ fontFamily: 'Poppins, sans-serif' }}>Завантаження товарів...</p>
+                        ) : goods.length > 0 ? (
+                            goods.map((product) => (
+                                <ProductCard
+                                    key={product.id}
+                                    id={String(product.id)}
+                                    image={product.main_image_url}
+                                    name={product.name}
+                                    price={product.price}
+                                    oldPrice={product.old_price ? product.old_price : undefined}
+                                    stockQuantity={product.stock_quantity}
+                                    showHeart={true}
+                                // bestSellingStyle={true}
+                                />
+                            ))
+                        ) : (
+                            <p style={{ fontFamily: 'Poppins, sans-serif' }}>Товарів поки немає</p>
+                        )}
                     </div>
 
                     <button className={styles.slider__btn} onClick={scrollRight}>
@@ -88,13 +119,12 @@ export default function Trending() {
                 </div>
 
                 <div className={styles.trending__pagination}>
-
-
-                    {[0, 1, 2].map((index) => (
+                    {/* Рендеримо крапочки на основі реальної кількості товарів */}
+                    {Array.from({ length: totalPages }).map((_, index) => (
                         <span
                             key={index}
                             className={`${styles.dot} ${activeIndex === index ? styles.dotActive : ""}`}
-                            onClick={() => goToPage(index)} // Крапочки тепер клікабельні!
+                            onClick={() => goToPage(index)}
                         ></span>
                     ))}
                 </div>
