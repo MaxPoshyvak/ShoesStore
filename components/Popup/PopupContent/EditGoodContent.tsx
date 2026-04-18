@@ -1,0 +1,303 @@
+// components/popups/EditGoodContent.tsx
+import React, { useState, useEffect } from 'react';
+import { UploadCloud, CheckCircle2, Package, Database } from 'lucide-react';
+import { updateGood, updateGoodStock } from '@/utils/backendData/backendGoods'; // Імпортуй свої функції
+
+interface EditGoodContentProps {
+    good: any; // Тут краще вказати твій інтерфейс Good
+    onClose: () => void;
+    onSuccess: () => void;
+}
+
+export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose, onSuccess }) => {
+    // Стейт для перемикання вкладок
+    const [activeTab, setActiveTab] = useState<'full' | 'stock'>('full');
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    // Стейт для ПОВНОЇ форми (заповнюємо даними існуючого товару)
+    // Стейт для ПОВНОЇ форми
+    const [formData, setFormData] = useState({
+        name: good?.name || '',
+        price: good?.price || '',
+        old_price: good?.old_price || '',
+        category: good?.category || 'Man',
+        stock_quantity: good?.stock_quantity || '', // ДОДАНО
+        is_new: good?.is_new || false,
+        description: good?.description || '', // ДОДАНО
+        sizes: Array.isArray(good?.sizes) ? good.sizes.join(', ') : good?.sizes || '',
+        main_image_url: good?.main_image_url || '',
+        // Перетворюємо масив галереї у строку (кожен URL з нового рядка)
+        gallery_urls: Array.isArray(good?.gallery_urls) ? good.gallery_urls.join('\n') : good?.gallery_urls || '', // ДОДАНО
+    });
+
+    // Стейт для ШВИДКОЇ форми (тільки залишок)
+    const [stockValue, setStockValue] = useState(good?.stock_quantity || 0);
+
+    // Обробник змін для повної форми
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value, type } = e.target;
+        const val = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+        setFormData((prev) => ({ ...prev, [name]: val }));
+    };
+
+    // 🚀 Відправка ПОВНОЇ форми
+    const handleFullSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError(null);
+        try {
+            await updateGood(good.id, formData);
+            onSuccess();
+            onClose();
+        } catch (err: unknown) {
+            setError((err as Error).message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // 🚀 Відправка ШВИДКОЇ форми (тільки залишки)
+    const handleStockSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError(null);
+        try {
+            await updateGoodStock(good.id, Number(stockValue));
+            onSuccess();
+            onClose();
+        } catch (err: unknown) {
+            setError((err as Error).message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="space-y-6">
+            {/* --- ПЕРЕМИКАЧ ВКЛАДОК (TABS) --- */}
+            <div className="flex bg-gray-100 p-1 rounded-xl">
+                <button
+                    onClick={() => setActiveTab('full')}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all ${
+                        activeTab === 'full' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                    }`}>
+                    <Database size={16} /> Повна інформація
+                </button>
+                <button
+                    onClick={() => setActiveTab('stock')}
+                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all ${
+                        activeTab === 'stock' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                    }`}>
+                    <Package size={16} /> Тільки залишок
+                </button>
+            </div>
+
+            {error && (
+                <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100">
+                    {error}
+                </div>
+            )}
+
+            {/* --- ВМІСТ ВСТАВКИ: ПОВНА ФОРМА --- */}
+            {/* --- ВМІСТ ВСТАВКИ: ПОВНА ФОРМА --- */}
+            {activeTab === 'full' && (
+                <form onSubmit={handleFullSubmit} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Назва товару</label>
+                            <input
+                                type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm"
+                                required
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Ціна (₴)</label>
+                            <input
+                                type="number"
+                                name="price"
+                                value={formData.price}
+                                onChange={handleChange}
+                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm"
+                                required
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                                Стара ціна (необов&apos;язково)
+                            </label>
+                            <input
+                                type="number"
+                                name="old_price"
+                                value={formData.old_price}
+                                onChange={handleChange}
+                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Категорія</label>
+                            <select
+                                name="category"
+                                value={formData.category}
+                                onChange={handleChange}
+                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm">
+                                <option value="Man">Чоловікам (Man)</option>
+                                <option value="Woman">Жінкам (Woman)</option>
+                                <option value="Boy">Хлопчикам (Boy)</option>
+                                <option value="Child">Дітям (Child)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                                Кількість на складі
+                            </label>
+                            <input
+                                type="number"
+                                name="stock_quantity"
+                                value={formData.stock_quantity}
+                                onChange={handleChange}
+                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm"
+                                required
+                            />
+                        </div>
+
+                        <div className="md:col-span-2">
+                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Розміри</label>
+                            <input
+                                type="text"
+                                name="sizes"
+                                value={formData.sizes}
+                                onChange={handleChange}
+                                placeholder="40, 41, 42"
+                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm"
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Опис товару</label>
+                        <textarea
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange}
+                            rows={3}
+                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm resize-none"
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">URL головного фото</label>
+                        <div className="relative">
+                            <UploadCloud className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                            <input
+                                type="url"
+                                name="main_image_url"
+                                value={formData.main_image_url}
+                                onChange={handleChange}
+                                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm"
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1.5 flex justify-between items-center">
+                            <span>Додаткові фото (Галерея)</span>
+                            <span className="text-xs text-gray-400 font-normal">Кожне посилання з нового рядка</span>
+                        </label>
+                        <textarea
+                            name="gallery_urls"
+                            value={formData.gallery_urls}
+                            onChange={handleChange}
+                            rows={4}
+                            placeholder="https://example.com/img1.png&#10;https://example.com/img2.png"
+                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm resize-none"
+                        />
+                    </div>
+
+                    <label className="flex items-center gap-3 p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50">
+                        <input
+                            type="checkbox"
+                            name="is_new"
+                            checked={formData.is_new}
+                            onChange={handleChange}
+                            className="w-5 h-5 cursor-pointer accent-black"
+                        />
+                        <span className="text-sm font-semibold text-gray-900">Відмітити як новинку (NEW)</span>
+                    </label>
+
+                    <div className="flex justify-end gap-3 pt-4 border-t mt-4">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="px-5 py-2.5 text-sm font-semibold text-gray-600 bg-white border rounded-xl hover:bg-gray-50 disabled:opacity-50"
+                            disabled={isLoading}>
+                            Скасувати
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="px-5 py-2.5 text-sm font-semibold text-white bg-black rounded-xl hover:bg-gray-800 disabled:opacity-70">
+                            {isLoading ? 'Збереження...' : 'Оновити всі дані'}
+                        </button>
+                    </div>
+                </form>
+            )}
+
+            {/* --- ВМІСТ ВСТАВКИ: ТІЛЬКИ ЗАЛИШОК --- */}
+            {activeTab === 'stock' && (
+                <form onSubmit={handleStockSubmit} className="space-y-6 py-4">
+                    <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-blue-600 font-medium">Поточний залишок товару:</p>
+                            <p className="text-xl font-bold text-blue-900">{good.stock_quantity} шт.</p>
+                        </div>
+                        <Package size={32} className="text-blue-200" />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2 text-center text-lg">
+                            Нова кількість на складі
+                        </label>
+                        <input
+                            type="number"
+                            value={stockValue}
+                            onChange={(e) => setStockValue(Number(e.target.value))}
+                            className="w-full text-center text-3xl font-bold px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-black outline-none"
+                            required
+                            min="0"
+                        />
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-4 border-t">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="px-5 py-2.5 text-sm font-semibold text-gray-600 bg-white border rounded-xl hover:bg-gray-50 disabled:opacity-50"
+                            disabled={isLoading}>
+                            Скасувати
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="px-5 py-2.5 text-sm font-semibold text-white bg-black rounded-xl hover:bg-gray-800 disabled:opacity-70 flex items-center gap-2">
+                            <CheckCircle2 size={18} />
+                            {isLoading ? 'Оновлення...' : 'Зберегти залишок'}
+                        </button>
+                    </div>
+                </form>
+            )}
+        </div>
+    );
+};

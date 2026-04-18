@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Plus, Edit, Trash2 } from 'lucide-react';
-import { getGoods } from '@/utils/backendData';
+import { getGoods, deleteGood } from '@/utils/backendData/backendGoods';
+
+import Popup from '@/components/Popup/Popup';
+import { AddGoodContent } from '@/components/Popup/PopupContent/AddGoodContent';
+import { EditGoodContent } from '@/components/Popup/PopupContent/EditGoodContent';
 
 interface Good {
     id: number;
@@ -14,10 +18,18 @@ interface Good {
 export const GoodsPanel = () => {
     const [goods, setGoods] = useState<Good[]>([]);
 
-    useEffect(() => {
+    const [addGoodPopupOpen, setAddGoodPopupOpen] = useState(false);
+
+    const [editingGood, setEditingGood] = useState<Good | null>(null);
+
+    const fetchGoods = () => {
         getGoods()
             .then((data) => setGoods(data))
             .catch((error) => console.error('Помилка при завантаженні товарів:', error));
+    };
+
+    useEffect(() => {
+        fetchGoods();
     }, []);
 
     // ТУТ БУДЕ ТВІЙ ЗАПИТ ДО БЕКЕНДУ:
@@ -27,19 +39,39 @@ export const GoodsPanel = () => {
     //     .then(data => setGoods(data));
     // }, []);
 
-    // const handleDelete = (id) => {
-    //     if (window.confirm('Видалити цей товар?')) {
-    //         // ТУТ БУДЕ ЗАПИТ НА ВИДАЛЕННЯ:
-    //         // fetch(`http://localhost:3000/api/goods/${id}`, { method: 'DELETE' });
-    //         setGoods(goods.filter((g) => g.id !== id));
-    //     }
-    // };
+    const handleDelete = (id: number) => {
+        if (window.confirm('Delete this good?')) {
+            // ТУТ БУДЕ ЗАПИТ НА ВИДАЛЕННЯ:
+            deleteGood(id);
+            setGoods(goods.filter((g) => g.id !== id));
+        }
+    };
 
     return (
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <Popup isOpen={addGoodPopupOpen} onClose={() => setAddGoodPopupOpen(false)} title="Додайте новий товар">
+                <AddGoodContent onClose={() => setAddGoodPopupOpen(false)} onSuccess={() => fetchGoods()} />
+            </Popup>
+            <Popup
+                isOpen={!!editingGood} // Відкритий, якщо editingGood не null
+                onClose={() => setEditingGood(null)}
+                title={`Редагування: ${editingGood?.name}`}
+                maxWidth="md">
+                {editingGood && (
+                    <EditGoodContent
+                        good={editingGood}
+                        onClose={() => setEditingGood(null)}
+                        onSuccess={() => {
+                            fetchGoods(); // Оновлюємо таблицю
+                        }}
+                    />
+                )}
+            </Popup>
             <div className="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
                 <h2 className="text-xl font-bold text-gray-900">Товари (Goods)</h2>
-                <button className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                <button
+                    className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+                    onClick={() => setAddGoodPopupOpen(true)}>
                     <Plus size={16} /> Додати товар
                 </button>
             </div>
@@ -82,11 +114,13 @@ export const GoodsPanel = () => {
                                     </span>
                                 </td>
                                 <td className="p-4 text-sm text-right">
-                                    <button className="text-gray-400 hover:text-blue-600 p-1 transition-colors">
+                                    <button
+                                        className="text-gray-400 hover:text-blue-600 p-1 transition-colors"
+                                        onClick={() => setEditingGood(good)}>
                                         <Edit size={18} />
                                     </button>
                                     <button
-                                        // onClick={() => handleDelete(good.id)}
+                                        onClick={() => handleDelete(good.id)}
                                         className="text-gray-400 hover:text-red-600 p-1 ml-2 transition-colors">
                                         <Trash2 size={18} />
                                     </button>
