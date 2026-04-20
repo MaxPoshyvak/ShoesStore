@@ -1,48 +1,42 @@
-// components/popups/EditGoodContent.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { UploadCloud, CheckCircle2, Package, Database } from 'lucide-react';
-import { updateGood, updateGoodStock } from '@/utils/backendData/backendGoods'; // Імпортуй свої функції
+import { updateGood, updateGoodStock } from '@/utils/backendData/backendGoods';
+import type { Good } from '@/types/backendTypes';
 
 interface EditGoodContentProps {
-    good: any; // Тут краще вказати твій інтерфейс Good
+    good: Good;
     onClose: () => void;
     onSuccess: () => void;
 }
 
 export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose, onSuccess }) => {
-    // Стейт для перемикання вкладок
     const [activeTab, setActiveTab] = useState<'full' | 'stock'>('full');
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Стейт для ПОВНОЇ форми (заповнюємо даними існуючого товару)
-    // Стейт для ПОВНОЇ форми
     const [formData, setFormData] = useState({
         name: good?.name || '',
         price: good?.price || '',
         old_price: good?.old_price || '',
         category: good?.category || 'Man',
-        stock_quantity: good?.stock_quantity || '', // ДОДАНО
+        stock_quantity: good?.stock_quantity || '',
         is_new: good?.is_new || false,
-        description: good?.description || '', // ДОДАНО
+        description: good?.description || '',
         sizes: Array.isArray(good?.sizes) ? good.sizes.join(', ') : good?.sizes || '',
         main_image_url: good?.main_image_url || '',
-        // Перетворюємо масив галереї у строку (кожен URL з нового рядка)
-        gallery_urls: Array.isArray(good?.gallery_urls) ? good.gallery_urls.join('\n') : good?.gallery_urls || '', // ДОДАНО
+
+        gallery_urls: Array.isArray(good?.gallery_urls) ? good.gallery_urls.join('\n') : good?.gallery_urls || '',
     });
 
-    // Стейт для ШВИДКОЇ форми (тільки залишок)
     const [stockValue, setStockValue] = useState(good?.stock_quantity || 0);
 
-    // Обробник змін для повної форми
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
         const val = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
         setFormData((prev) => ({ ...prev, [name]: val }));
     };
 
-    // 🚀 Відправка ПОВНОЇ форми
     const handleFullSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
@@ -58,7 +52,6 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
         }
     };
 
-    // 🚀 Відправка ШВИДКОЇ форми (тільки залишки)
     const handleStockSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
@@ -221,7 +214,7 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
                             value={formData.gallery_urls}
                             onChange={handleChange}
                             rows={4}
-                            placeholder="https://example.com/img1.png&#10;https://example.com/img2.png"
+                            placeholder="https://example.com/image.png"
                             className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm resize-none"
                         />
                     </div>

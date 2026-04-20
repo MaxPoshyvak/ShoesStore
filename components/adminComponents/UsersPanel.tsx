@@ -1,11 +1,13 @@
 import { getUsers } from '@/utils/backendData/backendUsers';
 import { useEffect, useState } from 'react';
 import { User as UserIcon, Shield } from 'lucide-react';
-import Popup from '@/components/Popup/Popup'; // Твій компонент попапу
-import { UserDetailsContent } from '@/components/Popup/PopupContent/UserDetailsContent'; // Новий компонент контенту
+import Popup from '@/components/Popup/Popup';
+import { UserDetailsContent } from '@/components/Popup/PopupContent/UserDetailsContent';
+import { OrderDetailsContent } from '@/components/Popup/PopupContent/OrderDetailsContent';
+import type { Order } from '@/types/backendTypes';
 
 export interface User {
-    id: number;
+    id: string;
     username: string;
     email: string;
     role: 'admin' | 'user';
@@ -15,6 +17,8 @@ export interface User {
 export const UsersPanel = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
     useEffect(() => {
         getUsers()
@@ -81,9 +85,30 @@ export const UsersPanel = () => {
                 </table>
             </div>
 
-            {/* ПРОТОТИП ПОПАПУ ПРОФІЛЮ */}
             <Popup isOpen={!!selectedUser} onClose={() => setSelectedUser(null)} title="Картка клієнта" maxWidth="md">
-                {selectedUser && <UserDetailsContent user={selectedUser} onClose={() => setSelectedUser(null)} />}
+                {selectedUser && (
+                    <UserDetailsContent
+                        user={selectedUser}
+                        onClose={() => setSelectedUser(null)}
+                        onOpenOrder={(order) => {
+                            setSelectedUser(null);
+
+                            setSelectedOrder({
+                                ...order,
+                                customer_name: selectedUser.username,
+                                customer_email: selectedUser.email,
+                            });
+                        }}
+                    />
+                )}
+            </Popup>
+
+            <Popup
+                isOpen={!!selectedOrder}
+                onClose={() => setSelectedOrder(null)}
+                title={`Деталі замовлення #${selectedOrder?.id}`}
+                maxWidth="lg">
+                {selectedOrder && <OrderDetailsContent order={selectedOrder} onClose={() => setSelectedOrder(null)} />}
             </Popup>
         </div>
     );

@@ -1,18 +1,16 @@
-// components/popups/AddGoodContent.tsx
 import React, { useState } from 'react';
 import { UploadCloud, CheckCircle2 } from 'lucide-react';
 import { addGood } from '@/utils/backendData/backendGoods';
 
 interface AddGoodContentProps {
     onClose: () => void;
-    onSuccess: () => void; // Функція, щоб оновити таблицю товарів після додавання
+    onSuccess: () => void;
 }
 
 export const AddGoodContent: React.FC<AddGoodContentProps> = ({ onClose, onSuccess }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Стейт для всіх полів форми
     const [formData, setFormData] = useState({
         name: '',
         price: '',
@@ -21,7 +19,7 @@ export const AddGoodContent: React.FC<AddGoodContentProps> = ({ onClose, onSucce
         stock_quantity: '',
         is_new: false,
         description: '',
-        sizes: '', // Зберігаємо як строку "40, 41, 42", а при відправці розіб'ємо в масив
+        sizes: '',
         main_image_url: '',
     });
 
@@ -32,26 +30,19 @@ export const AddGoodContent: React.FC<AddGoodContentProps> = ({ onClose, onSucce
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
-        // 1. UI-логіка: зупиняємо перезавантаження сторінки
         e.preventDefault();
 
-        // 2. UI-логіка: керуємо станом кнопок і помилок
         setIsLoading(true);
         setError(null);
 
         try {
-            // 3. Викликаємо нашу чисту API-функцію!
-            // Передаємо туди formData (яка має відповідати інтерфейсу AddGoodData)
             await addGood(formData);
 
-            // 4. UI-логіка: якщо все ок, оновлюємо таблицю і закриваємо попап
             onSuccess();
             onClose();
         } catch (err: unknown) {
-            // Якщо API викинуло помилку — показуємо її
             setError((err as Error).message);
         } finally {
-            // Знімаємо лоадер
             setIsLoading(false);
         }
     };

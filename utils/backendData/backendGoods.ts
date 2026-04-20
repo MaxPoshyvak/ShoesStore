@@ -6,7 +6,7 @@ export const getGoods = async () => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${localStorage.getItem('token')}`, // Якщо потрібна авторизація
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
         });
 
@@ -21,7 +21,7 @@ export const getGoods = async () => {
         const data = await response.json();
         console.log(data);
 
-        return data; // Припускаємо, що відповідь має структуру { goods: [...] }
+        return data;
     } catch (error) {
         console.error('Помилка при отриманні товарів:', error);
         throw error;
@@ -34,7 +34,7 @@ export const deleteGood = async (goodId: number) => {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${localStorage.getItem('token')}`, // Якщо потрібна авторизація
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
         });
 
@@ -51,12 +51,10 @@ export const deleteGood = async (goodId: number) => {
     }
 };
 
-// backendData.ts (або api.ts)
-
 export interface AddGoodData {
     name: string;
     category: string;
-    price: string | number; // З форми часто приходить рядок
+    price: string | number;
     stock_quantity: string | number;
     sizes: string;
     main_image_url: string;
@@ -66,7 +64,6 @@ export interface AddGoodData {
 }
 
 export const addGood = async (goodData: AddGoodData) => {
-    // 1. Форматуємо дані (це бізнес-логіка, їй тут саме місце)
     const payload = {
         ...goodData,
         price: Number(goodData.price),
@@ -81,9 +78,7 @@ export const addGood = async (goodData: AddGoodData) => {
 
     const token = localStorage.getItem('token');
 
-    // 2. Робимо запит
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/goods`, {
-        // Порт 5001 чи 3000 - залежить від твого бекенду
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -92,22 +87,17 @@ export const addGood = async (goodData: AddGoodData) => {
         body: JSON.stringify(payload),
     });
 
-    // 3. Обробляємо 401 помилку (як ми робили раніше)
     if (response.status === 401) {
         unauthorized();
     }
 
     if (!response.ok) {
-        // Пробуємо дістати текст помилки від бекенду
         const errorData = await response.json().catch(() => null);
         throw new Error(errorData?.message || 'Не вдалося створити товар. Перевірте дані.');
     }
 
-    // 4. Повертаємо успішний результат
     return await response.json();
 };
-
-// backendData.ts
 
 export interface UpdateGoodData {
     name: string;
@@ -119,7 +109,7 @@ export interface UpdateGoodData {
     old_price?: string | number;
     is_new?: boolean;
     description?: string;
-    gallery_urls?: string; // Робимо строкою, щоб приймати текст з textarea
+    gallery_urls?: string;
 }
 
 export const updateGood = async (id: number, goodData: UpdateGoodData) => {
@@ -132,7 +122,7 @@ export const updateGood = async (id: number, goodData: UpdateGoodData) => {
             .split(',')
             .map((s) => Number(s.trim()))
             .filter((n) => !isNaN(n)),
-        // РОЗУМНИЙ ПАРСИНГ: розбиваємо по комі АБО по новому рядку (\n)
+
         gallery_urls: goodData.gallery_urls
             ? goodData.gallery_urls
                   .split(/[\n,]+/)

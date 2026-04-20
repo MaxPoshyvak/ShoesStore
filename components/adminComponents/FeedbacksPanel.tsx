@@ -1,82 +1,95 @@
-import { Star, CheckCircle } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Star, MessageSquare } from 'lucide-react';
+import { fetchFeedbacks, FeedbackType } from '@/utils/backendData/backendFeedbacks';
 
-const mockFeedbacks = [
-    {
-        id: 1,
-        user: 'Іван Петров',
-        good: 'Slick casual sneaker shoe',
-        rating: 5,
-        comment: 'Чудові кросівки, дуже зручні та стильні! Рекомендую.',
-        date: '16 Квіт 2026',
-        status: 'published',
-    },
-    {
-        id: 2,
-        user: 'Олена В.',
-        good: 'Nike Dunk Low Retro',
-        rating: 4,
-        comment: 'Трохи замаломірять, але якість супер. Доставка швидка.',
-        date: '15 Квіт 2026',
-        status: 'pending',
-    },
-];
+export const FeedbacksPanel = () => {
+    const [feedbacks, setFeedbacks] = useState<FeedbackType[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-export const FeedbacksPanel = () => (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-        <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-gray-900">Модерація відгуків</h2>
-            <div className="flex gap-2">
-                <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-bold">1 нове</span>
+    useEffect(() => {
+        fetchFeedbacks()
+            .then((data) => {
+                // Сортуємо так, щоб нові відгуки були зверху (якщо бекенд цього не робить)
+                const sortedData = data.sort(
+                    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+                );
+                setFeedbacks(sortedData);
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.error('Помилка при завантаженні відгуків:', error);
+                setIsLoading(false);
+            });
+    }, []);
+
+    return (
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    <MessageSquare size={24} className="text-gray-400" />
+                    Відгуки клієнтів
+                </h2>
+                <div className="flex gap-2">
+                    <span className="bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full font-bold">
+                        Всього: {feedbacks.length}
+                    </span>
+                </div>
+            </div>
+
+            <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+                {isLoading ? (
+                    <p className="text-center text-gray-500 text-sm py-8">Завантаження відгуків...</p>
+                ) : feedbacks.length === 0 ? (
+                    <p className="text-center text-gray-500 text-sm py-8">Відгуків поки немає</p>
+                ) : (
+                    feedbacks.map((feedback) => (
+                        <div
+                            key={feedback._id}
+                            className="p-5 border border-gray-100 rounded-xl hover:border-black transition-colors bg-white group cursor-default">
+                            <div className="flex justify-between items-start mb-3">
+                                <div>
+                                    <p className="font-bold text-gray-900">{feedback.username}</p>
+                                    <p className="text-xs text-gray-500 mt-0.5">
+                                        Товар:{' '}
+                                        <span className="font-medium text-black group-hover:underline cursor-pointer">
+                                            {feedback.goodName || 'Невідомий товар'}
+                                        </span>
+                                    </p>
+                                </div>
+                                {/* Зірочки рейтингу */}
+                                <div className="flex text-black">
+                                    {[...Array(5)].map((_, i) => (
+                                        <Star
+                                            key={i}
+                                            size={16}
+                                            fill={i < feedback.rating ? '#FFD700' : 'none'}
+                                            color={i < feedback.rating ? '#FFD703' : '#E5E7EB'}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+
+                            <p className="text-gray-700 text-sm mb-4 leading-relaxed">{feedback.comment}</p>
+
+                            <div className="flex justify-between items-center pt-3 border-t border-gray-100">
+                                <span className="text-xs font-medium text-gray-400">
+                                    {feedback.createdAt
+                                        ? new Date(feedback.createdAt).toLocaleDateString('uk-UA', {
+                                              day: 'numeric',
+                                              month: 'long',
+                                              year: 'numeric',
+                                          })
+                                        : 'Дата невідома'}
+                                </span>
+                                {/* Оскільки модерації немає, просто показуємо пошту або залишаємо пустим */}
+                                <span className="text-[10px] text-gray-400 uppercase tracking-widest">
+                                    {feedback.userEmail}
+                                </span>
+                            </div>
+                        </div>
+                    ))
+                )}
             </div>
         </div>
-
-        <div className="space-y-4">
-            {mockFeedbacks.map((feedback) => (
-                <div
-                    key={feedback.id}
-                    className="p-5 border border-gray-100 rounded-xl hover:border-gray-300 transition-all bg-gray-50/30">
-                    <div className="flex justify-between items-start mb-3">
-                        <div>
-                            <p className="font-bold text-gray-900">{feedback.user}</p>
-                            <p className="text-xs text-gray-500 mt-0.5">
-                                Товар: <span className="font-medium text-black">{feedback.good}</span>
-                            </p>
-                        </div>
-                        <div className="flex text-yellow-400">
-                            {[...Array(5)].map((_, i) => (
-                                <Star
-                                    key={i}
-                                    size={16}
-                                    fill={i < feedback.rating ? 'currentColor' : 'none'}
-                                    color={i < feedback.rating ? 'currentColor' : '#d1d5db'}
-                                />
-                            ))}
-                        </div>
-                    </div>
-
-                    <p className="text-gray-700 text-sm mb-4 italic">&quot;{feedback.comment}&quot;</p>
-
-                    <div className="flex justify-between items-center pt-3 border-t border-gray-100">
-                        <span className="text-xs text-gray-400">{feedback.date}</span>
-                        <div className="flex gap-2">
-                            {feedback.status === 'pending' ? (
-                                <>
-                                    <button className="text-xs px-3 py-1.5 bg-black text-white rounded hover:bg-gray-800 transition-colors">
-                                        Опублікувати
-                                    </button>
-                                    <button className="text-xs px-3 py-1.5 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors">
-                                        Відхилити
-                                    </button>
-                                </>
-                            ) : (
-                                <span className="text-xs px-3 py-1.5 bg-green-50 text-green-700 border border-green-200 rounded flex items-center gap-1">
-                                    <CheckCircle size={14} /> На сайті
-                                </span>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            ))}
-        </div>
-    </div>
-);
+    );
+};

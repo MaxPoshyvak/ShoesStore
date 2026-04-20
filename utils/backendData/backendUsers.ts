@@ -6,7 +6,7 @@ export const getUsers = async () => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${localStorage.getItem('token')}`, // Якщо потрібна авторизація
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
         });
 
@@ -21,7 +21,7 @@ export const getUsers = async () => {
         const data = await response.json();
         console.log(data);
 
-        return data; // Припускаємо, що відповідь має структуру { users: [...] }
+        return data;
     } catch (error) {
         console.error('Помилка при отриманні користувачів:', error);
         throw error;

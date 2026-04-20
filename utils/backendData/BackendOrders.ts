@@ -5,7 +5,31 @@ export const getOrders = async () => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`, // Якщо потрібна авторизація
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+    });
+
+    if (response.status === 401) {
+        unauthorized();
+    }
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    console.log(data);
+
+    return data;
+};
+
+export const getOrdersByUserId = async (userId: string) => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/orders/${userId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
     });
 

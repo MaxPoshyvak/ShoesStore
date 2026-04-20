@@ -1,9 +1,9 @@
-// components/adminComponents/OrdersPanel.tsx
 import React, { useEffect, useState } from 'react';
-import { MoreVertical } from 'lucide-react';
 import { getOrders } from '@/utils/backendData/BackendOrders';
 import Popup from '@/components/Popup/Popup';
-import { OrderDetailsContent, Order } from '@/components/Popup/PopupContent/OrderDetailsContent'; // 👈 Імпортуємо контент та інтерфейс
+import { OrderDetailsContent } from '@/components/Popup/PopupContent/OrderDetailsContent';
+
+import type { Order } from '@/types/backendTypes';
 
 export const OrdersPanel = () => {
     const [orders, setOrders] = useState<Order[]>([]);

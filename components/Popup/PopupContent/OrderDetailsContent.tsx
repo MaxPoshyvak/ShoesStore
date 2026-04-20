@@ -1,30 +1,6 @@
-// components/popups/OrderDetailsContent.tsx
 import React from 'react';
 import { MapPin, CreditCard, User, FileText, Package } from 'lucide-react';
-
-// Експортуємо інтерфейси, щоб їх можна було перевикористати в OrdersPanel
-export interface OrderItem {
-    order_id: number;
-    good_id: number;
-    quantity: number;
-    price_at_purchase: number;
-    name: string;
-    main_image_url: string;
-}
-
-export interface Order {
-    id: number;
-    total_amount: number;
-    status: string;
-    payment_method: string;
-    payment_status: string;
-    shipping_address: string;
-    customer_notes: string | null;
-    created_at: string;
-    customer_email: string;
-    customer_name: string;
-    items: OrderItem[];
-}
+import type { Order } from '@/types/backendTypes';
 
 interface OrderDetailsContentProps {
     order: Order;

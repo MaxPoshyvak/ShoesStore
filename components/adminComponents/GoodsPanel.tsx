@@ -5,15 +5,7 @@ import { getGoods, deleteGood } from '@/utils/backendData/backendGoods';
 import Popup from '@/components/Popup/Popup';
 import { AddGoodContent } from '@/components/Popup/PopupContent/AddGoodContent';
 import { EditGoodContent } from '@/components/Popup/PopupContent/EditGoodContent';
-
-interface Good {
-    id: number;
-    name: string;
-    category: string;
-    price: number;
-    stock_quantity: number;
-    isNew?: boolean;
-}
+import type { Good } from '@/types/backendTypes';
 
 export const GoodsPanel = () => {
     const [goods, setGoods] = useState<Good[]>([]);
@@ -32,16 +24,8 @@ export const GoodsPanel = () => {
         fetchGoods();
     }, []);
 
-    // ТУТ БУДЕ ТВІЙ ЗАПИТ ДО БЕКЕНДУ:
-    // useEffect(() => {
-    //   fetch('http://localhost:3000/api/goods')
-    //     .then(res => res.json())
-    //     .then(data => setGoods(data));
-    // }, []);
-
     const handleDelete = (id: number) => {
         if (window.confirm('Delete this good?')) {
-            // ТУТ БУДЕ ЗАПИТ НА ВИДАЛЕННЯ:
             deleteGood(id);
             setGoods(goods.filter((g) => g.id !== id));
         }
@@ -53,7 +37,7 @@ export const GoodsPanel = () => {
                 <AddGoodContent onClose={() => setAddGoodPopupOpen(false)} onSuccess={() => fetchGoods()} />
             </Popup>
             <Popup
-                isOpen={!!editingGood} // Відкритий, якщо editingGood не null
+                isOpen={!!editingGood}
                 onClose={() => setEditingGood(null)}
                 title={`Редагування: ${editingGood?.name}`}
                 maxWidth="md">
@@ -62,7 +46,7 @@ export const GoodsPanel = () => {
                         good={editingGood}
                         onClose={() => setEditingGood(null)}
                         onSuccess={() => {
-                            fetchGoods(); // Оновлюємо таблицю
+                            fetchGoods();
                         }}
                     />
                 )}
@@ -93,7 +77,7 @@ export const GoodsPanel = () => {
                                 <td className="p-4 text-sm text-gray-600">#{good.id}</td>
                                 <td className="p-4 text-sm font-medium text-gray-900">
                                     {good.name}
-                                    {good.isNew && (
+                                    {good.is_new && (
                                         <span className="ml-2 bg-black text-white text-[10px] px-2 py-0.5 rounded-full">
                                             NEW
                                         </span>
