@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**', // Це дозволить всі картинки, для старту ок
+        hostname: '**', // This will allow all images, fine for start
       },
     ],
   },

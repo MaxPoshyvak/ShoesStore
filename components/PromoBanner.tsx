@@ -87,8 +87,8 @@ export default function PromoBanner() {
                             Are you ready <br /> to lead the way
                         </h2>
                         <p className={styles.promo__desc}>
-                            Lorem ipsum dolor sit amet, consectetur<br />
-                            adipiscing elit, sed do.
+                            New-season sneakers with bold colorways<br />
+                            and lightweight cushioning.
                         </p>
 
                         {/* Кнопка та мініатюри в один рядок */}

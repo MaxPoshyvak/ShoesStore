@@ -5,7 +5,6 @@ import Image from "next/image";
 import styles from "./Trending.module.css";
 import ProductCard from "./ProductCard";
 
-// Описуємо інтерфейс товару, який приходить від API
 interface Good {
     id: string;
     name: string;
@@ -13,17 +12,17 @@ interface Good {
     old_price?: number | null;
     main_image_url: string;
     stock_quantity: number;
+    is_new?: boolean;
+    sizes: string[];
 }
 
 export default function Trending() {
     const sliderRef = useRef<HTMLDivElement>(null);
 
-    // СТАНИ ДЛЯ API ТА СЛАЙДЕРА
     const [goods, setGoods] = useState<Good[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [activeIndex, setActiveIndex] = useState(0);
 
-    // Підтягуємо дані з сервера при завантаженні компонента
     useEffect(() => {
         const fetchGoods = async () => {
             try {
@@ -31,8 +30,26 @@ export default function Trending() {
                 if (!response.ok) {
                     throw new Error('Помилка мережі');
                 }
-                const data = await response.json();
-                setGoods(data);
+                const data: Good[] = await response.json();
+
+                // 1. Сортуємо товари: спочатку зі знижкою, потім найдешевші
+                const sortedData = data.sort((a, b) => {
+                    const aHasDiscount = a.old_price && a.old_price > a.price;
+                    const bHasDiscount = b.old_price && b.old_price > b.price;
+
+                    // Якщо товар 'a' має знижку, а 'b' ні — 'a' йде вище
+                    if (aHasDiscount && !bHasDiscount) return -1;
+                    // Якщо товар 'b' має знижку, а 'a' ні — 'b' йде вище
+                    if (!aHasDiscount && bHasDiscount) return 1;
+
+                    // Якщо в обох є знижка, АБО в обох немає — сортуємо від найдешевшого
+                    return a.price - b.price;
+                });
+
+                // 2. Відрізаємо рівно 9 найкращих кросівок
+                const top9Goods = sortedData.slice(0, 9);
+
+                setGoods(top9Goods);
             } catch (error) {
                 console.error('Помилка завантаження товарів:', error);
             } finally {
@@ -43,16 +60,12 @@ export default function Trending() {
         fetchGoods();
     }, []);
 
-    // Динамічно рахуємо кількість сторінок (по 3 картки на сторінку)
     const totalPages = Math.ceil(goods.length / 3) || 1;
 
     const goToPage = (pageIndex: number) => {
         setActiveIndex(pageIndex);
         if (sliderRef.current) {
-            // Ширина картки (250px) + відступ (30px) = 280px. 
-            // Три картки: 280 * 3 = 840px.
             const scrollAmount = 840 * pageIndex;
-
             sliderRef.current.scrollTo({
                 left: scrollAmount,
                 behavior: "smooth"
@@ -79,15 +92,16 @@ export default function Trending() {
                 </div>
                 <h2 className={styles.trending__title}>Most Popular Products</h2>
                 <p className={styles.trending__desc}>
-                    Lorem Ipsum Dolor Sit Amet,
-                    <br />Consectetur Adipiscing Elit,
+                    Top-rated sneakers for daily miles,
+                    <br />gym sessions, and city walks.
                 </p>
                 <button className={styles.trending__explore}>Explore</button>
             </div>
 
             <div className={styles.trending__right}>
-                <div className={styles.trending__sliderWrapper}>
-                    <button className={styles.slider__btn} onClick={scrollLeft}>
+                <div className={styles.trending__sliderGrid}>
+
+                    <button className={`${styles.slider__btn} ${styles.btn__left}`} onClick={scrollLeft}>
                         <Image src="/left.png" alt="Left" width={40} height={40} />
                     </button>
 
@@ -104,8 +118,9 @@ export default function Trending() {
                                     price={product.price}
                                     oldPrice={product.old_price ? product.old_price : undefined}
                                     stockQuantity={product.stock_quantity}
+                                    isNew={product.is_new}
                                     showHeart={true}
-                                // bestSellingStyle={true}
+                                    sizes={product.sizes}
                                 />
                             ))
                         ) : (
@@ -113,20 +128,20 @@ export default function Trending() {
                         )}
                     </div>
 
-                    <button className={styles.slider__btn} onClick={scrollRight}>
+                    <button className={`${styles.slider__btn} ${styles.btn__right}`} onClick={scrollRight}>
                         <Image src="/right.png" alt="Right" width={40} height={40} />
                     </button>
-                </div>
 
-                <div className={styles.trending__pagination}>
-                    {/* Рендеримо крапочки на основі реальної кількості товарів */}
-                    {Array.from({ length: totalPages }).map((_, index) => (
-                        <span
-                            key={index}
-                            className={`${styles.dot} ${activeIndex === index ? styles.dotActive : ""}`}
-                            onClick={() => goToPage(index)}
-                        ></span>
-                    ))}
+                    <div className={styles.trending__pagination}>
+                        {Array.from({ length: totalPages }).map((_, index) => (
+                            <span
+                                key={index}
+                                className={`${styles.dot} ${activeIndex === index ? styles.dotActive : ""}`}
+                                onClick={() => goToPage(index)}
+                            ></span>
+                        ))}
+                    </div>
+
                 </div>
             </div>
         </section>

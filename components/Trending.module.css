@@ -1,10 +1,10 @@
 .trending {
     max-width: 1557px;
     margin: 0 auto;
-    padding: 100px 5%;
+    padding: 70px 5%; /* Прибрали зайві відступи зверху і знизу */
     display: flex;
     align-items: center;
-    gap: 50px
+    gap: 50px;
 }
 
 .trending__left {
@@ -15,7 +15,7 @@
 }
 
 .trending__subtitle {
-    font-family: Poppins, sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 19px;
     font-weight: 500;
     color: #000;
@@ -66,35 +66,61 @@
     background-color: #333;
 }
 
-/* ПРАВА ЧАСТИНА (СЛАЙДЕР) */
+/* ПРАВА ЧАСТИНА */
 .trending__right {
     flex: 0 0 70%;
-    /* Займає 70% ширини */
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
     overflow: hidden;
-    /* Ховаємо те, що не влізло */
+}
+
+/* 🔥 МАГІЯ CSS GRID (Один контейнер керує всім) */
+.trending__sliderGrid {
+    display: grid;
+    grid-template-columns: auto 1fr auto; /* Ліва кнопка | Картки | Права кнопка */
+    grid-template-rows: auto auto; /* Картки | Крапочки */
+    align-items: center; 
+    column-gap: 20px; /* Відстань між стрілками і картками */
+    row-gap: 25px; /* Відстань між картками і крапочками */
+    width: 100%;
+}
+
+/* Призначаємо місця в сітці Grid */
+.btn__left {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.btn__right {
+    grid-column: 3;
+    grid-row: 1;
 }
 
 .trending__cards {
+    grid-column: 2;
+    grid-row: 1;
     display: flex;
     gap: 30px;
     flex-wrap: nowrap;
-
     overflow-x: auto;
-    /* Дозволяє контенту прокручуватись по горизонталі */
     scroll-behavior: smooth;
-    /* Робить прокрутку плавною */
     width: 100%;
-    /* Обмежуємо ширину */
-    padding-bottom: 20px;
-
+    padding-bottom: 10px; /* Місце для тіні карток */
     -ms-overflow-style: none;
-    /* Для Internet Explorer та Edge */
     scrollbar-width: none;
 }
 
+.trending__pagination {
+    grid-column: 2;
+    grid-row: 2; /* Ставимо крапочки під картки */
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Загальні стилі для кнопок і крапочок */
 .slider__btn {
     background: transparent;
     border: none;
@@ -105,15 +131,6 @@
 
 .slider__btn:hover {
     opacity: 0.6;
-}
-
-
-.trending__pagination {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-    margin-top: 40px;
 }
 
 .dot {
@@ -130,11 +147,3 @@
     width: 30px;
     border-radius: 10px;
 }
-
-.trending__sliderWrapper {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    width: 100%;
-}
-

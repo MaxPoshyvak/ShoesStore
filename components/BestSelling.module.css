@@ -4,7 +4,7 @@
     padding: 0 5%;
 }
 
-/* === ЗАГОЛОВОК === */
+/* === HEADER === */
 .header {
     display: flex;
     align-items: center;
@@ -27,7 +27,7 @@
     margin: 0;
 }
 
-/* === ФІЛЬТРИ === */
+/* === FILTERS === */
 .filters {
     display: flex;
     justify-content: center;
@@ -47,10 +47,9 @@
     cursor: pointer;
     transition: all 0.3s ease;
     border-radius: 4px;
-    /* Невелике закруглення кнопок */
 }
 
-/* Активна кнопка (чорна) */
+/* Active button (black) */
 .activeFilter {
     background-color: #000;
     color: #fff;
@@ -63,9 +62,11 @@
 }
 
 .grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    
+  display: grid;
+    /* REDUCE HERE: instead of 400px or 350px, set approximately 300px or 280px */
+    grid-template-columns: repeat(3, 280px); 
     gap: 30px;
-    margin-bottom: 50px;
+    justify-content: center;
+    width: 100%;
+    margin-top: 40px;
 }

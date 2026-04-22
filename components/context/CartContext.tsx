@@ -9,6 +9,8 @@ interface CartItem {
     image: string;
     quantity: number;
     stock_quantity: number;
+    sizes?: (number | string)[];
+
 }
 
 interface CartContextType {
@@ -39,7 +41,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             }
             return [...prev, { ...product, quantity: 1 }];
         });
-        setIsCartOpen(true); // Автоматично відкриваємо кошик при додаванні
+        // setIsCartOpen(true); // Автоматично відкриваємо кошик при додаванні
     };
 
     const removeFromCart = (id: string) => {

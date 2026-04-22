@@ -3,8 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./Footer.module.css";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+    const pathname = usePathname();
+    if (pathname === '/login' || pathname === '/register') {
+        return null;
+    }
+    
     const handleSubscribe = (e: React.FormEvent) => {
         e.preventDefault();
         alert("Thanks for subscribing!");
@@ -13,14 +19,14 @@ export default function Footer() {
     return (
         <footer className={styles.footer}>
             <div className={styles.container}>
-                
+
                 {/* ЛІВА КОЛОНКА: Логотип, текст, соцмережі */}
                 <div className={styles.colLeft}>
                     <h2 className={styles.logo}>Slick</h2>
                     <p className={styles.desc}>
-                        Lorem Ipsum Dolor Sit Amet, Consectetur<br />
-                        Adipiscing Elit, Sed Do Eiusmod Tempor<br />
-                        Incididunt Ut Labore Et Dolore Magna Aliqua.
+                        Fresh sneaker drops, trusted fit guides<br />
+                        and honest reviews from real runners<br />
+                        and streetwear fans.
                     </p>
                     <div className={styles.socials}>
                         <Link href="#" className={styles.socialIcon}>
@@ -36,9 +42,9 @@ export default function Footer() {
                     <h3 className={styles.title}>Subscribe for news latter</h3>
                     {/* Форма підписки */}
                     <form className={styles.subscribeForm} onSubmit={handleSubscribe}>
-                        <input 
-                            type="email" 
-                            placeholder="Enter Email..." 
+                        <input
+                            type="email"
+                            placeholder="Enter Email..."
                             className={styles.input}
                             required
                         />

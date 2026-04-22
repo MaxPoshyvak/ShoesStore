@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import styles from "./BestSelling.module.css";
-import ProductCard from "./ProductCard";
+import BestSellingCard from "./BestSellingCard";
+import Link from "next/link";
 
 const categories = ["Man", "Woman", "Boy", "Child"];
 
@@ -18,6 +19,7 @@ export default function BestSelling() {
         is_new: boolean;
         main_image_url: string;
         stock_quantity: number;
+        sizes: string[];
     }
 
     const [activeCategory, setActiveCategory] = useState("Man")
@@ -47,7 +49,7 @@ export default function BestSelling() {
         fetchGoods();
 
     }, []);
-    const filteredGoods = goods.filter(good => good.category === activeCategory);
+    const filteredGoods = goods.filter(good => good.category === activeCategory).slice(0, 6);
 
 
 
@@ -77,24 +79,30 @@ export default function BestSelling() {
                 {isLoading ? (
                     <p style={{ textAlign: 'center', gridColumn: 'span 3', fontFamily: 'Poppins, sans-serif' }}>Завантаження товарів...</p>
                 ) : filteredGoods.length > 0 ? (
-                    filteredGoods.map((good) => (
-                        <ProductCard
-                            id={good.id}
-                            key={good.id}
-                            image={good.main_image_url}
-                            name={good.name}
-                            price={`₹ ${good.price}`}
-                            oldPrice={good.old_price ? `₹ ${good.old_price}` : undefined}
-                            isNew={good.is_new}
+                    filteredGoods.map((product) => (
+                        <BestSellingCard // Використовуємо новий компонент
+                            key={product.id}
+                            id={String(product.id)}
+                            image={product.main_image_url}
+                            name={product.name}
+                            price={product.price}
+                            oldPrice={product.old_price ? product.old_price : undefined}
+                            stockQuantity={product.stock_quantity}
                             showHeart={true}
-                            fullWidth={true}
-                            bestSellingStyle={true}
-                            stockQuantity={good.stock_quantity}
+                            isNew={product.is_new}
+                            sizes={product.sizes}
+
                         />
                     ))
                 ) : (
                     <p style={{ textAlign: 'center', gridColumn: 'span 3', fontFamily: 'Poppins, sans-serif' }}>В цій категорії поки немає товарів</p>
                 )}
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px', paddingRight: '10px' }}>
+                <Link href={`/shop?category=${activeCategory}`} style={{ fontFamily: 'Poppins', color: '#888888', textDecoration: 'none', fontSize: '16px' }}>
+                    All goods...
+                </Link>
             </div>
 
         </section>

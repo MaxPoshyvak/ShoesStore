@@ -1,5 +1,6 @@
 import Image from "next/image";
 import styles from "./Hero.module.css";
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -12,12 +13,12 @@ export default function Hero() {
           With Us
         </h1>
         <p className={styles.hero__description}>
-          Lorem Ipsum Dolor Sit Amet, Consectetur<br />
-          Adipiscing Elit, Sed Do Eiusmod.
+          Premium sneaker drops, built for speed<br />
+          and everyday comfort.
         </p>
-        <button className={styles.hero__btn}>
+        <Link href="/shop" className={styles.hero__btn}>
           Shop Now
-        </button>
+        </Link>
       </div>
 
       <div className={styles.hero__right}>

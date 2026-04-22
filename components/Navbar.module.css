@@ -97,3 +97,48 @@
     font-family: 'Alata', sans-serif;
     z-index: 2; /* Щоб цифра точно була поверх кошика */
 }
+
+
+.userAvatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Poppins', sans-serif; /* Або alata, якщо хочеш */
+  font-size: 20px;
+  font-weight: 400;
+  color: #000000; /* Чорна буква, як на скріншоті */
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Тінь під аватаркою */
+  user-select: none;
+}
+
+.userAvatar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+}
+
+.userAvatar:active {
+  transform: scale(0.95);
+}
+
+/* Якщо юзер не авторизований, показуємо кнопку Login (можеш налаштувати під свій дизайн) */
+.loginBtn {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #000;
+  text-decoration: none;
+  padding: 8px 16px;
+  border: 1px solid #000;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+}
+
+.loginBtn:hover {
+  background-color: #000;
+  color: #fff;
+}
