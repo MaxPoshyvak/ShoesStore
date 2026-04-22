@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import CartSidebar from "@/components/CartSidebar";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "../components/AuthContext";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,7 +39,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <AuthProvider>
           <CartProvider>
-            <Navbar />
+            <Suspense fallback={<div>Loading header...</div>}>
+              <Navbar />
+            </Suspense>
             <CartSidebar />
             {children}
             <Footer />
