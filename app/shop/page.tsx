@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import styles from "../../components/BestSelling.module.css";
 import BestSellingCard from "../../components/BestSellingCard";
@@ -19,10 +19,10 @@ interface Good {
     sizes: string[]; 
 }
 
-export default function ShopPage() {
+// 1. МИ ПЕРЕЙМЕНУВАЛИ ГОЛОВНУ ФУНКЦІЮ НА ShopContent
+function ShopContent() {
     const searchParams = useSearchParams();
     
-    // READ ALL FILTERS FROM URL
     const activeCategory = searchParams.get("category") || "Man"; 
     const sizeFilter = searchParams.get("size");
     const sortFilter = searchParams.get("sort");
@@ -35,7 +35,7 @@ export default function ShopPage() {
         const fetchGoods = async () => {
             try {
                 const response = await fetch('https://shoesstore-server.onrender.com/api/goods')
-                if (!response.ok) throw new Error('Error');
+                if (!response.ok) throw new Error('Помилка');
                 const data = await response.json();
                 setGoods(data);
             } catch (error) {
@@ -47,11 +47,9 @@ export default function ShopPage() {
         fetchGoods();
     }, []);
 
-    // APPLY FILTERS FROM URL
     let filteredGoods = goods.filter(good => good.category === activeCategory);
 
     if (sizeFilter) {
-        // If sizes in database are stored as numbers (e.g. 39) but comes as string "39" from URL
         filteredGoods = filteredGoods.filter(good => good.sizes && good.sizes.map(String).includes(sizeFilter));
     }
 
@@ -65,16 +63,14 @@ export default function ShopPage() {
         filteredGoods.sort((a, b) => b.price - a.price);
     }
 
-    // Function to change category (updates URL but keeps other filters)
     const handleCategoryChange = (cat: string) => {
         const params = new URLSearchParams(searchParams.toString());
         params.set('category', cat);
-        window.history.pushState(null, '', `?${params.toString()}`); // Update URL without page reload
+        window.history.pushState(null, '', `?${params.toString()}`); 
     };
 
     return (
         <main style={{ paddingTop: '120px', paddingBottom: '40px', minHeight: '80vh' }}>
-            
             <div className={styles.header}>
                 <span className={styles.line}></span>
                 <h2 className={styles.title}>Shop Now</h2>
@@ -109,7 +105,6 @@ export default function ShopPage() {
                             showHeart={true}
                             isNew={product.is_new}
                             sizes={product.sizes} 
-                            
                         />
                     ))
                 ) : (
@@ -117,5 +112,14 @@ export default function ShopPage() {
                 )}
             </div>
         </main>
+    );
+}
+
+// 2. СТВОРИЛИ НОВУ ГОЛОВНУ ФУНКЦІЮ, ЯКА ОБГОРТАЄ ВСЕ В SUSPENSE
+export default function ShopPage() {
+    return (
+        <Suspense fallback={<div style={{ paddingTop: '120px', textAlign: 'center', fontFamily: 'Poppins' }}>Loading shop...</div>}>
+            <ShopContent />
+        </Suspense>
     );
 }
