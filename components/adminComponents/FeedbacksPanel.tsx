@@ -17,7 +17,7 @@ export const FeedbacksPanel = () => {
                 setIsLoading(false);
             })
             .catch((error) => {
-                console.error('Помилка при завантаженні відгуків:', error);
+                console.error('Error loading feedbacks:', error);
                 setIsLoading(false);
             });
     }, []);
@@ -27,20 +27,20 @@ export const FeedbacksPanel = () => {
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                     <MessageSquare size={24} className="text-gray-400" />
-                    Відгуки клієнтів
+                    Customer feedback
                 </h2>
                 <div className="flex gap-2">
                     <span className="bg-gray-100 text-gray-600 text-xs px-3 py-1.5 rounded-full font-bold">
-                        Всього: {feedbacks.length}
+                        Total: {feedbacks.length}
                     </span>
                 </div>
             </div>
 
             <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
                 {isLoading ? (
-                    <p className="text-center text-gray-500 text-sm py-8">Завантаження відгуків...</p>
+                    <p className="text-center text-gray-500 text-sm py-8">Loading feedbacks...</p>
                 ) : feedbacks.length === 0 ? (
-                    <p className="text-center text-gray-500 text-sm py-8">Відгуків поки немає</p>
+                    <p className="text-center text-gray-500 text-sm py-8">No feedback yet</p>
                 ) : (
                     feedbacks.map((feedback) => (
                         <div
@@ -50,9 +50,9 @@ export const FeedbacksPanel = () => {
                                 <div>
                                     <p className="font-bold text-gray-900">{feedback.username}</p>
                                     <p className="text-xs text-gray-500 mt-0.5">
-                                        Товар:{' '}
+                                        Product:{' '}
                                         <span className="font-medium text-black group-hover:underline cursor-pointer">
-                                            {feedback.goodName || 'Невідомий товар'}
+                                            {feedback.goodName || 'Unknown product'}
                                         </span>
                                     </p>
                                 </div>
@@ -74,12 +74,12 @@ export const FeedbacksPanel = () => {
                             <div className="flex justify-between items-center pt-3 border-t border-gray-100">
                                 <span className="text-xs font-medium text-gray-400">
                                     {feedback.createdAt
-                                        ? new Date(feedback.createdAt).toLocaleDateString('uk-UA', {
+                                        ? new Date(feedback.createdAt).toLocaleDateString('en-US', {
                                               day: 'numeric',
                                               month: 'long',
                                               year: 'numeric',
                                           })
-                                        : 'Дата невідома'}
+                                        : 'Unknown date'}
                                 </span>
                                 {/* Оскільки модерації немає, просто показуємо пошту або залишаємо пустим */}
                                 <span className="text-[10px] text-gray-400 uppercase tracking-widest">

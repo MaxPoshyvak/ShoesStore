@@ -59,20 +59,20 @@ export const AddGoodContent: React.FC<AddGoodContentProps> = ({ onClose, onSucce
             {/* Основна інформація */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Назва товару</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Product name</label>
                     <input
                         type="text"
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        placeholder="Напр. Nike Air Max 270"
+                        placeholder="e.g. Nike Air Max 270"
                         className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent transition-all outline-none text-sm"
                         required
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Ціна (₴)</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Price (₴)</label>
                     <input
                         type="number"
                         name="price"
@@ -86,7 +86,7 @@ export const AddGoodContent: React.FC<AddGoodContentProps> = ({ onClose, onSucce
 
                 <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                        Стара ціна (необов&apos;язково)
+                        Old price (optional)
                     </label>
                     <input
                         type="number"
@@ -99,21 +99,21 @@ export const AddGoodContent: React.FC<AddGoodContentProps> = ({ onClose, onSucce
                 </div>
 
                 <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Категорія</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Category</label>
                     <select
                         name="category"
                         value={formData.category}
                         onChange={handleChange}
                         className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent transition-all outline-none text-sm appearance-none">
-                        <option value="Man">Чоловікам (Man)</option>
-                        <option value="Woman">Жінкам (Woman)</option>
-                        <option value="Boy">Хлопчикам (Boy)</option>
-                        <option value="Child">Дітям (Child)</option>
+                        <option value="Man">Men (Man)</option>
+                        <option value="Woman">Women (Woman)</option>
+                        <option value="Boy">Boys (Boy)</option>
+                        <option value="Child">Kids (Child)</option>
                     </select>
                 </div>
 
                 <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Кількість на складі</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">Stock quantity</label>
                     <input
                         type="number"
                         name="stock_quantity"
@@ -127,33 +127,33 @@ export const AddGoodContent: React.FC<AddGoodContentProps> = ({ onClose, onSucce
             </div>
 
             <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Розміри (через кому)</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Sizes (comma-separated)</label>
                 <input
                     type="text"
                     name="sizes"
                     value={formData.sizes}
                     onChange={handleChange}
-                    placeholder="Напр. 38, 39, 40, 41, 42"
+                    placeholder="e.g. 38, 39, 40, 41, 42"
                     className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent transition-all outline-none text-sm"
                     required
                 />
             </div>
 
             <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Опис товару</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Product description</label>
                 <textarea
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
                     rows={3}
-                    placeholder="Короткий опис кросівок..."
+                    placeholder="Short product description..."
                     className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent transition-all outline-none text-sm resize-none"
                     required
                 />
             </div>
 
             <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">URL головного фото</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Main image URL</label>
                 <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <UploadCloud className="h-5 w-5 text-gray-400" />
@@ -183,8 +183,8 @@ export const AddGoodContent: React.FC<AddGoodContentProps> = ({ onClose, onSucce
                     <CheckCircle2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" />
                 </div>
                 <div>
-                    <p className="text-sm font-semibold text-gray-900">Відмітити як новинку (NEW)</p>
-                    <p className="text-xs text-gray-500">Товар отримає чорний бейдж &quot;New&quot; на сайті</p>
+                    <p className="text-sm font-semibold text-gray-900">Mark as new (NEW)</p>
+                    <p className="text-xs text-gray-500">The product will have a black &quot;New&quot; badge on the website</p>
                 </div>
             </label>
 
@@ -195,7 +195,7 @@ export const AddGoodContent: React.FC<AddGoodContentProps> = ({ onClose, onSucce
                     onClick={onClose}
                     className="px-5 py-2.5 text-sm font-semibold text-gray-600 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors"
                     disabled={isLoading}>
-                    Скасувати
+                    Cancel
                 </button>
                 <button
                     type="submit"
@@ -216,10 +216,10 @@ export const AddGoodContent: React.FC<AddGoodContentProps> = ({ onClose, onSucce
                                     fill="currentColor"
                                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            Збереження...
+                            Saving...
                         </>
                     ) : (
-                        'Зберегти товар'
+                        'Save product'
                     )}
                 </button>
             </div>

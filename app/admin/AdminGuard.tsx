@@ -24,7 +24,7 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
 
     if (isLoading || !isAuthorized) {
         // Поки перевіряємо, показуємо лоадер або просто пустий екран
-        return <div className="h-screen flex items-center justify-center">Перевірка доступу...</div>;
+        return <div className="h-screen flex items-center justify-center">Checking access…</div>;
     }
 
     return <>{children}</>;

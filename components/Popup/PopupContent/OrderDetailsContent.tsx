@@ -17,7 +17,7 @@ export const OrderDetailsContent: React.FC<OrderDetailsContentProps> = ({ order,
                         <User size={18} className="text-gray-500" />
                     </div>
                     <div className="overflow-hidden">
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Клієнт</p>
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Customer</p>
                         <p className="text-sm font-bold text-gray-900 truncate">{order.customer_name}</p>
                     </div>
                 </div>
@@ -27,7 +27,7 @@ export const OrderDetailsContent: React.FC<OrderDetailsContentProps> = ({ order,
                         <CreditCard size={18} className="text-gray-500" />
                     </div>
                     <div className="overflow-hidden">
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Оплата</p>
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Payment</p>
                         <p className="text-sm font-bold text-gray-900 capitalize truncate">
                             {order.payment_method}
                             <span
@@ -45,7 +45,7 @@ export const OrderDetailsContent: React.FC<OrderDetailsContentProps> = ({ order,
                         <MapPin size={18} className="text-gray-500" />
                     </div>
                     <div className="overflow-hidden">
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Доставка</p>
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">Shipping</p>
                         <p className="text-sm font-bold text-gray-900 truncate" title={order.shipping_address}>
                             {order.shipping_address}
                         </p>
@@ -59,7 +59,7 @@ export const OrderDetailsContent: React.FC<OrderDetailsContentProps> = ({ order,
                     <FileText size={20} className="text-yellow-600 shrink-0 mt-0.5" />
                     <div>
                         <p className="text-xs font-bold text-yellow-800 uppercase tracking-wide mb-1">
-                            Коментар клієнта
+                            Customer note
                         </p>
                         <p className="text-sm text-yellow-900 italic leading-relaxed">
                             &quot;{order.customer_notes}&quot;
@@ -71,7 +71,7 @@ export const OrderDetailsContent: React.FC<OrderDetailsContentProps> = ({ order,
             {/* Список товарів */}
             <div>
                 <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2 uppercase tracking-wide border-b pb-2">
-                    <Package size={16} /> Придбані товари
+                    <Package size={16} /> Purchased items
                 </h3>
                 <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                     {order.items.map((item, index) => (
@@ -86,13 +86,13 @@ export const OrderDetailsContent: React.FC<OrderDetailsContentProps> = ({ order,
                             <div className="flex-1 min-w-0">
                                 <p className="font-bold text-gray-900 text-sm truncate">{item.name}</p>
                                 <p className="text-xs text-gray-500 mt-1">
-                                    Код товару: <span className="font-mono text-gray-700">#{item.good_id}</span>
+                                    Product code: <span className="font-mono text-gray-700">#{item.good_id}</span>
                                 </p>
                             </div>
                             <div className="text-right shrink-0">
                                 <p className="text-sm font-black text-gray-900">{item.price_at_purchase} ₴</p>
-                                <p className="text-xs text-gray-500 mt-1 font-medium text-black">
-                                    К-сть: {item.quantity}
+                                <p className="text-xs text-gray-500 mt-1 font-medium">
+                                    Qty: {item.quantity}
                                 </p>
                             </div>
                         </div>
@@ -103,7 +103,7 @@ export const OrderDetailsContent: React.FC<OrderDetailsContentProps> = ({ order,
             {/* Підсумок та кнопки */}
             <div className="border-t border-gray-200 pt-5 mt-6">
                 <div className="flex justify-between items-center mb-6">
-                    <span className="text-gray-500 font-medium uppercase text-sm tracking-wider">Загальна сума:</span>
+                    <span className="text-gray-500 font-medium uppercase text-sm tracking-wider">Total:</span>
                     <span className="text-3xl font-black text-black">{order.total_amount} ₴</span>
                 </div>
 
@@ -111,7 +111,7 @@ export const OrderDetailsContent: React.FC<OrderDetailsContentProps> = ({ order,
                     <button
                         onClick={onClose}
                         className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-bold rounded-xl transition-colors">
-                        Закрити деталі
+                        Close details
                     </button>
                 </div>
             </div>

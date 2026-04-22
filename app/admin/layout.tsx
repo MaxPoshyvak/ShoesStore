@@ -3,8 +3,8 @@ import { AuthProvider } from '@/components/AuthContext';
 import AdminGuard from './AdminGuard';
 
 export const metadata = {
-    title: 'Адмінка - Shoes Store',
-    description: 'Панель адміністратора для управління товарами та замовленнями',
+    title: 'Admin Panel - Shoes Store',
+    description: 'Administrator dashboard for managing products and orders',
 };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

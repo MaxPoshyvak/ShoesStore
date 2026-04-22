@@ -17,7 +17,7 @@ export const GoodsPanel = () => {
     const fetchGoods = () => {
         getGoods()
             .then((data) => setGoods(data))
-            .catch((error) => console.error('Помилка при завантаженні товарів:', error));
+            .catch((error) => console.error('Error loading products:', error));
     };
 
     useEffect(() => {
@@ -33,13 +33,13 @@ export const GoodsPanel = () => {
 
     return (
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-            <Popup isOpen={addGoodPopupOpen} onClose={() => setAddGoodPopupOpen(false)} title="Додайте новий товар">
+            <Popup isOpen={addGoodPopupOpen} onClose={() => setAddGoodPopupOpen(false)} title="Add a new product">
                 <AddGoodContent onClose={() => setAddGoodPopupOpen(false)} onSuccess={() => fetchGoods()} />
             </Popup>
             <Popup
                 isOpen={!!editingGood}
                 onClose={() => setEditingGood(null)}
-                title={`Редагування: ${editingGood?.name}`}
+                title={`Edit: ${editingGood?.name}`}
                 maxWidth="md">
                 {editingGood && (
                     <EditGoodContent
@@ -52,11 +52,11 @@ export const GoodsPanel = () => {
                 )}
             </Popup>
             <div className="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
-                <h2 className="text-xl font-bold text-gray-900">Товари (Goods)</h2>
+                <h2 className="text-xl font-bold text-gray-900">Products</h2>
                 <button
                     className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
                     onClick={() => setAddGoodPopupOpen(true)}>
-                    <Plus size={16} /> Додати товар
+                    <Plus size={16} /> Add product
                 </button>
             </div>
             <div className="overflow-x-auto">
@@ -64,11 +64,11 @@ export const GoodsPanel = () => {
                     <thead>
                         <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
                             <th className="p-4 font-semibold">ID</th>
-                            <th className="p-4 font-semibold">Назва</th>
-                            <th className="p-4 font-semibold">Категорія</th>
-                            <th className="p-4 font-semibold">Ціна</th>
-                            <th className="p-4 font-semibold">Залишок</th>
-                            <th className="p-4 font-semibold text-right">Дії</th>
+                            <th className="p-4 font-semibold">Name</th>
+                            <th className="p-4 font-semibold">Category</th>
+                            <th className="p-4 font-semibold">Price</th>
+                            <th className="p-4 font-semibold">Stock</th>
+                            <th className="p-4 font-semibold text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
@@ -94,7 +94,7 @@ export const GoodsPanel = () => {
                                                   ? 'bg-yellow-100 text-yellow-800'
                                                   : 'bg-red-100 text-red-800'
                                         }`}>
-                                        {good.stock_quantity > 0 ? `${good.stock_quantity} шт.` : 'Немає в наявності'}
+                                        {good.stock_quantity > 0 ? `${good.stock_quantity} pcs` : 'Out of stock'}
                                     </span>
                                 </td>
                                 <td className="p-4 text-sm text-right">

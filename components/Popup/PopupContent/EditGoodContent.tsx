@@ -76,14 +76,14 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
                     className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all ${
                         activeTab === 'full' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-gray-700'
                     }`}>
-                    <Database size={16} /> Повна інформація
+                    <Database size={16} /> Full details
                 </button>
                 <button
                     onClick={() => setActiveTab('stock')}
                     className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all ${
                         activeTab === 'stock' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-gray-700'
                     }`}>
-                    <Package size={16} /> Тільки залишок
+                    <Package size={16} /> Stock only
                 </button>
             </div>
 
@@ -99,7 +99,7 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
                 <form onSubmit={handleFullSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="md:col-span-2">
-                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Назва товару</label>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Product name</label>
                             <input
                                 type="text"
                                 name="name"
@@ -111,7 +111,7 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Ціна (₴)</label>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Price (₴)</label>
                             <input
                                 type="number"
                                 name="price"
@@ -124,7 +124,7 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
 
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                                Стара ціна (необов&apos;язково)
+                                Old price (optional)
                             </label>
                             <input
                                 type="number"
@@ -136,22 +136,22 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Категорія</label>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Category</label>
                             <select
                                 name="category"
                                 value={formData.category}
                                 onChange={handleChange}
                                 className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm">
-                                <option value="Man">Чоловікам (Man)</option>
-                                <option value="Woman">Жінкам (Woman)</option>
-                                <option value="Boy">Хлопчикам (Boy)</option>
-                                <option value="Child">Дітям (Child)</option>
+                                <option value="Man">Men (Man)</option>
+                                <option value="Woman">Women (Woman)</option>
+                                <option value="Boy">Boys (Boy)</option>
+                                <option value="Child">Kids (Child)</option>
                             </select>
                         </div>
 
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                                Кількість на складі
+                                Stock quantity
                             </label>
                             <input
                                 type="number"
@@ -164,7 +164,7 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
                         </div>
 
                         <div className="md:col-span-2">
-                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Розміри</label>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Sizes</label>
                             <input
                                 type="text"
                                 name="sizes"
@@ -178,7 +178,7 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Опис товару</label>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Product description</label>
                         <textarea
                             name="description"
                             value={formData.description}
@@ -190,7 +190,7 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">URL головного фото</label>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Main image URL</label>
                         <div className="relative">
                             <UploadCloud className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                             <input
@@ -205,9 +205,9 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5 flex justify-between items-center">
-                            <span>Додаткові фото (Галерея)</span>
-                            <span className="text-xs text-gray-400 font-normal">Кожне посилання з нового рядка</span>
+                        <label className="flex justify-between items-center text-sm font-semibold text-gray-700 mb-1.5">
+                            <span>Additional images (gallery)</span>
+                            <span className="text-xs text-gray-400 font-normal">One URL per line</span>
                         </label>
                         <textarea
                             name="gallery_urls"
@@ -227,7 +227,7 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
                             onChange={handleChange}
                             className="w-5 h-5 cursor-pointer accent-black"
                         />
-                        <span className="text-sm font-semibold text-gray-900">Відмітити як новинку (NEW)</span>
+                        <span className="text-sm font-semibold text-gray-900">Mark as new (NEW)</span>
                     </label>
 
                     <div className="flex justify-end gap-3 pt-4 border-t mt-4">
@@ -236,13 +236,13 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
                             onClick={onClose}
                             className="px-5 py-2.5 text-sm font-semibold text-gray-600 bg-white border rounded-xl hover:bg-gray-50 disabled:opacity-50"
                             disabled={isLoading}>
-                            Скасувати
+                            Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={isLoading}
                             className="px-5 py-2.5 text-sm font-semibold text-white bg-black rounded-xl hover:bg-gray-800 disabled:opacity-70">
-                            {isLoading ? 'Збереження...' : 'Оновити всі дані'}
+                            {isLoading ? 'Saving...' : 'Update all details'}
                         </button>
                     </div>
                 </form>
@@ -253,15 +253,15 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
                 <form onSubmit={handleStockSubmit} className="space-y-6 py-4">
                     <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl flex items-center justify-between">
                         <div>
-                            <p className="text-sm text-blue-600 font-medium">Поточний залишок товару:</p>
-                            <p className="text-xl font-bold text-blue-900">{good.stock_quantity} шт.</p>
+                            <p className="text-sm text-blue-600 font-medium">Current stock:</p>
+                            <p className="text-xl font-bold text-blue-900">{good.stock_quantity} pcs</p>
                         </div>
                         <Package size={32} className="text-blue-200" />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2 text-center text-lg">
-                            Нова кількість на складі
+                        <label className="block text-lg font-semibold text-gray-700 mb-2 text-center">
+                            New stock quantity
                         </label>
                         <input
                             type="number"
@@ -279,14 +279,14 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
                             onClick={onClose}
                             className="px-5 py-2.5 text-sm font-semibold text-gray-600 bg-white border rounded-xl hover:bg-gray-50 disabled:opacity-50"
                             disabled={isLoading}>
-                            Скасувати
+                            Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={isLoading}
                             className="px-5 py-2.5 text-sm font-semibold text-white bg-black rounded-xl hover:bg-gray-800 disabled:opacity-70 flex items-center gap-2">
                             <CheckCircle2 size={18} />
-                            {isLoading ? 'Оновлення...' : 'Зберегти залишок'}
+                            {isLoading ? 'Updating...' : 'Save stock'}
                         </button>
                     </div>
                 </form>

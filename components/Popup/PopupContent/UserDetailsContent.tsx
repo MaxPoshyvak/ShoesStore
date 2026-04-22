@@ -27,7 +27,7 @@ export const UserDetailsContent: React.FC<UserDetailsContentProps> = ({ user, on
 
         getOrdersByUserId(user.id)
             .then((data) => setOrders(data))
-            .catch((error) => console.error('Помилка при завантаженні замовлень користувача:', error));
+            .catch((error) => console.error('Error loading user orders:', error));
     }, [user.id]);
 
     return (
@@ -61,7 +61,7 @@ export const UserDetailsContent: React.FC<UserDetailsContentProps> = ({ user, on
             <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white border border-gray-100 p-4 rounded-xl flex items-center justify-between shadow-sm">
                     <div>
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Витрачено</p>
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Spent</p>
                         <p className="text-2xl font-black text-gray-900">
                             {orders.reduce((total, order) => total + Number(order.total_amount), 0).toFixed(2)} ₴
                         </p>
@@ -72,7 +72,7 @@ export const UserDetailsContent: React.FC<UserDetailsContentProps> = ({ user, on
                 </div>
                 <div className="bg-white border border-gray-100 p-4 rounded-xl flex items-center justify-between shadow-sm">
                     <div>
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Замовлень</p>
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Orders</p>
                         <p className="text-2xl font-black text-gray-900">{orders.length}</p>
                     </div>
                     <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600">
@@ -83,7 +83,7 @@ export const UserDetailsContent: React.FC<UserDetailsContentProps> = ({ user, on
 
             <div>
                 <h4 className="text-sm font-bold text-gray-900 mb-3 border-b pb-2 uppercase tracking-wide">
-                    Історія замовлень
+                    Order history
                 </h4>
 
                 <div className="space-y-2 max-h-62.5 overflow-y-auto pr-2 custom-scrollbar">
@@ -102,10 +102,10 @@ export const UserDetailsContent: React.FC<UserDetailsContentProps> = ({ user, on
                                         <ShoppingBag size={18} />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-bold text-gray-900">Замовлення #{order.id}</p>
+                                        <p className="text-sm font-bold text-gray-900">Order #{order.id}</p>
                                         <p className="text-xs text-gray-500">
                                             {new Date(order.created_at).toLocaleDateString()} •{' '}
-                                            {order.items?.length || 0} товар(ів)
+                                            {order.items?.length || 0} item(s)
                                         </p>
                                     </div>
                                 </div>
@@ -115,13 +115,13 @@ export const UserDetailsContent: React.FC<UserDetailsContentProps> = ({ user, on
                                     <div>
                                         {/* Виправили суму на Number() + toLocaleString */}
                                         <p className="text-sm font-black text-gray-900">
-                                            {Number(order.total_amount).toLocaleString('uk-UA')} ₴
+                                            {Number(order.total_amount).toLocaleString('en-US')} ₴
                                         </p>
                                         <p
                                             className={`text-[10px] font-bold uppercase tracking-wider ${
                                                 order.status === 'completed' ? 'text-green-600' : 'text-yellow-600'
                                             }`}>
-                                            {order.status === 'completed' ? 'Виконано' : 'В обробці'}
+                                            {order.status === 'completed' ? 'Completed' : 'In progress'}
                                         </p>
                                     </div>
                                     <ExternalLink
@@ -140,7 +140,7 @@ export const UserDetailsContent: React.FC<UserDetailsContentProps> = ({ user, on
                 <button
                     onClick={onClose}
                     className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-bold rounded-xl transition-colors">
-                    Закрити
+                    Close
                 </button>
             </div>
         </div>

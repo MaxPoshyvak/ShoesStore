@@ -23,25 +23,25 @@ export const UsersPanel = () => {
     useEffect(() => {
         getUsers()
             .then((data) => setUsers(data))
-            .catch((error) => console.error('Помилка при завантаженні користувачів:', error));
+            .catch((error) => console.error('Error loading users:', error));
     }, []);
 
     return (
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <div className="p-6 border-b border-gray-200 bg-gray-50/50 flex justify-between items-center">
-                <h2 className="text-xl font-bold text-gray-900">Користувачі (Users)</h2>
-                <span className="text-sm font-medium text-gray-500">Всього: {users.length}</span>
+                <h2 className="text-xl font-bold text-gray-900">Users</h2>
+                <span className="text-sm font-medium text-gray-500">Total: {users.length}</span>
             </div>
 
             <div className="overflow-x-auto">
                 <table className="w-full text-left">
                     <thead>
                         <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider border-b border-gray-200">
-                            <th className="p-4 font-semibold">ID / Ім&apos;я</th>
+                            <th className="p-4 font-semibold">ID / Name</th>
                             <th className="p-4 font-semibold">Email</th>
-                            <th className="p-4 font-semibold">Роль</th>
-                            <th className="p-4 font-semibold">Дата реєстрації</th>
-                            <th className="p-4 font-semibold text-right">Дії</th>
+                            <th className="p-4 font-semibold">Role</th>
+                            <th className="p-4 font-semibold">Registered</th>
+                            <th className="p-4 font-semibold text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
@@ -70,13 +70,13 @@ export const UsersPanel = () => {
                                     </span>
                                 </td>
                                 <td className="p-4 text-sm text-gray-500">
-                                    {new Date(user.created_at).toLocaleDateString('uk-UA')}
+                                    {new Date(user.created_at).toLocaleDateString('en-US')}
                                 </td>
                                 <td className="p-4 text-right">
                                     <button
                                         onClick={() => setSelectedUser(user)}
                                         className="text-gray-500 hover:text-black bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg font-medium transition-colors text-xs">
-                                        Профіль
+                                        Profile
                                     </button>
                                 </td>
                             </tr>
@@ -85,7 +85,7 @@ export const UsersPanel = () => {
                 </table>
             </div>
 
-            <Popup isOpen={!!selectedUser} onClose={() => setSelectedUser(null)} title="Картка клієнта" maxWidth="md">
+            <Popup isOpen={!!selectedUser} onClose={() => setSelectedUser(null)} title="Customer profile" maxWidth="md">
                 {selectedUser && (
                     <UserDetailsContent
                         user={selectedUser}
@@ -106,7 +106,7 @@ export const UsersPanel = () => {
             <Popup
                 isOpen={!!selectedOrder}
                 onClose={() => setSelectedOrder(null)}
-                title={`Деталі замовлення #${selectedOrder?.id}`}
+                title={`Order details #${selectedOrder?.id}`}
                 maxWidth="lg">
                 {selectedOrder && <OrderDetailsContent order={selectedOrder} onClose={() => setSelectedOrder(null)} />}
             </Popup>
