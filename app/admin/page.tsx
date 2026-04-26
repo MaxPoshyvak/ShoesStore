@@ -8,6 +8,7 @@ import { GoodsPanel } from '@/components/adminComponents/GoodsPanel';
 import { OrdersPanel } from '@/components/adminComponents/OrdersPanel';
 import { PaymentsPanel } from '@/components/adminComponents/PaymentsPanel';
 import { FeedbacksPanel } from '@/components/adminComponents/FeedbacksPanel';
+import { SupportChatsPanel } from '@/components/adminComponents/SupportChatsPanel';
 
 export default function App() {
     const [activeTab, setActiveTab] = useState('dashboard');
@@ -19,6 +20,7 @@ export default function App() {
         { id: 'orders', label: 'Orders', icon: ShoppingCart },
         { id: 'payments', label: 'Payments', icon: CreditCard },
         { id: 'feedbacks', label: 'Feedbacks', icon: MessageSquare },
+        { id: 'support', label: 'Support', icon: MessageSquare },
     ];
 
     // Функція-роутер: малює потрібний компонент залежно від вибраного меню
@@ -36,6 +38,8 @@ export default function App() {
                 return <PaymentsPanel />;
             case 'feedbacks':
                 return <FeedbacksPanel />;
+            case 'support':
+                return <SupportChatsPanel />;
             default:
                 return <GoodsPanel />;
         }
