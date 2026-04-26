@@ -26,7 +26,7 @@ export interface Chat {
 // ==========================================
 // SOCKET.IO SETUP
 // ==========================================
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5001';
+const SOCKET_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001';
 const socket: Socket = io(SOCKET_URL);
 
 const ADMIN_ID = 'df6fe17e-6274-4631-ab65-8b930c6d99cc'; // Ваш ID адміністратора
@@ -48,7 +48,7 @@ export const SupportChatsPanel = () => {
     useEffect(() => {
         const getChats = async () => {
             try {
-                const res = await fetch('http://localhost:5001/api/telegram/get-support-chats', {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/telegram/get-support-chats`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
@@ -75,11 +75,14 @@ export const SupportChatsPanel = () => {
         const fetchHistory = async () => {
             setIsLoadingMessages(true);
             try {
-                const res = await fetch(`http://localhost:5001/api/telegram/get-history/${selectedChatId}`, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                const res = await fetch(
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/telegram/get-history/${selectedChatId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        },
                     },
-                });
+                );
                 if (res.ok) {
                     const data = await res.json();
                     setMessages(data);
@@ -126,7 +129,7 @@ export const SupportChatsPanel = () => {
         setReplyText('');
 
         try {
-            await fetch('http://localhost:5001/api/telegram/send-support-message', {
+            await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/telegram/send-support-message`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
