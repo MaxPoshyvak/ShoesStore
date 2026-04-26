@@ -26,14 +26,21 @@ export interface Chat {
 // ==========================================
 // SOCKET.IO SETUP
 // ==========================================
-const SOCKET_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001';
+const SOCKET_URL = 'https://shoesstore-server.onrender.com';
 const socket: Socket = io(SOCKET_URL, {
-    auth: {
-        token: localStorage.getItem('token'),
-    },
-    transports: ['websocket, polling'],
+    transports: ['websocket'], // Залишаємо ТІЛЬКИ websocket
+    upgrade: false, // Вимикаємо механізм апгрейду (бо ми одразу на ws)
     withCredentials: true,
+    reconnectionAttempts: 5,
 });
+
+// socket.on('connect', () => {
+//     console.log('🟢 Socket успішно підключено! Мій ID:', socket.id);
+// });
+
+// socket.on('connect_error', (err) => {
+//     console.log('🔴 Помилка підключення:', err.message);
+// });
 
 const ADMIN_ID = 'df6fe17e-6274-4631-ab65-8b930c6d99cc'; // Ваш ID адміністратора
 
