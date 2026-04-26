@@ -50,6 +50,7 @@ export const SupportChatsPanel = () => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [replyText, setReplyText] = useState('');
     const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+    const [myId, setMyId] = useState<string | null>(null);
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -76,6 +77,26 @@ export const SupportChatsPanel = () => {
         };
 
         getChats();
+
+        const getMyIdFromToken = (): string | null => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) return null;
+
+                // JWT токен розділений крапками. Беремо другу частину (payload) і розшифровуємо
+                const payload = JSON.parse(atob(token.split('.')[1]));
+
+                // Увага: перевір, як саме називається поле з ID у твоєму бекенді при генерації токена
+                // (це може бути payload.id, payload._id або payload.userId)
+                return String(payload.id);
+            } catch (error) {
+                console.error('Помилка розшифровки токена:', error);
+                return null;
+            }
+        };
+
+        const myId = getMyIdFromToken();
+        setMyId(myId);
     }, []);
 
     // ==========================================
@@ -236,7 +257,7 @@ export const SupportChatsPanel = () => {
                                 <div className="text-center text-gray-400 mt-10">No messages yet.</div>
                             ) : (
                                 messages.map((msg) => {
-                                    const isAdmin = String(msg.sender_id) === ADMIN_ID;
+                                    const isAdmin = String(msg.sender_id) === myId;
 
                                     return (
                                         <div
