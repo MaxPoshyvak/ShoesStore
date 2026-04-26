@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState, useId } from "react";
-import Image from "next/image";
-import { useCart } from "./context/CartContext";
-import { useAuth } from "./AuthContext"; // Підключили AuthContext
-import styles from "./ProductCard.module.css";
-import { useRouter } from "next/navigation"; // Підключили роутер
+import { useState, useId } from 'react';
+import Image from 'next/image';
+import { useCart } from './context/CartContext';
+import { useAuth } from './AuthContext'; // Підключили AuthContext
+import styles from './ProductCard.module.css';
+import { useRouter } from 'next/navigation'; // Підключили роутер
 
 interface ProductCardProps {
     id: string;
@@ -21,7 +21,19 @@ interface ProductCardProps {
     sizes?: (number | string)[];
 }
 
-export default function ProductCard({ id, image, name, price, oldPrice, isNew, showHeart, fullWidth, bestSellingStyle, stockQuantity, sizes }: ProductCardProps) {
+export default function ProductCard({
+    id,
+    image,
+    name,
+    price,
+    oldPrice,
+    isNew,
+    showHeart,
+    fullWidth,
+    bestSellingStyle,
+    stockQuantity,
+    sizes,
+}: ProductCardProps) {
     const [isFavorite, setIsFavorite] = useState(false);
 
     const { addToCart, cartItems } = useCart();
@@ -30,17 +42,17 @@ export default function ProductCard({ id, image, name, price, oldPrice, isNew, s
 
     const uniqueImageId = useId();
 
-    const itemInCart = cartItems.find(item => item.id === id);
+    const itemInCart = cartItems.find((item) => item.id === id);
     const quntityInCart = itemInCart ? itemInCart.quantity : 0;
     const remainingStock = stockQuantity - quntityInCart;
     const isOutOfStock = remainingStock === 0;
 
     const toggleFavourite = () => {
         setIsFavorite(!isFavorite);
-    }
+    };
 
     const flyToCart = () => {
-        const cartTarget = document.getElementById("cart-icon-target");
+        const cartTarget = document.getElementById('cart-icon-target');
         const productImage = document.getElementById(uniqueImageId);
 
         if (!cartTarget || !productImage) return;
@@ -48,29 +60,29 @@ export default function ProductCard({ id, image, name, price, oldPrice, isNew, s
         const cartRect = cartTarget.getBoundingClientRect();
         const imgRect = productImage.getBoundingClientRect();
 
-        const flyingImg = document.createElement("img");
+        const flyingImg = document.createElement('img');
         flyingImg.src = image;
-        flyingImg.style.position = "fixed";
+        flyingImg.style.position = 'fixed';
         flyingImg.style.left = `${imgRect.left}px`;
         flyingImg.style.top = `${imgRect.top}px`;
         flyingImg.style.width = `${imgRect.width}px`;
         flyingImg.style.height = `${imgRect.height}px`;
-        flyingImg.style.objectFit = "contain";
-        flyingImg.style.zIndex = "2147483647";
-        flyingImg.style.borderRadius = "50%";
-        flyingImg.style.pointerEvents = "none";
-        flyingImg.style.transition = "none";
+        flyingImg.style.objectFit = 'contain';
+        flyingImg.style.zIndex = '2147483647';
+        flyingImg.style.borderRadius = '50%';
+        flyingImg.style.pointerEvents = 'none';
+        flyingImg.style.transition = 'none';
 
         document.body.appendChild(flyingImg);
 
         setTimeout(() => {
-            flyingImg.style.transition = "all 1.5s cubic-bezier(0.4, 0, 0.2, 1)";
+            flyingImg.style.transition = 'all 1.5s cubic-bezier(0.4, 0, 0.2, 1)';
 
-            flyingImg.style.left = `${cartRect.left + (cartRect.width / 2) - 10}px`;
-            flyingImg.style.top = `${cartRect.top + (cartRect.height / 2) - 10}px`;
-            flyingImg.style.width = "20px";
-            flyingImg.style.height = "20px";
-            flyingImg.style.opacity = "0.2";
+            flyingImg.style.left = `${cartRect.left + cartRect.width / 2 - 10}px`;
+            flyingImg.style.top = `${cartRect.top + cartRect.height / 2 - 10}px`;
+            flyingImg.style.width = '20px';
+            flyingImg.style.height = '20px';
+            flyingImg.style.opacity = '0.2';
         }, 10);
 
         setTimeout(() => {
@@ -90,7 +102,7 @@ export default function ProductCard({ id, image, name, price, oldPrice, isNew, s
             image: image,
             quantity: 1,
             stock_quantity: stockQuantity,
-            sizes: sizes || []
+            sizes: sizes || [],
         });
 
         flyToCart();
@@ -98,8 +110,8 @@ export default function ProductCard({ id, image, name, price, oldPrice, isNew, s
 
     const handleNotifyClick = () => {
         if (!user) {
-            alert("Please log in to your account to receive notifications.");
-            router.push("/login");
+            alert('Please log in to your account to receive notifications.');
+            router.push('/login');
             return;
         }
 
@@ -107,13 +119,19 @@ export default function ProductCard({ id, image, name, price, oldPrice, isNew, s
     };
 
     return (
-        <div className={`${styles.card} ${fullWidth ? styles.cardFullWidth : ""} ${bestSellingStyle ? styles.bestSellingCard : ""} ${isOutOfStock ? styles.outOfStockCard : ""}`}>
+        <div
+            className={`${styles.card} ${fullWidth ? styles.cardFullWidth : ''} ${bestSellingStyle ? styles.bestSellingCard : ''} ${isOutOfStock ? styles.outOfStockCard : ''}`}>
             <div className={styles.card__imageBox}>
                 {isNew && <div className={styles.badgeNew}>New</div>}
 
                 {showHeart && (
                     <button className={styles.heartBtn} onClick={toggleFavourite}>
-                        <Image src={isFavorite ? "/heart-filled.svg" : "/heart-outline.svg"} alt="Favourite" width={24} height={24} />
+                        <Image
+                            src={isFavorite ? '/heart-filled.svg' : '/heart-outline.svg'}
+                            alt="Favourite"
+                            width={24}
+                            height={24}
+                        />
                     </button>
                 )}
 
@@ -124,23 +142,24 @@ export default function ProductCard({ id, image, name, price, oldPrice, isNew, s
                     fill={true}
                     className={styles.shoeImage}
                     style={{ objectFit: 'contain', padding: '20px' }}
-
                 />
             </div>
 
             <div className={styles.card__info}>
                 <h4 className={styles.card__name}>{name}</h4>
 
-                <div className={styles.stockContainer} style={{ display: 'flex', gap: '15px', alignItems: 'center', fontSize: '13px', color: '#888' }}>
+                <div
+                    className={styles.stockContainer}
+                    style={{ display: 'flex', gap: '15px', alignItems: 'center', fontSize: '13px', color: '#888' }}>
                     {remainingStock > 0 ? (
                         <span className={styles.lowStock}>In stock: {remainingStock}</span>
                     ) : (
-                        <span className={styles.lowStock} style={{ color: '#d9534f' }}>Out of stock</span>
+                        <span className={styles.lowStock} style={{ color: '#d9534f' }}>
+                            Out of stock
+                        </span>
                     )}
 
-                    {sizes && sizes.length > 0 && (
-                        <span className={styles.sizesList}>size: {sizes.join(", ")}</span>
-                    )}
+                    {sizes && sizes.length > 0 && <span className={styles.sizesList}>size: {sizes.join(', ')}</span>}
                 </div>
 
                 <div className={styles.card__bottom}>
@@ -150,8 +169,9 @@ export default function ProductCard({ id, image, name, price, oldPrice, isNew, s
                     </div>
 
                     {isOutOfStock ? (
-
-                        <button className={styles.notifyBtn} onClick={handleNotifyClick}>Notify</button>
+                        <button className={styles.notifyBtn} onClick={handleNotifyClick}>
+                            Notify
+                        </button>
                     ) : (
                         <button className={styles.card__btn} onClick={handleAddToCart}>
                             <Image src="/btn.png" alt="Add to Cart" width={30} height={30} />
@@ -160,5 +180,5 @@ export default function ProductCard({ id, image, name, price, oldPrice, isNew, s
                 </div>
             </div>
         </div>
-    )
+    );
 }

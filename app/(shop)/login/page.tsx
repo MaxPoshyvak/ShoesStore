@@ -1,46 +1,46 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { useAuth } from "../../components/AuthContext";
-import styles from "../register/Register.module.css"; 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useAuth } from '../../../components/AuthContext';
+import styles from '../register/Register.module.css';
 export default function LoginPage() {
     const router = useRouter();
-    const { login } = useAuth(); 
+    const { login } = useAuth();
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError("");
+        setError('');
         setIsLoading(true);
 
         try {
-            const res = await fetch("https://shoesstore-server.onrender.com/api/users/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
+            const res = await fetch('https://shoesstore-server.onrender.com/api/users/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
             });
 
             const data = await res.json();
 
             if (!res.ok) {
-                throw new Error(data.message || "Помилка входу. Перевірте email або пароль.");
+                throw new Error(data.message || 'Помилка входу. Перевірте email або пароль.');
             }
 
+            localStorage.setItem('token', data.token);
             login(data.token, data.user);
 
-            router.push("/");
-
+            router.push('/');
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);
             } else {
-                setError("Сталася невідома помилка");
+                setError('Сталася невідома помилка');
             }
         } finally {
             setIsLoading(false);
@@ -77,12 +77,15 @@ export default function LoginPage() {
                     </div>
 
                     <button type="submit" className={styles.submitBtn} disabled={isLoading}>
-                        {isLoading ? "Вхід..." : "Увійти"}
+                        {isLoading ? 'Вхід...' : 'Увійти'}
                     </button>
                 </form>
 
                 <p className={styles.footerText}>
-                    Немає акаунту? <Link href="/register" className={styles.link}>Зареєструватися</Link>
+                    Немає акаунту?{' '}
+                    <Link href="/register" className={styles.link}>
+                        Зареєструватися
+                    </Link>
                 </p>
             </div>
         </div>
