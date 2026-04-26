@@ -27,7 +27,13 @@ export interface Chat {
 // SOCKET.IO SETUP
 // ==========================================
 const SOCKET_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001';
-const socket: Socket = io(SOCKET_URL);
+const socket: Socket = io(SOCKET_URL, {
+    auth: {
+        token: localStorage.getItem('token'),
+    },
+    transports: ['websocket, polling'],
+    withCredentials: true,
+});
 
 const ADMIN_ID = 'df6fe17e-6274-4631-ab65-8b930c6d99cc'; // Ваш ID адміністратора
 
@@ -48,7 +54,7 @@ export const SupportChatsPanel = () => {
     useEffect(() => {
         const getChats = async () => {
             try {
-                const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/telegram/get-support-chats`, {
+                const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/telegram/get-support-chats`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
@@ -76,7 +82,7 @@ export const SupportChatsPanel = () => {
             setIsLoadingMessages(true);
             try {
                 const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/telegram/get-history/${selectedChatId}`,
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/telegram/get-history/${selectedChatId}`,
                     {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -129,7 +135,7 @@ export const SupportChatsPanel = () => {
         setReplyText('');
 
         try {
-            await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/telegram/send-support-message`, {
+            await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/telegram/send-support-message`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
