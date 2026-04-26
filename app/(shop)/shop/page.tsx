@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import styles from "../../components/BestSelling.module.css";
-import BestSellingCard from "../../components/BestSellingCard";
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+import styles from '../../../components/BestSelling.module.css';
+import BestSellingCard from '../../../components/BestSellingCard';
 
-const categories = ["Man", "Woman", "Boy", "Child"];
+const categories = ['Man', 'Woman', 'Boy', 'Child'];
 
 interface Good {
     id: string;
@@ -16,17 +16,17 @@ interface Good {
     is_new: boolean;
     main_image_url: string;
     stock_quantity: number;
-    sizes: string[]; 
+    sizes: string[];
 }
 
 // 1. МИ ПЕРЕЙМЕНУВАЛИ ГОЛОВНУ ФУНКЦІЮ НА ShopContent
 function ShopContent() {
     const searchParams = useSearchParams();
-    
-    const activeCategory = searchParams.get("category") || "Man"; 
-    const sizeFilter = searchParams.get("size");
-    const sortFilter = searchParams.get("sort");
-    const instockFilter = searchParams.get("instock") === "true";
+
+    const activeCategory = searchParams.get('category') || 'Man';
+    const sizeFilter = searchParams.get('size');
+    const sortFilter = searchParams.get('sort');
+    const instockFilter = searchParams.get('instock') === 'true';
 
     const [goods, setGoods] = useState<Good[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -34,7 +34,7 @@ function ShopContent() {
     useEffect(() => {
         const fetchGoods = async () => {
             try {
-                const response = await fetch('https://shoesstore-server.onrender.com/api/goods')
+                const response = await fetch('https://shoesstore-server.onrender.com/api/goods');
                 if (!response.ok) throw new Error('Помилка');
                 const data = await response.json();
                 setGoods(data);
@@ -43,30 +43,30 @@ function ShopContent() {
             } finally {
                 setIsLoading(false);
             }
-        }
+        };
         fetchGoods();
     }, []);
 
-    let filteredGoods = goods.filter(good => good.category === activeCategory);
+    let filteredGoods = goods.filter((good) => good.category === activeCategory);
 
     if (sizeFilter) {
-        filteredGoods = filteredGoods.filter(good => good.sizes && good.sizes.map(String).includes(sizeFilter));
+        filteredGoods = filteredGoods.filter((good) => good.sizes && good.sizes.map(String).includes(sizeFilter));
     }
 
     if (instockFilter) {
-        filteredGoods = filteredGoods.filter(good => good.stock_quantity > 0);
+        filteredGoods = filteredGoods.filter((good) => good.stock_quantity > 0);
     }
 
-    if (sortFilter === "price_asc") {
+    if (sortFilter === 'price_asc') {
         filteredGoods.sort((a, b) => a.price - b.price);
-    } else if (sortFilter === "price_desc") {
+    } else if (sortFilter === 'price_desc') {
         filteredGoods.sort((a, b) => b.price - a.price);
     }
 
     const handleCategoryChange = (cat: string) => {
         const params = new URLSearchParams(searchParams.toString());
         params.set('category', cat);
-        window.history.pushState(null, '', `?${params.toString()}`); 
+        window.history.pushState(null, '', `?${params.toString()}`);
     };
 
     return (
@@ -81,9 +81,8 @@ function ShopContent() {
                 {categories.map((cat) => (
                     <button
                         key={cat}
-                        className={`${styles.filterBtn} ${activeCategory === cat ? styles.activeFilter : ""}`}
-                        onClick={() => handleCategoryChange(cat)}
-                    >
+                        className={`${styles.filterBtn} ${activeCategory === cat ? styles.activeFilter : ''}`}
+                        onClick={() => handleCategoryChange(cat)}>
                         {cat}
                     </button>
                 ))}
@@ -94,7 +93,7 @@ function ShopContent() {
                     <p style={{ textAlign: 'center', gridColumn: 'span 3', fontFamily: 'Poppins' }}>Loading...</p>
                 ) : filteredGoods.length > 0 ? (
                     filteredGoods.map((product) => (
-                        <BestSellingCard 
+                        <BestSellingCard
                             key={product.id}
                             id={String(product.id)}
                             image={product.main_image_url}
@@ -104,11 +103,13 @@ function ShopContent() {
                             stockQuantity={product.stock_quantity}
                             showHeart={true}
                             isNew={product.is_new}
-                            sizes={product.sizes} 
+                            sizes={product.sizes}
                         />
                     ))
                 ) : (
-                    <p style={{ textAlign: 'center', gridColumn: 'span 3', fontFamily: 'Poppins' }}>За вашими фільтрами нічого не знайдено.</p>
+                    <p style={{ textAlign: 'center', gridColumn: 'span 3', fontFamily: 'Poppins' }}>
+                        За вашими фільтрами нічого не знайдено.
+                    </p>
                 )}
             </div>
         </main>
@@ -118,7 +119,10 @@ function ShopContent() {
 // 2. СТВОРИЛИ НОВУ ГОЛОВНУ ФУНКЦІЮ, ЯКА ОБГОРТАЄ ВСЕ В SUSPENSE
 export default function ShopPage() {
     return (
-        <Suspense fallback={<div style={{ paddingTop: '120px', textAlign: 'center', fontFamily: 'Poppins' }}>Loading shop...</div>}>
+        <Suspense
+            fallback={
+                <div style={{ paddingTop: '120px', textAlign: 'center', fontFamily: 'Poppins' }}>Loading shop...</div>
+            }>
             <ShopContent />
         </Suspense>
     );
