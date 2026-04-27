@@ -55,7 +55,7 @@ export default function Hero() {
         
         <div className={styles.hero__priceTag}>
           <h3 className={styles.hero__shoeName}>Trendy Slick Pro</h3>
-          <p className={styles.hero__shoePrice}>₹ 3999.00</p>
+          <p className={styles.hero__shoePrice}>₴ 3999.00</p>
         </div>
       </div>
 

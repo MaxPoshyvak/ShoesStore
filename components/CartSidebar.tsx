@@ -111,7 +111,7 @@ export default function CartSidebar() {
                                 </div>
                                 <div className={styles.details}>
                                     <h4>{item.name}</h4>
-                                    <p>₹ {item.price.toFixed(2)}</p>
+                                    <p>₴ {item.price.toFixed(2)}</p>
                                     <div className={styles.quantityControls}>
                                         <button onClick={() => updateQuantity(item.id, -1)}>−</button>
                                         <span>{item.quantity}</span>
@@ -130,7 +130,7 @@ export default function CartSidebar() {
                     <div className={styles.footer}>
                         <div className={styles.total}>
                             <span>Total:</span>
-                            <span>₹ {totalPrice.toFixed(2)}</span>
+                            <span>₴ {totalPrice.toFixed(2)}</span>
                         </div>
                         <Link href="/checkout" >
                             <button

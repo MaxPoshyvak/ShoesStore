@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode } from "react";
+import { useCartStore } from "@/store/useCartStore";
 
 interface CartItem {
     id: string;
@@ -30,6 +31,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
 
+
     const addToCart = (product: CartItem) => {
         setCartItems((prev) => {
             const existingItem = prev.find((item) => item.id === product.id);
@@ -41,11 +43,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
             }
             return [...prev, { ...product, quantity: 1 }];
         });
+        // Also add to Zustand store (localStorage)
+        const zustandStore = useCartStore.getState();
+        zustandStore.addItem({
+            id: parseInt(product.id),
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            quantity: 1,
+        });
         // setIsCartOpen(true); // Автоматично відкриваємо кошик при додаванні
     };
 
     const removeFromCart = (id: string) => {
         setCartItems(prev => prev.filter(item => item.id !== id));
+        // Also remove from Zustand store (localStorage)
+        // Convert string ID to number to match how items are stored
+        useCartStore.getState().removeItem(parseInt(id));
     };
 
     const updateQuantity = (id: string, delta: number) => {
@@ -64,9 +78,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const totalPrice = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
     return (
-        <CartContext.Provider value={{ 
-            cartItems, addToCart, removeFromCart, updateQuantity, 
-            totalItems, totalPrice, isCartOpen, setIsCartOpen 
+        <CartContext.Provider value={{
+            cartItems, addToCart, removeFromCart, updateQuantity,
+            totalItems, totalPrice, isCartOpen, setIsCartOpen
         }}>
             {children}
         </CartContext.Provider>

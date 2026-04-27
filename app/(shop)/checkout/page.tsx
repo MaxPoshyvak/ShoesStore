@@ -441,7 +441,7 @@ export default function Checkout() {
                                             </div>
                                         </div>
                                         <div className="font-bold text-sm whitespace-nowrap">
-                                            ₹ {(item.price * item.quantity).toFixed(2)}
+                                            ₴ {(item.price * item.quantity).toFixed(2)}
                                         </div>
                                     </div>
                                 ))}
@@ -450,11 +450,11 @@ export default function Checkout() {
                             <div className="border-t border-gray-200 pt-5 space-y-3 mb-6">
                                 <div className="flex justify-between text-gray-600 text-sm">
                                     <span>Subtotal</span>
-                                    <span className="font-medium">₹ {subtotal.toFixed(2)}</span>
+                                    <span className="font-medium">₴ {subtotal.toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between text-gray-600 text-sm">
                                     <span>Shipping Fee</span>
-                                    <span className="font-medium">₹ {shippingCost.toFixed(2)}</span>
+                                    <span className="font-medium">₴ {shippingCost.toFixed(2)}</span>
                                 </div>
                             </div>
 
@@ -462,7 +462,7 @@ export default function Checkout() {
                             <div className="border-t border-gray-200 pt-4 mt-2">
                                 <div className="flex justify-between items-center mb-4">
                                     <span className="text-[17px] font-bold text-black">Total:</span>
-                                    <span className="text-[17px] font-bold text-black">₹ {total.toFixed(2)}</span>
+                                    <span className="text-[17px] font-bold text-black">₴ {total.toFixed(2)}</span>
                                 </div>
 
                                 <button

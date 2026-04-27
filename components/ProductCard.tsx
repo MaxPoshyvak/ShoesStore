@@ -175,8 +175,8 @@ export default function ProductCard({
 
                 <div className={styles.card__bottom}>
                     <div className={styles.priceContainer}>
-                        <p className={styles.card__price}>₹ {Number(price).toFixed(2)}</p>
-                        {oldPrice && <p className={styles.card__oldPrice}>₹ {Number(oldPrice).toFixed(2)}</p>}
+                        <p className={styles.card__price}>₴ {Number(price).toFixed(2)}</p>
+                        {oldPrice && <p className={styles.card__oldPrice}>₴ {Number(oldPrice).toFixed(2)}</p>}
                     </div>
 
                     {isOutOfStock ? (

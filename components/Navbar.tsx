@@ -8,7 +8,7 @@ import { useAuth } from "./AuthContext";
 
 import { Alata } from "next/font/google";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const alata = Alata({
     weight: '400',
@@ -40,20 +40,26 @@ export default function Navbar() {
 
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isSortOpen, setIsSortOpen] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     // Hide Navbar on auth pages
     if (pathname === '/login' || pathname === '/register') {
         return null;
     }
 
-    const initial = user?.username ? user.username.charAt(0).toUpperCase() : "?";
+    const resolvedUser = isMounted ? user : null;
+    const initial = resolvedUser?.username ? resolvedUser.username.charAt(0).toUpperCase() : "?";
     
     const currentSize = searchParams.get('size');
     const currentSort = searchParams.get('sort') || 'default';
     const inStock = searchParams.get('instock') === 'true';
     
-    const avatarBackground = user?.username
-        ? generateAvatarGradient(user.username)
+    const avatarBackground = resolvedUser?.username
+        ? generateAvatarGradient(resolvedUser.username)
         : "linear-gradient(180deg, #EAEAEA 0%, #D4D4D4 100%)";
 
     const updateFilter = (key: string, value: string | null) => {
@@ -220,10 +226,10 @@ export default function Navbar() {
                 </button>
 
                 <Link
-                    href={user ? "/profile" : "/login"}
+                    href={resolvedUser ? "/profile" : "/login"}
                     className={styles.userAvatar}
                     style={{ background: avatarBackground }}
-                    title={user?.username || "Login"}
+                    title={resolvedUser?.username || "Login"}
                 >
                     {initial}
                 </Link>
