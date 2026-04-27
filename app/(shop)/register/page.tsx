@@ -1,19 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import styles from "./Register.module.css";
+import React, { useState } from "react";
+// In the original Next.js, uncomment these lines:
+// import { useRouter } from "next/navigation";
+// import Link from "next/link";
+import { User, Mail, Lock, AlertCircle, ArrowRight } from "lucide-react";
 
 export default function RegisterPage() {
-    const router = useRouter();
+    // In the original Next.js, uncomment:
+    // const router = useRouter();
 
-    // Стани для полів форми
+    // States for form fields
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    // Стани для UI
+    // UI states
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
@@ -23,26 +25,28 @@ export default function RegisterPage() {
         setIsLoading(true);
 
         try {
-            // Звертаємося до API Максима
+            // Call the API
             const res = await fetch("https://shoesstore-server.onrender.com/api/users/registration", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, email, password }),
             });
 
-            const data = await res.json();
+            const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
-                throw new Error(data.message || "Помилка реєстрації");
+                throw new Error(data.message || "Registration error");
             }
 
-            alert("Реєстрація успішна! Тепер увійдіть в акаунт.");
-            router.push("/login");
+            alert("Registration successful! Please log in to your account.");
+            
+            // Routing simulation for Canvas. In Next.js use: router.push("/login");
+            window.location.href = "/login"; 
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);
             } else {
-                setError("Сталася невідома помилка");
+                setError("An unknown error occurred");
             }
         } finally {
             setIsLoading(false);
@@ -50,55 +54,106 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className={styles.container}>
-            <div className={styles.card}>
-                <h1 className={styles.title}>Створити акаунт</h1>
+        <div className="min-h-screen bg-gray-50 font-sans text-black flex items-center justify-center p-4">
+            
+            <div className="max-w-md w-full bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-gray-100 relative overflow-hidden">
+                
+                {/* Decorative background (optional) */}
+                <div className="absolute top-0 left-0 w-full h-2 bg-black"></div>
 
-                {error && <div className={styles.error}>{error}</div>}
+                <div className="text-center mb-8">
+                    <div className="text-3xl font-black tracking-tighter mb-6">Slick</div>
+                    <h1 className="text-2xl md:text-3xl font-bold mb-2">Create an account</h1>
+                    <p className="text-gray-500 text-sm">Fill in the details below to join us.</p>
+                </div>
 
-                <form onSubmit={handleSubmit} className={styles.form}>
-                    <div className={styles.inputGroup}>
-                        <label>Ім&apos;я користувача</label>
-                        <input
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
-                            placeholder="Наприклад: user"
-                        />
+                {error && (
+                    <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl flex items-start gap-3 text-sm">
+                        <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                        <span>{error}</span>
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-5">
+                    {/* Username Field */}
+                    <div>
+                        <label className="block text-sm font-semibold mb-2 text-gray-700">Username <span className="text-red-500">*</span></label>
+                        <div className="relative">
+                            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <input
+                                type="text"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                                placeholder="e.g., john_slick"
+                                className="w-full border border-gray-200 p-4 pl-12 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all bg-gray-50/50 focus:bg-white"
+                            />
+                        </div>
                     </div>
 
-                    <div className={styles.inputGroup}>
-                        <label>Email</label>
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            placeholder="your@email.com"
-                        />
+                    {/* Email Field */}
+                    <div>
+                        <label className="block text-sm font-semibold mb-2 text-gray-700">Email Address <span className="text-red-500">*</span></label>
+                        <div className="relative">
+                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                placeholder="your@email.com"
+                                className="w-full border border-gray-200 p-4 pl-12 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all bg-gray-50/50 focus:bg-white"
+                            />
+                        </div>
                     </div>
 
-                    <div className={styles.inputGroup}>
-                        <label>Пароль (мінімум 6 символів)</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            minLength={6}
-                        />
+                    {/* Password Field */}
+                    <div>
+                        <label className="block text-sm font-semibold mb-2 text-gray-700">Password <span className="text-gray-400 font-normal">(min. 6 characters)</span> <span className="text-red-500">*</span></label>
+                        <div className="relative">
+                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                minLength={6}
+                                placeholder="Create a strong password"
+                                className="w-full border border-gray-200 p-4 pl-12 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all bg-gray-50/50 focus:bg-white"
+                            />
+                        </div>
                     </div>
 
-                    <button type="submit" className={styles.submitBtn} disabled={isLoading}>
-                        {isLoading ? "Реєстрація..." : "Зареєструватися"}
-                    </button>
+                    {/* Submit Button */}
+                    <div className="pt-4">
+                        <button 
+                            type="submit" 
+                            disabled={isLoading}
+                            className="w-full bg-black text-white py-4 px-6 font-semibold rounded-xl hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex justify-center items-center gap-2 group"
+                        >
+                            {isLoading ? (
+                                "Registering..."
+                            ) : (
+                                <>
+                                    Register
+                                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                </>
+                            )}
+                        </button>
+                    </div>
                 </form>
 
-                <p className={styles.footerText}>
-                    Вже маєте акаунт? <Link href="/login" className={styles.link}>Увійти</Link>
-                </p>
+                {/* Login Link */}
+                <div className="mt-8 text-center text-sm text-gray-500">
+                    Already have an account?{" "}
+                    {/* In Next.js replace <a> with <Link href="/login"> */}
+                    <a href="/login" className="text-black font-bold hover:underline transition-all">
+                        Log In
+                    </a>
+                </div>
+
             </div>
+            
         </div>
     );
 }
