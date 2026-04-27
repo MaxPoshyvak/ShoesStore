@@ -6,6 +6,8 @@ import styles from "./CartSidebar.module.css";
 import { useAuth } from "./AuthContext";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Link from "next/link";
+import { Trash2 } from "lucide-react";
 
 export default function CartSidebar() {
     const { isCartOpen, setIsCartOpen, cartItems, removeFromCart, updateQuantity, totalPrice } = useCart();
@@ -117,7 +119,7 @@ export default function CartSidebar() {
                                     </div>
                                 </div>
                                 <button className={styles.removeBtn} onClick={() => removeFromCart(item.id)}>
-                                    <Image src="/Remove.svg" alt="Remove" width={20} height={20} />
+                                    <Trash2 width={20} height={20}/>
                                 </button>
                             </div>
                         ))
@@ -130,13 +132,13 @@ export default function CartSidebar() {
                             <span>Total:</span>
                             <span>₹ {totalPrice.toFixed(2)}</span>
                         </div>
-                        <button
-                            className={styles.checkoutBtn} // Your button class
-                            onClick={handleCheckout}
-                            disabled={isCheckoutLoading} // Disable button while request is in progress
-                        >
-                            {isCheckoutLoading ? "Processing..." : "Pay Now"}
-                        </button>
+                        <Link href="/checkout" >
+                            <button
+                                onClick={setIsCartOpen.bind(null, false)} // Close cart when going to checkout
+                                className={styles.checkoutBtn} // Your button class
+                                disabled={isCheckoutLoading} // Disable button while request is in progress
+                            >Checkout</button>
+                        </Link>
                     </div>
                 )}
             </div>

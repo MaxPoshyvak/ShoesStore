@@ -7,6 +7,7 @@ import { useCart } from "./context/CartContext";
 import { useAuth } from "./AuthContext";
 import { useRouter } from "next/navigation";
 import styles from "./BestSellingCard.module.css";
+import { useCartStore } from "@/store/useCartStore";
 
 interface ProductCardProps {
     id: string;
@@ -23,9 +24,10 @@ interface ProductCardProps {
 export default function BestSellingCard({ id, image, name, price, oldPrice, isNew, showHeart, stockQuantity, sizes }: ProductCardProps) {
     const [isFavorite, setIsFavorite] = useState(false);
 
+    const addItem = useCartStore((state) => state.addItem);
     const { addToCart, cartItems } = useCart();
-    const { user } = useAuth(); // 2. Дістаємо користувача з контексту
-    const router = useRouter(); // 3. Ініціалізуємо роутер
+    const { user } = useAuth();
+    const router = useRouter();
 
     const uniqueImageId = useId();
 
@@ -86,6 +88,8 @@ export default function BestSellingCard({ id, image, name, price, oldPrice, isNe
     const handleAddToCart = () => {
         if (isOutOfStock) return;
 
+        console.log('🛍️ Adding to cart:', { id, name, price, sizes });
+
         addToCart({
             id: id,
             name: name,
@@ -96,7 +100,21 @@ export default function BestSellingCard({ id, image, name, price, oldPrice, isNe
         });
 
         flyToCart();
+        
+        const itemToAdd = {
+            id: Number(id),
+            name: name,
+            price: Number(price),
+            image: image,
+            quantity: 1,
+            size: sizes && sizes.length > 0 ? sizes[0].toString() : undefined
+        };
+        
+        console.log('📤 Passing to Zustand:', itemToAdd);
+        addItem(itemToAdd);
     };
+
+
 
     const handleNotifyClick = () => {
         if (!user) {

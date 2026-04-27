@@ -3,6 +3,7 @@
 import { useState, useId } from 'react';
 import Image from 'next/image';
 import { useCart } from './context/CartContext';
+import { useCartStore } from '@/store/useCartStore';
 import { useAuth } from './AuthContext'; // Підключили AuthContext
 import styles from './ProductCard.module.css';
 import { useRouter } from 'next/navigation'; // Підключили роутер
@@ -37,6 +38,7 @@ export default function ProductCard({
     const [isFavorite, setIsFavorite] = useState(false);
 
     const { addToCart, cartItems } = useCart();
+    const addItem = useCartStore((state) => state.addItem);
     const { user } = useAuth(); // Дістаємо юзера
     const router = useRouter(); // Ініціалізуємо роутер
 
@@ -103,6 +105,15 @@ export default function ProductCard({
             quantity: 1,
             stock_quantity: stockQuantity,
             sizes: sizes || [],
+        });
+
+        addItem({
+            id: Number(id),
+            name: name,
+            price: Number(price),
+            image: image,
+            quantity: 1,
+            size: sizes && sizes.length > 0 ? String(sizes[0]) : undefined,
         });
 
         flyToCart();
