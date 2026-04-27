@@ -25,15 +25,33 @@ export default function Hero() {
         
         
         <div className={`${styles.hero__graphic} ${styles["hero__graphic--circles"]}`}>
-          <Image src="/Group 3(circle).png" alt="" fill style={{ objectFit: "contain" }} />
+          <Image
+            src="/Group 3(circle).png"
+            alt=""
+            fill
+            sizes="(max-width: 768px) 80vw, 45vw"
+            style={{ objectFit: "contain" }}
+          />
         </div>
 
         <div className={`${styles.hero__graphic} ${styles["hero__graphic--lines"]}`}>
-          <Image src="/Group 1(line).png" alt="" fill style={{ objectFit: "contain" }} />
+          <Image
+            src="/Group 1(line).png"
+            alt=""
+            fill
+            sizes="(max-width: 768px) 80vw, 45vw"
+            style={{ objectFit: "contain" }}
+          />
         </div>
 
         <div className={`${styles.hero__graphic} ${styles["hero__graphic--shadows"]}`}>
-          <Image src="/Group 2(shadow).png" alt="" fill style={{ objectFit: "contain" }} />
+          <Image
+            src="/Group 2(shadow).png"
+            alt=""
+            fill
+            sizes="(max-width: 768px) 80vw, 45vw"
+            style={{ objectFit: "contain" }}
+          />
         </div>
 
 
@@ -49,6 +67,7 @@ export default function Hero() {
             width={650} 
             height={550} 
             className={styles.hero__shoe}
+            style={{ width: "auto", height: "auto" }}
             priority
           />
         </div>

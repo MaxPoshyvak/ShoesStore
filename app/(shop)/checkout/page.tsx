@@ -1,11 +1,10 @@
-"use client";
+'use client';
 
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { CreditCard, MapPin, FileText, CheckCircle2, Mail, Lock, User, Truck, Loader2 } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 
 export default function Checkout() {
-
     const handlePayment = async (payload: {
         shipping_address: string;
         payment_method: string;
@@ -66,7 +65,7 @@ export default function Checkout() {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false); // State for loading spinner
 
-    const items  = useCartStore( (state) => state.items);
+    const items = useCartStore((state) => state.items);
     const isHydrated = true;
 
     // 🔧 Log hydration and items
@@ -76,15 +75,14 @@ export default function Checkout() {
         }
     }, [isHydrated, items.length]);
 
-    const subtotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-    const shippingCost = formData.delivery_method === 'express_courier' ? 250.00 : 150.00;
-    const total = subtotal + shippingCost;
+    const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const total = subtotal;
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
-            [name]: value
+            [name]: value,
         }));
     };
 
@@ -114,11 +112,11 @@ export default function Checkout() {
             delivery_method: formData.delivery_method,
             payment_method: formData.payment_method,
             customer_notes: formData.customer_notes,
-            items: items.map(item => ({
+            items: items.map((item) => ({
                 good_id: item.id,
                 quantity: item.quantity,
-                size: item.size || 0
-            }))
+                size: item.size || 0,
+            })),
         };
 
         // Add auth fields only if user is not authenticated
@@ -128,7 +126,7 @@ export default function Checkout() {
             payload.password = formData.password;
         }
 
-        console.log("Sending data:", payload);
+        console.log('Sending data:', payload);
 
         try {
             // 1. Create the Order
@@ -147,13 +145,16 @@ export default function Checkout() {
             // 2. Conditional Payment Logic
             if (payload.payment_method === 'card' && orderId) {
                 // Fetch to create payment session for the order
-                const paymentResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/payments/create/${orderId}`, {
-                    method: 'POST', // Assuming POST to create a payment session
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
+                const paymentResponse = await fetch(
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/payments/create/${orderId}`,
+                    {
+                        method: 'POST', // Assuming POST to create a payment session
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
+                        },
                     },
-                });
+                );
 
                 if (!paymentResponse.ok) {
                     throw new Error('Failed to initiate payment gateway.');
@@ -188,8 +189,7 @@ export default function Checkout() {
                 </p>
                 <button
                     onClick={() => setIsSubmitted(false)}
-                    className="bg-black text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
-                >
+                    className="bg-black text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors">
                     Back to Shop
                 </button>
             </div>
@@ -205,11 +205,9 @@ export default function Checkout() {
                 </div>
 
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-
                     {/* Form (Left Column) */}
                     <div className="lg:w-2/3">
                         <form id="checkout-form" onSubmit={handleSubmit} className="space-y-8">
-
                             {/* Registration / Contact Details (Hidden if token exists) */}
                             {!isAuthenticated && (
                                 <section className="bg-gray-50/50 p-5 md:p-8 rounded-2xl border border-gray-100">
@@ -219,7 +217,9 @@ export default function Checkout() {
                                     </h2>
                                     <div className="space-y-4">
                                         <div>
-                                            <label className="block text-sm font-semibold mb-2 text-gray-700">Email Address <span className="text-red-500">*</span></label>
+                                            <label className="block text-sm font-semibold mb-2 text-gray-700">
+                                                Email Address <span className="text-red-500">*</span>
+                                            </label>
                                             <div className="relative">
                                                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                                                 <input
@@ -235,7 +235,9 @@ export default function Checkout() {
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div>
-                                                <label className="block text-sm font-semibold mb-2 text-gray-700">Full Name <span className="text-red-500">*</span></label>
+                                                <label className="block text-sm font-semibold mb-2 text-gray-700">
+                                                    Full Name <span className="text-red-500">*</span>
+                                                </label>
                                                 <input
                                                     type="text"
                                                     name="username"
@@ -247,7 +249,9 @@ export default function Checkout() {
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-semibold mb-2 text-gray-700">Password <span className="text-red-500">*</span></label>
+                                                <label className="block text-sm font-semibold mb-2 text-gray-700">
+                                                    Password <span className="text-red-500">*</span>
+                                                </label>
                                                 <div className="relative">
                                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                                                     <input
@@ -273,7 +277,8 @@ export default function Checkout() {
                                     Delivery Method
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <label className={`relative border p-5 rounded-xl cursor-pointer transition-all ${formData.delivery_method === 'standard_post' ? 'border-black bg-white shadow-sm' : 'border-gray-200 hover:border-gray-300 bg-white'}`}>
+                                    <label
+                                        className={`relative border p-5 rounded-xl cursor-pointer transition-all ${formData.delivery_method === 'standard_post' ? 'border-black bg-white shadow-sm' : 'border-gray-200 hover:border-gray-300 bg-white'}`}>
                                         <input
                                             type="radio"
                                             name="delivery_method"
@@ -283,8 +288,11 @@ export default function Checkout() {
                                             className="absolute opacity-0"
                                         />
                                         <div className="flex items-center gap-4">
-                                            <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.delivery_method === 'standard_post' ? 'border-black' : 'border-gray-300'}`}>
-                                                {formData.delivery_method === 'standard_post' && <div className="w-2.5 h-2.5 bg-black rounded-full"></div>}
+                                            <div
+                                                className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.delivery_method === 'standard_post' ? 'border-black' : 'border-gray-300'}`}>
+                                                {formData.delivery_method === 'standard_post' && (
+                                                    <div className="w-2.5 h-2.5 bg-black rounded-full"></div>
+                                                )}
                                             </div>
                                             <div>
                                                 <div className="font-bold">Standard Post</div>
@@ -293,7 +301,8 @@ export default function Checkout() {
                                         </div>
                                     </label>
 
-                                    <label className={`relative border p-5 rounded-xl cursor-pointer transition-all ${formData.delivery_method === 'express_courier' ? 'border-black bg-white shadow-sm' : 'border-gray-200 hover:border-gray-300 bg-white'}`}>
+                                    <label
+                                        className={`relative border p-5 rounded-xl cursor-pointer transition-all ${formData.delivery_method === 'express_courier' ? 'border-black bg-white shadow-sm' : 'border-gray-200 hover:border-gray-300 bg-white'}`}>
                                         <input
                                             type="radio"
                                             name="delivery_method"
@@ -303,8 +312,11 @@ export default function Checkout() {
                                             className="absolute opacity-0"
                                         />
                                         <div className="flex items-center gap-4">
-                                            <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.delivery_method === 'express_courier' ? 'border-black' : 'border-gray-300'}`}>
-                                                {formData.delivery_method === 'express_courier' && <div className="w-2.5 h-2.5 bg-black rounded-full"></div>}
+                                            <div
+                                                className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.delivery_method === 'express_courier' ? 'border-black' : 'border-gray-300'}`}>
+                                                {formData.delivery_method === 'express_courier' && (
+                                                    <div className="w-2.5 h-2.5 bg-black rounded-full"></div>
+                                                )}
                                             </div>
                                             <div>
                                                 <div className="font-bold">Express Courier</div>
@@ -323,15 +335,16 @@ export default function Checkout() {
                                 </h2>
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-sm font-semibold mb-2 text-gray-700">Full Address <span className="text-red-500">*</span></label>
+                                        <label className="block text-sm font-semibold mb-2 text-gray-700">
+                                            Full Address <span className="text-red-500">*</span>
+                                        </label>
                                         <textarea
                                             name="shipping_address"
                                             value={formData.shipping_address}
                                             onChange={handleInputChange}
                                             placeholder="City, Street, Building, Apartment/Office..."
                                             required
-                                            className="w-full border border-gray-200 p-4 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none h-28"
-                                        ></textarea>
+                                            className="w-full border border-gray-200 p-4 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none h-28"></textarea>
                                     </div>
                                 </div>
                             </section>
@@ -343,7 +356,8 @@ export default function Checkout() {
                                     Payment Method
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <label className={`relative border p-5 rounded-xl cursor-pointer transition-all ${formData.payment_method === 'card' ? 'border-black bg-white shadow-sm' : 'border-gray-200 hover:border-gray-300 bg-white'}`}>
+                                    <label
+                                        className={`relative border p-5 rounded-xl cursor-pointer transition-all ${formData.payment_method === 'card' ? 'border-black bg-white shadow-sm' : 'border-gray-200 hover:border-gray-300 bg-white'}`}>
                                         <input
                                             type="radio"
                                             name="payment_method"
@@ -353,8 +367,11 @@ export default function Checkout() {
                                             className="absolute opacity-0"
                                         />
                                         <div className="flex items-center gap-4">
-                                            <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.payment_method === 'card' ? 'border-black' : 'border-gray-300'}`}>
-                                                {formData.payment_method === 'card' && <div className="w-2.5 h-2.5 bg-black rounded-full"></div>}
+                                            <div
+                                                className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.payment_method === 'card' ? 'border-black' : 'border-gray-300'}`}>
+                                                {formData.payment_method === 'card' && (
+                                                    <div className="w-2.5 h-2.5 bg-black rounded-full"></div>
+                                                )}
                                             </div>
                                             <div>
                                                 <div className="font-bold">Credit/Debit Card</div>
@@ -363,7 +380,8 @@ export default function Checkout() {
                                         </div>
                                     </label>
 
-                                    <label className={`relative border p-5 rounded-xl cursor-pointer transition-all ${formData.payment_method === 'cash' ? 'border-black bg-white shadow-sm' : 'border-gray-200 hover:border-gray-300 bg-white'}`}>
+                                    <label
+                                        className={`relative border p-5 rounded-xl cursor-pointer transition-all ${formData.payment_method === 'cash' ? 'border-black bg-white shadow-sm' : 'border-gray-200 hover:border-gray-300 bg-white'}`}>
                                         <input
                                             type="radio"
                                             name="payment_method"
@@ -373,8 +391,11 @@ export default function Checkout() {
                                             className="absolute opacity-0"
                                         />
                                         <div className="flex items-center gap-4">
-                                            <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.payment_method === 'cash' ? 'border-black' : 'border-gray-300'}`}>
-                                                {formData.payment_method === 'cash' && <div className="w-2.5 h-2.5 bg-black rounded-full"></div>}
+                                            <div
+                                                className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.payment_method === 'cash' ? 'border-black' : 'border-gray-300'}`}>
+                                                {formData.payment_method === 'cash' && (
+                                                    <div className="w-2.5 h-2.5 bg-black rounded-full"></div>
+                                                )}
                                             </div>
                                             <div>
                                                 <div className="font-bold">Cash on Delivery</div>
@@ -392,14 +413,15 @@ export default function Checkout() {
                                     Order Notes
                                 </h2>
                                 <div>
-                                    <label className="block text-sm font-semibold mb-2 text-gray-700">Notes (Optional)</label>
+                                    <label className="block text-sm font-semibold mb-2 text-gray-700">
+                                        Notes (Optional)
+                                    </label>
                                     <textarea
                                         name="customer_notes"
                                         value={formData.customer_notes}
                                         onChange={handleInputChange}
                                         placeholder="e.g. Call before delivery, specific door code..."
-                                        className="w-full border border-gray-200 p-4 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none h-24"
-                                    ></textarea>
+                                        className="w-full border border-gray-200 p-4 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none h-24"></textarea>
                                 </div>
                             </section>
                         </form>
@@ -433,7 +455,9 @@ export default function Checkout() {
                                             />
                                         </div>
                                         <div className="flex-1">
-                                            <h3 className="font-bold text-sm line-clamp-2 text-gray-900">{item.name}</h3>
+                                            <h3 className="font-bold text-sm line-clamp-2 text-gray-900">
+                                                {item.name}
+                                            </h3>
                                             <div className="flex gap-3 text-gray-500 text-xs mt-1.5 font-medium">
                                                 <span>Size: {item.size}</span>
                                                 <span className="w-px h-4 bg-gray-300"></span>
@@ -447,17 +471,6 @@ export default function Checkout() {
                                 ))}
                             </div>
 
-                            <div className="border-t border-gray-200 pt-5 space-y-3 mb-6">
-                                <div className="flex justify-between text-gray-600 text-sm">
-                                    <span>Subtotal</span>
-                                    <span className="font-medium">₴ {subtotal.toFixed(2)}</span>
-                                </div>
-                                <div className="flex justify-between text-gray-600 text-sm">
-                                    <span>Shipping Fee</span>
-                                    <span className="font-medium">₴ {shippingCost.toFixed(2)}</span>
-                                </div>
-                            </div>
-
                             {/* Stylized Total & Button Section matching the user's screenshot */}
                             <div className="border-t border-gray-200 pt-4 mt-2">
                                 <div className="flex justify-between items-center mb-4">
@@ -469,8 +482,7 @@ export default function Checkout() {
                                     type="submit"
                                     form="checkout-form"
                                     disabled={isProcessing || items.length === 0}
-                                    className="w-full bg-black text-white py-3.5 px-6 font-semibold text-base rounded-lg hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex justify-center items-center gap-2"
-                                >
+                                    className="w-full bg-black text-white py-3.5 px-6 font-semibold text-base rounded-lg hover:bg-gray-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex justify-center items-center gap-2">
                                     {isProcessing ? (
                                         <>
                                             <Loader2 className="w-5 h-5 animate-spin" />
@@ -481,10 +493,8 @@ export default function Checkout() {
                                     )}
                                 </button>
                             </div>
-
                         </div>
                     </div>
-
                 </div>
             </main>
         </div>

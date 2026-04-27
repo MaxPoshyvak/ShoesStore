@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { useCartStore } from "@/store/useCartStore";
 
 interface CartItem {
@@ -28,50 +28,47 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-    const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const storeItems = useCartStore((state) => state.items);
+    const updateStoreQuantity = useCartStore((state) => state.updateQuantity);
+    const removeStoreItem = useCartStore((state) => state.removeItem);
+    const addStoreItem = useCartStore((state) => state.addItem);
+    useEffect(() => {
+        // Ensure persist rehydrates ASAP (esp. after refresh)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (useCartStore as any).persist?.rehydrate?.();
+    }, []);
+
+    const cartItems: CartItem[] = storeItems.map((item) => ({
+        id: String(item.id),
+        name: item.name,
+        price: item.price,
+        image: item.image,
+        quantity: item.quantity,
+        stock_quantity: item.stock_quantity ?? Number.POSITIVE_INFINITY,
+        sizes: item.sizes,
+    }));
     const [isCartOpen, setIsCartOpen] = useState(false);
 
 
     const addToCart = (product: CartItem) => {
-        setCartItems((prev) => {
-            const existingItem = prev.find((item) => item.id === product.id);
-            if (existingItem) {
-                if (existingItem.quantity >= product.stock_quantity) return prev;
-                return prev.map((item) =>
-                    item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-                );
-            }
-            return [...prev, { ...product, quantity: 1 }];
-        });
-        // Also add to Zustand store (localStorage)
-        const zustandStore = useCartStore.getState();
-        zustandStore.addItem({
-            id: parseInt(product.id),
+        addStoreItem({
+            id: Number(product.id),
             name: product.name,
             price: product.price,
             image: product.image,
             quantity: 1,
+            stock_quantity: product.stock_quantity,
+            sizes: product.sizes,
         });
         // setIsCartOpen(true); // Автоматично відкриваємо кошик при додаванні
     };
 
     const removeFromCart = (id: string) => {
-        setCartItems(prev => prev.filter(item => item.id !== id));
-        // Also remove from Zustand store (localStorage)
-        // Convert string ID to number to match how items are stored
-        useCartStore.getState().removeItem(parseInt(id));
+        removeStoreItem(id);
     };
 
     const updateQuantity = (id: string, delta: number) => {
-        setCartItems(prev => prev.map(item => {
-            if (item.id === id) {
-                const newQty = item.quantity + delta;
-                if (newQty > 0 && newQty <= item.stock_quantity) {
-                    return { ...item, quantity: newQty };
-                }
-            }
-            return item;
-        }));
+        updateStoreQuantity(id, delta);
     };
 
     const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);

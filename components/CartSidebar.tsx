@@ -107,7 +107,13 @@ export default function CartSidebar() {
                         cartItems.map((item, index) => (
                             <div key={`${item.id}-${index}`} className={styles.item}>
                                 <div className={styles.imgWrapper}>
-                                    <Image src={item.image} alt={item.name} width={80} height={80} style={{ objectFit: 'contain' }} />
+                                    <Image
+                                        src={item.image}
+                                        alt={item.name}
+                                        width={80}
+                                        height={80}
+                                        style={{ objectFit: 'contain', width: 'auto', height: 'auto' }}
+                                    />
                                 </div>
                                 <div className={styles.details}>
                                     <h4>{item.name}</h4>

@@ -9,6 +9,8 @@ export interface CartItem {
     image: string;
     quantity: number;
     size?: string;
+    stock_quantity?: number;
+    sizes?: (number | string)[];
 }
 
 // 2. Описуємо, що взагалі вміє наш кошик
@@ -16,6 +18,7 @@ interface CartState {
     items: CartItem[];
     addItem: (item: CartItem) => void;
     removeItem: (id: string | number) => void;
+    updateQuantity: (id: string | number, delta: number) => void;
     clearCart: () => void;
     getTotalPrice: () => number;
     isHydrated: boolean;
@@ -38,6 +41,10 @@ export const useCartStore = create<CartState>()(
                 
                 if (existingItem) {
                     console.log('⬆️ Item exists, increasing quantity');
+                    const maxQty = existingItem.stock_quantity;
+                    if (typeof maxQty === 'number' && existingItem.quantity >= maxQty) {
+                        return { items: state.items };
+                    }
                     return {
                         items: state.items.map((item) =>
                             item.id === newItem.id
@@ -51,9 +58,29 @@ export const useCartStore = create<CartState>()(
             }),
 
             // Функція видалення товару
-            removeItem: (id) => set((state) => ({
-                items: state.items.filter((item) => item.id !== id)
-            })),
+            removeItem: (id) => {
+                const normalizedId = Number(id);
+                return set((state) => ({
+                    items: state.items.filter((item) => item.id !== normalizedId),
+                }));
+            },
+
+            updateQuantity: (id, delta) => {
+                const normalizedId = Number(id);
+                return set((state) => ({
+                    items: state.items.map((item) => {
+                        if (item.id !== normalizedId) return item;
+
+                        const nextQty = item.quantity + delta;
+                        if (nextQty <= 0) return item;
+
+                        const maxQty = item.stock_quantity;
+                        if (typeof maxQty === 'number' && nextQty > maxQty) return item;
+
+                        return { ...item, quantity: nextQty };
+                    }),
+                }));
+            },
 
             // Функція повного очищення кошика
             clearCart: () => set({ items: [] }),

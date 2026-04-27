@@ -43,6 +43,7 @@ export default function Navbar() {
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsMounted(true);
     }, []);
 
@@ -217,11 +218,12 @@ export default function Navbar() {
                 >
                     <div id="cart-icon-target" className={styles.cartWrapper}>
                         <Image src="/trolley.png" alt="Cart" width={30} height={30} />
-                        {totalItems > 0 && (
-                            <span className={`${alata.className} ${styles.cartBadge}`}>
-                                {totalItems}
-                            </span>
-                        )}
+                        <span
+                            suppressHydrationWarning
+                            className={`${alata.className} ${styles.cartBadge}`}
+                        >
+                            {totalItems > 0 ? totalItems : ""}
+                        </span>
                     </div>
                 </button>
 

@@ -3,7 +3,6 @@
 import { useState, useId } from 'react';
 import Image from 'next/image';
 import { useCart } from './context/CartContext';
-import { useCartStore } from '@/store/useCartStore';
 import { useAuth } from './AuthContext'; // Підключили AuthContext
 import styles from './ProductCard.module.css';
 import { useRouter } from 'next/navigation'; // Підключили роутер
@@ -38,7 +37,6 @@ export default function ProductCard({
     const [isFavorite, setIsFavorite] = useState(false);
 
     const { addToCart, cartItems } = useCart();
-    const addItem = useCartStore((state) => state.addItem);
     const { user } = useAuth(); // Дістаємо юзера
     const router = useRouter(); // Ініціалізуємо роутер
 
@@ -107,15 +105,6 @@ export default function ProductCard({
             sizes: sizes || [],
         });
 
-        addItem({
-            id: Number(id),
-            name: name,
-            price: Number(price),
-            image: image,
-            quantity: 1,
-            size: sizes && sizes.length > 0 ? String(sizes[0]) : undefined,
-        });
-
         flyToCart();
     };
 
@@ -142,6 +131,7 @@ export default function ProductCard({
                             alt="Favourite"
                             width={24}
                             height={24}
+                            style={{ objectFit: 'contain' }}
                         />
                     </button>
                 )}
@@ -152,6 +142,7 @@ export default function ProductCard({
                     alt={name}
                     fill={true}
                     className={styles.shoeImage}
+                    sizes="(max-width: 768px) 90vw, (max-width: 1200px) 33vw, 25vw"
                     style={{ objectFit: 'contain', padding: '20px' }}
                 />
             </div>
@@ -185,7 +176,13 @@ export default function ProductCard({
                         </button>
                     ) : (
                         <button className={styles.card__btn} onClick={handleAddToCart}>
-                            <Image src="/btn.png" alt="Add to Cart" width={30} height={30} />
+                            <Image
+                                src="/btn.png"
+                                alt="Add to Cart"
+                                width={30}
+                                height={30}
+                                style={{ objectFit: 'contain' }}
+                            />
                         </button>
                     )}
                 </div>

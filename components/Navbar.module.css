@@ -1,5 +1,5 @@
 .navbar {
-    position: absolute; /* Відриваємо шапку від звичайного потоку */
+    position: fixed; /* Відриваємо шапку від звичайного потоку */
     top: 0;
     left: 0;
     right: 0;
@@ -11,60 +11,64 @@
     padding: 30px 5%;
     max-width: 1557px;
     margin: 0 auto;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .navbar__logo {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 800;
-  font-size: 31px;
-  text-decoration: none;
-  color: #000;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    font-size: 31px;
+    text-decoration: none;
+    color: #000;
 }
 
 .navbar__nav {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 40px; /* Ось що робить магію! Це відстань між посиланнями */
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 40px; /* Ось що робить магію! Це відстань між посиланнями */
 }
 
 /* САМІ ПОСИЛАННЯ */
 .navbar__link {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;
-  font-size: 19px;
-  text-decoration: none;
-  color: #000;
-  transition: color 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-size: 19px;
+    text-decoration: none;
+    color: #000;
+    transition: color 0.3s ease;
 }
 
 .navbar__link:hover {
-  color: #6b7280;
+    color: #6b7280;
 }
 
 /* КОНТЕЙНЕР ДЛЯ ІКОНОК */
 .navbar__actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 30px; /* Відстань між іконками */
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 30px; /* Відстань між іконками */
 }
 
 /* КНОПКИ З ІКОНКАМИ */
 .navbar__btn-search,
 .navbar__btn-cart,
 .navbar__btn-menu {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
 }
 
 .cartWrapper {
-    position: relative; 
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -75,22 +79,22 @@
     position: absolute;
     top: -8px; /* Піднімаємо вгору */
     right: -15px; /* Зсуваємо вправо */
-    
+
     background-color: #ffffff;
     color: #000000;
     border: 2px solid #000000; /* Чорна рамка, як на макеті */
     border-radius: 50%; /* Робимо ідеальне коло */
-    
+
     /* Розміри кружечка */
     width: 27px;
     height: 27px;
     padding: 0 4px; /* Додаємо трохи місця по боках, якщо буде 2 або 3 цифри (напр. 11) */
-    
+
     /* Вирівнюємо цифру рівно по центру кружечка */
     display: flex;
     justify-content: center;
     align-items: center;
-    
+
     /* Стиль тексту */
     font-size: 13px;
     font-weight: 600;
@@ -98,47 +102,52 @@
     z-index: 2; /* Щоб цифра точно була поверх кошика */
 }
 
+.cartBadge:empty {
+    display: none;
+}
 
 .userAvatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Poppins', sans-serif; /* Або alata, якщо хочеш */
-  font-size: 20px;
-  font-weight: 400;
-  color: #000000; /* Чорна буква, як на скріншоті */
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Тінь під аватаркою */
-  user-select: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif; /* Або alata, якщо хочеш */
+    font-size: 20px;
+    font-weight: 400;
+    color: #000000; /* Чорна буква, як на скріншоті */
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Тінь під аватаркою */
+    user-select: none;
 }
 
 .userAvatar:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
 }
 
 .userAvatar:active {
-  transform: scale(0.95);
+    transform: scale(0.95);
 }
 
 /* Якщо юзер не авторизований, показуємо кнопку Login (можеш налаштувати під свій дизайн) */
 .loginBtn {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  color: #000;
-  text-decoration: none;
-  padding: 8px 16px;
-  border: 1px solid #000;
-  border-radius: 20px;
-  transition: all 0.2s ease;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    color: #000;
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1px solid #000;
+    border-radius: 20px;
+    transition: all 0.2s ease;
 }
 
 .loginBtn:hover {
-  background-color: #000;
-  color: #fff;
+    background-color: #000;
+    color: #fff;
 }
