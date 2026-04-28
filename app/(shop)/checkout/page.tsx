@@ -3,6 +3,7 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
 import { CreditCard, MapPin, FileText, CheckCircle2, Mail, Lock, User, Truck, Loader2 } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
+import Image from 'next/image';
 
 export default function Checkout() {
     const handlePayment = async (payload: {
@@ -429,7 +430,7 @@ export default function Checkout() {
 
                     {/* Order Summary (Right Column) */}
                     <div className="lg:w-1/3">
-                        <div className="bg-gray-50/80 p-5 md:p-6 rounded-2xl sticky top-8 border border-gray-100 shadow-sm">
+                        <div className="bg-gray-50/80 p-5 md:p-6 rounded-2xl sticky top-30 border border-gray-100 shadow-sm">
                             <h2 className="text-xl font-bold mb-6 border-b border-gray-200 pb-4">Your Order</h2>
 
                             <div className="space-y-6 mb-6">
@@ -446,7 +447,7 @@ export default function Checkout() {
                                 {items.map((item, index) => (
                                     <div key={index} className="flex gap-4 items-center">
                                         <div className="w-20 h-20 bg-white rounded-lg overflow-hidden border border-gray-200 shrink-0">
-                                            <img
+                                            <Image
                                                 src={item.image}
                                                 alt={item.name}
                                                 width={80}

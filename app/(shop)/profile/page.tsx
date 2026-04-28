@@ -133,7 +133,7 @@ export default function UserProfile() {
             <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-8">
                 {/* ================= SIDEBAR ================= */}
                 <div className="w-full md:w-72 shrink-0">
-                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden sticky top-20">
+                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden sticky top-30">
                         {/* User Summary */}
                         <div className="p-6 border-b border-gray-50 flex items-center gap-4 bg-gray-50/50">
                             <div className="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center font-bold text-lg">
