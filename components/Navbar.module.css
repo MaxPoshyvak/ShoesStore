@@ -1,152 +1,153 @@
-/* Container */
 .navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 50;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  padding: 30px 5%;
-  max-width: 1557px;
-  margin: 0 auto;
-  
-  /* Must be transparent for mix-blend-mode to read the background */
-  background: transparent;
-  pointer-events: none; /* Allows clicking through empty spaces of header */
+    position: fixed; /* Відриваємо шапку від звичайного потоку */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50; /* Робимо так, щоб шапка завжди була НАД усім */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 5%;
+    max-width: 1557px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Re-enable clicks on actual elements */
-.navbar__logo,
-.navbar__nav,
-.navbar__actions {
-  pointer-events: auto;
-}
-
-/* Logo */
 .navbar__logo {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 800;
-  font-size: 31px;
-  text-decoration: none;
-  
-  /* MAGIC HERE */
-  color: #ffffff;
-  mix-blend-mode: difference;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    font-size: 31px;
+    text-decoration: none;
+    color: #000;
 }
 
-/* Navigation */
 .navbar__nav {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 40px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 40px; /* Ось що робить магію! Це відстань між посиланнями */
 }
 
+/* САМІ ПОСИЛАННЯ */
 .navbar__link {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;
-  font-size: 19px;
-  text-decoration: none;
-  transition: color 0.3s ease;
-  
-  /* MAGIC HERE */
-  color: #ffffff;
-  mix-blend-mode: difference;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    font-size: 19px;
+    text-decoration: none;
+    color: #000;
+    transition: color 0.3s ease;
 }
 
 .navbar__link:hover {
-  color: #a1a1aa;
+    color: #6b7280;
 }
 
-/* Actions Container */
+/* КОНТЕЙНЕР ДЛЯ ІКОНОК */
 .navbar__actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 30px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 30px; /* Відстань між іконками */
 }
 
-/* Buttons */
+/* КНОПКИ З ІКОНКАМИ */
 .navbar__btn-search,
 .navbar__btn-cart,
 .navbar__btn-menu {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
 }
 
-/* Icons (Images) */
-.iconImage {
-  /* Inverts black PNGs to white, then applies difference blending */
-  filter: invert(1);
-  mix-blend-mode: difference;
-}
-
-/* Cart */
 .cartWrapper {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
+/* Сам кружечок з цифрою */
 .cartBadge {
-  position: absolute;
-  top: -8px;
-  right: -15px;
-  width: 27px;
-  height: 27px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 13px;
-  font-weight: 600;
-  font-family: 'Alata', sans-serif;
-  z-index: 2;
-  
-  /* MAGIC HERE */
-  background-color: #ffffff;
-  color: #000000;
-  border: 2px solid #ffffff;
-  border-radius: 50%;
-  mix-blend-mode: difference;
+    position: absolute;
+    top: -8px; /* Піднімаємо вгору */
+    right: -15px; /* Зсуваємо вправо */
+
+    background-color: #ffffff;
+    color: #000000;
+    border: 2px solid #000000; /* Чорна рамка, як на макеті */
+    border-radius: 50%; /* Робимо ідеальне коло */
+
+    /* Розміри кружечка */
+    width: 27px;
+    height: 27px;
+    padding: 0 4px; /* Додаємо трохи місця по боках, якщо буде 2 або 3 цифри (напр. 11) */
+
+    /* Вирівнюємо цифру рівно по центру кружечка */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* Стиль тексту */
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Alata', sans-serif;
+    z-index: 2; /* Щоб цифра точно була поверх кошика */
 }
 
 .cartBadge:empty {
-  display: none;
+    display: none;
 }
 
-/* Avatar */
 .userAvatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Poppins', sans-serif;
-  font-size: 20px;
-  font-weight: 400;
-  color: #000000;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  user-select: none;
-  
-  /* Remove mix-blend-mode here to keep the gradient colors pure */
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif; /* Або alata, якщо хочеш */
+    font-size: 20px;
+    font-weight: 400;
+    color: #000000; /* Чорна буква, як на скріншоті */
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Тінь під аватаркою */
+    user-select: none;
 }
 
 .userAvatar:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
 }
 
 .userAvatar:active {
-  transform: scale(0.95);
+    transform: scale(0.95);
+}
+
+/* Якщо юзер не авторизований, показуємо кнопку Login (можеш налаштувати під свій дизайн) */
+.loginBtn {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    color: #000;
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1px solid #000;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+}
+
+.loginBtn:hover {
+    background-color: #000;
+    color: #fff;
 }
