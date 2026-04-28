@@ -11,10 +11,26 @@
     padding: 30px 5%;
     max-width: 1557px;
     margin: 0 auto;
+   
+}
+
+.navbarTransparent {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.navbarScrolled {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+
+
+
+
 }
 
 .navbar__logo {

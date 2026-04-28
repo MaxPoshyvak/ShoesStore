@@ -41,10 +41,22 @@ export default function Navbar() {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isSortOpen, setIsSortOpen] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsMounted(true);
+    }, []);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 40);
+        };
+
+        handleScroll();
+        window.addEventListener('scroll', handleScroll, { passive: true });
+
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     // Hide Navbar on auth pages
@@ -63,6 +75,8 @@ export default function Navbar() {
         ? generateAvatarGradient(resolvedUser.username)
         : "linear-gradient(180deg, #EAEAEA 0%, #D4D4D4 100%)";
 
+    const navbarThemeClass = isScrolled ? styles.navbarScrolled : styles.navbarTransparent;
+
     const updateFilter = (key: string, value: string | null) => {
         const params = new URLSearchParams(searchParams.toString());
         if (value) params.set(key, value);
@@ -71,7 +85,7 @@ export default function Navbar() {
     };
 
     return (
-        <header className={styles.navbar}>
+        <header className={`${styles.navbar} ${navbarThemeClass}`}>
 
             <Link href="/" className={styles.navbar__logo}>
                 Slick
