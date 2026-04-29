@@ -31,8 +31,6 @@
     line-height: 154%;
     margin-bottom: 40px;
     max-width: 400px;
-
-
 }
 
 .hero__btn {
@@ -46,14 +44,16 @@
     cursor: pointer;
     width: fit-content;
     /* Кнопка підлаштовується під текст, а не тягнеться */
-    transition: transform 0.2s, background-color 0.2s;
+    transition:
+        transform 0.2s,
+        background-color 0.2s;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     /* Легка тінь як у Figma */
 }
 
 .hero__right {
     flex: 1;
-    background: linear-gradient(90deg, #E4E4E4 0%, #FAFAFA 100%);
+    background: linear-gradient(90deg, #e4e4e4 0%, #fafafa 100%);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -61,15 +61,11 @@
     position: relative;
     padding-top: 100px;
     overflow: hidden;
-
 }
-
-
 
 .hero__imageContainer:hover {
     transform: scale(1.05) rotate(-2deg);
 }
-
 
 .hero__priceTag {
     text-align: center;
@@ -151,7 +147,7 @@
 
 .hero__graphic--lines {
     width: 70%;
-    height:70%;
+    height: 70%;
     top: 350px;
     left: 400px;
     z-index: 2;
@@ -186,13 +182,95 @@
 
 /* Відриваємо цінник і ставимо в правий нижній кут */
 
-
 .hero__priceTag {
     position: absolute;
     bottom: 95px; /* Висота від низу залишається */
-    left: 40%; 
-    transform: translateX(-50%); 
-    
+    left: 40%;
+    transform: translateX(-50%);
+
     text-align: center;
     z-index: 5;
+}
+
+/* =========================================
+   RESPONSIVE STYLES
+   ========================================= */
+
+@media (max-width: 1024px) {
+    .hero {
+        flex-direction: column;
+        min-height: auto;
+    }
+    .hero__left {
+        flex: none;
+        width: 100%;
+        padding: 120px 5% 40px;
+        align-items: center;
+        text-align: center;
+    }
+    .hero__description {
+        max-width: 100%;
+    }
+    .hero__right {
+        flex: none;
+        width: 100%;
+        padding: 60px 5%;
+        min-height: 600px;
+    }
+    .hero__imageContainer {
+        left: 0;
+        top: 0;
+    }
+    .hero__graphic--circles {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+    }
+    .hero__graphic--lines {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+    }
+    .hero__graphic--shadows {
+        left: 50%;
+        top: 60%;
+        transform: translateX(-50%);
+        width: 80%;
+    }
+    .hero__ultimate {
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 80px;
+        position: relative;
+        text-align: center;
+        margin-bottom: -50px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero__title {
+        font-size: 48px;
+    }
+    .hero__description {
+        font-size: 16px;
+    }
+    .hero__ultimate {
+        font-size: 50px;
+    }
+    .hero__right {
+        min-height: 450px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero__title {
+        font-size: 36px;
+    }
+    .hero__right {
+        min-height: 350px;
+        padding-top: 40px;
+    }
 }
