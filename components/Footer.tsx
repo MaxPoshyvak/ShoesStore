@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./Footer.module.css";
+import Swal from 'sweetalert2';
 import { usePathname } from "next/navigation";
 
 export default function Footer() {
@@ -11,9 +12,14 @@ export default function Footer() {
         return null;
     }
     
-    const handleSubscribe = (e: React.FormEvent) => {
+    const handleSubscribe = async (e: React.FormEvent) => {
         e.preventDefault();
-        alert("Thanks for subscribing!");
+        await Swal.fire({
+            icon: 'success',
+            title: 'Thanks for subscribing!',
+            showConfirmButton: true,
+            confirmButtonColor: '#000'
+        });
     };
 
     return (

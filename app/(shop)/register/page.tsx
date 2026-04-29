@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Swal from 'sweetalert2';
 // In the original Next.js, uncomment these lines:
 // import { useRouter } from "next/navigation";
 // import Link from "next/link";
@@ -38,8 +39,13 @@ export default function RegisterPage() {
                 throw new Error(data.message || "Registration error");
             }
 
-            alert("Registration successful! Please log in to your account.");
-            
+            await Swal.fire({
+                icon: 'success',
+                title: 'Registration successful!',
+                text: 'Please log in to your account.',
+                confirmButtonColor: '#000'
+            });
+
             // Routing simulation for Canvas. In Next.js use: router.push("/login");
             window.location.href = "/login"; 
         } catch (err) {

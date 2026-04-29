@@ -42,17 +42,15 @@
 
 .card {
     flex: 0 0 calc(50% - 15px);
-    background-color: #F8F8F8;
+    background-color: #f8f8f8;
     /* Світло-сірий фон як у Фігмі */
     border-radius: 12px;
     padding: 30px;
     display: flex;
     align-items: center;
     gap: 30px;
-    border: 1px solid #EAEAEA;
+    border: 1px solid #eaeaea;
 }
-
-
 
 .imageWrapper {
     flex-shrink: 0;
@@ -80,7 +78,7 @@
 }
 
 .stars {
-    color: #FFC107;
+    color: #ffc107;
     /* Жовто-золотий колір зірочок */
     font-size: 16px;
     margin-bottom: 10px;
@@ -107,7 +105,7 @@
 .dot {
     width: 8px;
     height: 8px;
-    background-color: #C4C4C4;
+    background-color: #c4c4c4;
     /* Світло-сірі неактивні крапочки */
     border-radius: 50%;
     cursor: pointer;
@@ -119,3 +117,39 @@
     /* Темно-сіра активна крапочка */
 }
 
+/* =========================================
+   RESPONSIVE STYLES
+   ========================================= */
+
+@media (max-width: 1024px) {
+    .card {
+        flex: 0 0 calc(100% - 15px); /* На планшетах показуємо по одному відгуку на всю ширину */
+    }
+}
+
+@media (max-width: 768px) {
+    .reviewsSection {
+        padding: 0 5%;
+        margin: 50px auto;
+    }
+    .header {
+        flex-direction: column;
+        margin-bottom: 30px;
+    }
+    .title {
+        font-size: 26px;
+        text-align: center;
+    }
+    .card {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+        padding: 20px;
+    }
+    .imageWrapper {
+        margin: 0 auto;
+    }
+    .sliderTrack {
+        gap: 15px;
+    }
+}

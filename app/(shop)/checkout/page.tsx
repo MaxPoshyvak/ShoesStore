@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
+import Swal from 'sweetalert2';
 import { CreditCard, MapPin, FileText, CheckCircle2, Mail, Lock, User, Truck, Loader2 } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 import Image from 'next/image';
@@ -174,7 +175,12 @@ export default function Checkout() {
             setIsSubmitted(true);
         } catch (error) {
             const message = error instanceof Error ? error.message : 'Order failed.';
-            alert(message);
+            await Swal.fire({
+                icon: 'error',
+                title: 'Order error',
+                text: message,
+                confirmButtonColor: '#000'
+            });
         } finally {
             setIsProcessing(false); // End loading
         }

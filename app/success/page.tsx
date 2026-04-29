@@ -13,7 +13,7 @@ export default async function SuccessPage({ searchParams }: { searchParams: Prom
         <div className="min-h-screen bg-[#F8F9FA] flex flex-col items-center justify-center p-4 font-sans selection:bg-black selection:text-white">
             <div className="max-w-lg w-full bg-white rounded-[2rem] shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
                 {/* Верхній блок з іконкою */}
-                <div className="bg-black p-8 text-center relative overflow-hidden">
+                <div className="bg-black p-6 sm:p-8 text-center relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
                         {/* Патерн для преміальності (опціонально) */}
                         <div className="w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent"></div>
@@ -23,15 +23,17 @@ export default async function SuccessPage({ searchParams }: { searchParams: Prom
                         <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center mb-6 border border-white/20 shadow-inner">
                             <Check size={40} className="text-white" strokeWidth={2} />
                         </div>
-                        <h1 className="text-3xl font-black text-white tracking-tight mb-2">Оплата пройшла!</h1>
+                        <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2">
+                            Оплата пройшла!
+                        </h1>
                         <p className="text-gray-300 text-sm font-medium">Твоє замовлення успішно оформлено.</p>
                     </div>
                 </div>
 
                 {/* Тіло картки (Чек) */}
-                <div className="p-8 space-y-8">
+                <div className="p-6 sm:p-8 space-y-6 sm:space-y-8">
                     {/* Інформаційний блок */}
-                    <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                    <div className="bg-gray-50 rounded-2xl p-5 sm:p-6 border border-gray-100">
                         <div className="flex items-center gap-3 mb-4">
                             <Receipt size={20} className="text-gray-400" />
                             <h2 className="text-sm font-bold text-gray-900 uppercase tracking-widest">Деталі</h2>

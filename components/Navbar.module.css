@@ -371,3 +371,52 @@
 .checkboxInput:checked + .customCheckbox::after {
     display: block;
 }
+
+/* =========================================
+   RESPONSIVE STYLES
+   ========================================= */
+
+@media (max-width: 1024px) {
+    .navbar__nav {
+        gap: 20px;
+    }
+    .navbar__actions {
+        gap: 15px;
+    }
+    .navbar__link {
+        font-size: 16px;
+    }
+    .navbar__logo {
+        font-size: 26px;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        padding: 15px 5%;
+    }
+    .navbar__nav {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 300px;
+        background-color: #ffffff;
+        flex-direction: column;
+        padding: 90px 40px 40px; /* Верхній відступ більший, щоб звільнити місце для кнопки закриття або хедера */
+        box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
+        transform: translateX(100%); /* Ховаємо меню за правий край екрана */
+        transition: transform 0.3s ease-in-out;
+        z-index: 100;
+    }
+    .navbar__navOpen {
+        transform: translateX(0); /* Показуємо меню */
+    }
+    .navbar__logo {
+        font-size: 24px;
+    }
+    .filterWrapper {
+        right: -20px;
+        width: 280px;
+    }
+}
