@@ -39,10 +39,11 @@ export default function BestSellingCard({
 
     const uniqueImageId = useId();
 
-    const itemInCart = cartItems.find((item) => item.id === id);
-    const quntityInCart = itemInCart ? itemInCart.quantity : 0;
-    const remainingStock = stockQuantity - quntityInCart;
-    const isOutOfStock = remainingStock === 0;
+    const itemInCart = cartItems.find((item) => String(item.id) === String(id));
+    const cartQuantity = Number(itemInCart?.quantity ?? 0);
+    const stock = Number(stockQuantity ?? 0);
+    const remainingStock = Math.max(0, stock - cartQuantity);
+    const isOutOfStock = remainingStock <= 0;
 
     const toggleFavourite = () => {
         setIsFavorite(!isFavorite);
@@ -112,8 +113,18 @@ export default function BestSellingCard({
 
                 <div className={styles.card__bottom}>
                     <div className={styles.priceContainer}>
-                        <p className={styles.card__price}>₴ {Number(price).toFixed(2)}</p>
-                        {oldPrice && <p className={styles.card__oldPrice}>₴ {Number(oldPrice).toFixed(2)}</p>}
+                        {(() => {
+                            const displayPrice = Number(price ?? 0);
+                            const displayOld = oldPrice != null ? Number(oldPrice) : null;
+                            return (
+                                <>
+                                    <p className={styles.card__price}>₴ {displayPrice.toFixed(2)}</p>
+                                    {displayOld !== null && !Number.isNaN(displayOld) && (
+                                        <p className={styles.card__oldPrice}>₴ {displayOld.toFixed(2)}</p>
+                                    )}
+                                </>
+                            );
+                        })()}
                     </div>
 
                     {isOutOfStock ? (
