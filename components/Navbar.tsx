@@ -15,7 +15,7 @@ const alata = Alata({
     subsets: ["latin"]
 });
 
-const availableSizes = ["39", "40", "41", "42", "43", "44", "45"];
+const availableSizes = ["36", "37", "38", "39", "40", "41", "42", "43", "44", "45"];
 
 // Helper function to generate avatar gradient
 const generateAvatarGradient = (name: string) => {
@@ -66,11 +66,11 @@ export default function Navbar() {
 
     const resolvedUser = isMounted ? user : null;
     const initial = resolvedUser?.username ? resolvedUser.username.charAt(0).toUpperCase() : "?";
-    
+
     const currentSize = searchParams.get('size');
     const currentSort = searchParams.get('sort') || 'default';
     const inStock = searchParams.get('instock') === 'true';
-    
+
     const avatarBackground = resolvedUser?.username
         ? generateAvatarGradient(resolvedUser.username)
         : "linear-gradient(180deg, #EAEAEA 0%, #D4D4D4 100%)";
@@ -99,7 +99,7 @@ export default function Navbar() {
             </nav>
 
             <div className={styles.navbar__actions}>
-                
+
                 {pathname === '/shop' && (
                     <div style={{ position: 'relative' }}>
                         <button
@@ -110,95 +110,63 @@ export default function Navbar() {
                         </button>
 
                         {isFilterOpen && (
-                            <div style={{
-                                position: 'absolute', top: '40px', right: '-63px', width: '320px',
-                                backgroundColor: '#EBEBEB', padding: '20px', borderRadius: '15px',
-                                boxShadow: '0 10px 25px rgba(0,0,0,0.1)', zIndex: 1000, fontFamily: 'Poppins'
-                            }}>
-                                {/* Triangle indicator */}
-                                <div style={{ 
-                                    position: 'absolute', top: '-10px', right: '65px', 
-                                    width: '0', height: '0', 
-                                    borderLeft: '10px solid transparent', 
-                                    borderRight: '10px solid transparent', 
-                                    borderBottom: '10px solid #EBEBEB' 
-                                }}></div>
+                            <div className={styles.filterWrapper}>
+                                <div className={styles.filterArrow}></div>
 
-                                <div style={{ marginBottom: '15px' }}>
-                                    <p style={{ fontSize: '14px', marginBottom: '8px' }}>Size:</p>
-                                    <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
+                                <div className={styles.filterSection}>
+                                    <h4 className={styles.filterTitle}>Size</h4>
+                                    <div className={styles.sizeGrid}>
                                         <button
                                             onClick={() => updateFilter('size', null)}
-                                            style={{ 
-                                                padding: '5px 12px', borderRadius: '8px', border: '1px solid #ccc', 
-                                                background: !currentSize ? '#000' : '#fff', 
-                                                color: !currentSize ? '#fff' : '#000', cursor: 'pointer' 
-                                            }}
-                                        >All</button>
+                                            className={`${styles.sizeBtn} ${!currentSize ? styles.sizeBtnActive : ''}`}
+                                        >
+                                            All
+                                        </button>
                                         {availableSizes.map(size => (
                                             <button
                                                 key={size}
                                                 onClick={() => updateFilter('size', size)}
-                                                style={{ 
-                                                    padding: '5px 12px', borderRadius: '8px', border: '1px solid #ccc', 
-                                                    background: currentSize === size ? '#000' : '#fff', 
-                                                    color: currentSize === size ? '#fff' : '#000', cursor: 'pointer' 
-                                                }}
-                                            >{size}</button>
+                                                className={`${styles.sizeBtn} ${currentSize === size ? styles.sizeBtnActive : ''}`}
+                                            >
+                                                {size}
+                                            </button>
                                         ))}
                                     </div>
                                 </div>
 
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                    
-                                    <div style={{ position: 'relative', width: '170px' }}>
-                                        <p style={{ fontSize: '14px', marginBottom: '8px' }}>Sort by:</p>
-                                        
+                                <div className={styles.filterBottomRow}>
+                                    <div className={styles.sortWrapper}>
+                                        <h4 className={styles.filterTitle}>Sort by</h4>
                                         <div
                                             onClick={() => setIsSortOpen(!isSortOpen)}
-                                            style={{ 
-                                                padding: '8px 10px', background: '#fff', border: '1px solid #ccc', 
-                                                borderRadius: '5px', cursor: 'pointer', fontSize: '13px', 
-                                                display: 'flex', justifyContent: 'space-between', alignItems: 'center' 
-                                            }}
+                                            className={styles.sortTrigger}
                                         >
                                             {currentSort === 'price_asc' ? 'Price: Low to High' : currentSort === 'price_desc' ? 'Price: High to Low' : 'Default'}
-                                            <span style={{ transform: isSortOpen ? 'rotate(180deg)' : 'rotate(0)', fontSize: '10px', marginLeft: '5px' }}>▼</span>
+                                            <span
+                                                className={styles.sortIcon}
+                                                style={{ transform: isSortOpen ? 'rotate(180deg)' : 'rotate(0)' }}
+                                            >
+                                                ▼
+                                            </span>
                                         </div>
 
                                         {isSortOpen && (
-                                            <ul style={{
-                                                position: 'absolute', top: '100%', left: 0, width: '100%', background: '#fff',
-                                                border: '1px solid #ccc', borderRadius: '5px', listStyle: 'none', padding: '5px 0',
-                                                margin: '5px 0 0 0', zIndex: 10, boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                                            }}>
+                                            <ul className={styles.sortList}>
                                                 <li
                                                     onClick={() => { updateFilter('sort', 'default'); setIsSortOpen(false); }}
-                                                    style={{ 
-                                                        padding: '8px 12px', cursor: 'pointer', fontSize: '13px', 
-                                                        background: currentSort === 'default' ? '#000' : '#fff', 
-                                                        color: currentSort === 'default' ? '#fff' : '#000' 
-                                                    }}
+                                                    className={`${styles.sortItem} ${currentSort === 'default' ? styles.sortItemActive : ''}`}
                                                 >
                                                     Default
                                                 </li>
                                                 <li
                                                     onClick={() => { updateFilter('sort', 'price_asc'); setIsSortOpen(false); }}
-                                                    style={{ 
-                                                        padding: '8px 12px', cursor: 'pointer', fontSize: '13px', 
-                                                        background: currentSort === 'price_asc' ? '#000' : '#fff', 
-                                                        color: currentSort === 'price_asc' ? '#fff' : '#000' 
-                                                    }}
+                                                    className={`${styles.sortItem} ${currentSort === 'price_asc' ? styles.sortItemActive : ''}`}
                                                 >
                                                     Price: Low to High
                                                 </li>
                                                 <li
                                                     onClick={() => { updateFilter('sort', 'price_desc'); setIsSortOpen(false); }}
-                                                    style={{ 
-                                                        padding: '8px 12px', cursor: 'pointer', fontSize: '13px', 
-                                                        background: currentSort === 'price_desc' ? '#000' : '#fff', 
-                                                        color: currentSort === 'price_desc' ? '#fff' : '#000' 
-                                                    }}
+                                                    className={`${styles.sortItem} ${currentSort === 'price_desc' ? styles.sortItemActive : ''}`}
                                                 >
                                                     Price: High to Low
                                                 </li>
@@ -206,22 +174,21 @@ export default function Navbar() {
                                         )}
                                     </div>
 
-                                    <label style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '13px', cursor: 'pointer', marginTop: '30px' }}>
+                                    <label className={styles.checkboxLabel}>
                                         <input
                                             type="checkbox"
                                             checked={inStock}
                                             onChange={(e) => updateFilter('instock', e.target.checked ? 'true' : null)}
-                                            style={{ width: '14px', height: '14px', cursor: 'pointer' }}
+                                            className={styles.checkboxInput}
                                         />
+                                        <span className={styles.customCheckbox}></span>
                                         In stock only
                                     </label>
-
                                 </div>
                             </div>
                         )}
                     </div>
                 )}
-
                 <button className={styles["navbar__btn-search"]}>
                     <Image src="/search.png" alt="Search" width={21} height={21} />
                 </button>

@@ -25,6 +25,14 @@ interface CartState {
     setHydrated: (value: boolean) => void;
 }
 
+const normalizePrice = (price: number | string) => Number(price) || 0;
+
+const normalizeItem = (item: CartItem): CartItem => ({
+    ...item,
+    id: Number(item.id),
+    price: normalizePrice(item.price),
+});
+
 // 3. Створюємо саме сховище з магією persist (збереження в localStorage)
 export const useCartStore = create<CartState>()(
     persist(
@@ -36,25 +44,28 @@ export const useCartStore = create<CartState>()(
 
             // Функція додавання товару
             addItem: (newItem) => set((state) => {
-                console.log('🛒 Adding item:', newItem);
-                const existingItem = state.items.find((item) => item.id === newItem.id);
+                const normalizedNewItem = normalizeItem(newItem);
+                const incomingQuantity = Math.max(1, Math.floor(Number(newItem.quantity) || 1));
+                console.log('🛒 Adding item:', normalizedNewItem);
+                const existingItem = state.items.find((item) => item.id === normalizedNewItem.id);
                 
                 if (existingItem) {
                     console.log('⬆️ Item exists, increasing quantity');
                     const maxQty = existingItem.stock_quantity;
-                    if (typeof maxQty === 'number' && existingItem.quantity >= maxQty) {
+                    const nextQuantity = existingItem.quantity + incomingQuantity;
+                    if (typeof maxQty === 'number' && nextQuantity > maxQty) {
                         return { items: state.items };
                     }
                     return {
                         items: state.items.map((item) =>
-                            item.id === newItem.id
-                                ? { ...item, quantity: item.quantity + 1 }
+                            item.id === normalizedNewItem.id
+                                ? { ...normalizeItem(item), quantity: nextQuantity }
                                 : item
                         ),
                     };
                 }
                 console.log('✨ Adding new item');
-                return { items: [...state.items, { ...newItem, quantity: 1 }] };
+                return { items: [...state.items, { ...normalizedNewItem, quantity: incomingQuantity }] };
             }),
 
             // Функція видалення товару
@@ -96,6 +107,7 @@ export const useCartStore = create<CartState>()(
             storage: createJSONStorage(() => localStorage),
             onRehydrateStorage: () => (state) => {
                 if (state) {
+                    state.items = state.items.map(normalizeItem);
                     console.log('✅ Store hydrated:', state.items.length, 'items');
                     state.setHydrated(true);
                 }
