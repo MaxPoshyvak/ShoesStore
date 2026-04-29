@@ -33,81 +33,25 @@ export default function BestSellingCard({
 }: ProductCardProps) {
     const [isFavorite, setIsFavorite] = useState(false);
 
-    const { addToCart, cartItems } = useCart();
+    const { cartItems } = useCart();
     const { user } = useAuth();
     const router = useRouter();
 
     const uniqueImageId = useId();
 
-    const itemInCart = cartItems.find((item) => item.id === id);
-    const quntityInCart = itemInCart ? itemInCart.quantity : 0;
-    const remainingStock = stockQuantity - quntityInCart;
-    const isOutOfStock = remainingStock === 0;
+    const itemInCart = cartItems.find((item) => String(item.id) === String(id));
+    const cartQuantity = Number(itemInCart?.quantity ?? 0);
+    const stock = Number(stockQuantity ?? 0);
+    const remainingStock = Math.max(0, stock - cartQuantity);
+    const isOutOfStock = remainingStock <= 0;
 
     const toggleFavourite = () => {
         setIsFavorite(!isFavorite);
     };
 
-    const flyToCart = () => {
-        const cartTarget = document.getElementById('cart-icon-target');
-        const productImage = document.getElementById(uniqueImageId);
-
-        if (!cartTarget || !productImage) {
-            console.log('Елементи для анімації не знайдено!');
-            return;
-        }
-
-        const cartRect = cartTarget.getBoundingClientRect();
-        const imgRect = productImage.getBoundingClientRect();
-
-        const flyingImg = document.createElement('img');
-        flyingImg.src = image;
-        flyingImg.style.position = 'fixed';
-        flyingImg.style.left = `${imgRect.left}px`;
-        flyingImg.style.top = `${imgRect.top}px`;
-        flyingImg.style.width = `${imgRect.width}px`;
-        flyingImg.style.height = `${imgRect.height}px`;
-        flyingImg.style.objectFit = 'contain';
-        flyingImg.style.zIndex = '2147483647';
-        flyingImg.style.borderRadius = '50%';
-        flyingImg.style.pointerEvents = 'none';
-
-        flyingImg.style.transition = 'none';
-        document.body.appendChild(flyingImg);
-
-        setTimeout(() => {
-            flyingImg.style.transition = 'all 1.5s cubic-bezier(0.4, 0, 0.2, 1)';
-
-            flyingImg.style.left = `${cartRect.left + cartRect.width / 2 - 10}px`;
-            flyingImg.style.top = `${cartRect.top + cartRect.height / 2 - 10}px`;
-            flyingImg.style.width = '20px';
-            flyingImg.style.height = '20px';
-            flyingImg.style.opacity = '0.2';
-        }, 10);
-
-        setTimeout(() => {
-            if (document.body.contains(flyingImg)) {
-                flyingImg.remove();
-            }
-        }, 1500);
-    };
-
-    const handleAddToCart = () => {
+    const handleOpenProduct = () => {
         if (isOutOfStock) return;
-
-        console.log('🛍️ Adding to cart:', { id, name, price, sizes });
-
-        addToCart({
-            id: id,
-            name: name,
-            price: Number(price),
-            image: image,
-            quantity: 1,
-            stock_quantity: stockQuantity,
-            sizes: sizes || [],
-        });
-
-        flyToCart();
+        router.push(`/product/${id}`);
     };
 
     const handleNotifyClick = () => {
@@ -169,8 +113,18 @@ export default function BestSellingCard({
 
                 <div className={styles.card__bottom}>
                     <div className={styles.priceContainer}>
-                        <p className={styles.card__price}>₴ {Number(price).toFixed(2)}</p>
-                        {oldPrice && <p className={styles.card__oldPrice}>₴ {Number(oldPrice).toFixed(2)}</p>}
+                        {(() => {
+                            const displayPrice = Number(price ?? 0);
+                            const displayOld = oldPrice != null ? Number(oldPrice) : null;
+                            return (
+                                <>
+                                    <p className={styles.card__price}>₴ {displayPrice.toFixed(2)}</p>
+                                    {displayOld !== null && !Number.isNaN(displayOld) && (
+                                        <p className={styles.card__oldPrice}>₴ {displayOld.toFixed(2)}</p>
+                                    )}
+                                </>
+                            );
+                        })()}
                     </div>
 
                     {isOutOfStock ? (
@@ -178,7 +132,7 @@ export default function BestSellingCard({
                             Notify
                         </button>
                     ) : (
-                        <button className={styles.card__btn} onClick={handleAddToCart}>
+                        <button className={styles.card__btn} onClick={handleOpenProduct}>
                             <Image
                                 src="/btn.png"
                                 alt="Add to Cart"

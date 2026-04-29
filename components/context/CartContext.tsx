@@ -10,6 +10,7 @@ interface CartItem {
     image: string;
     quantity: number;
     stock_quantity: number;
+    size?: string;
     sizes?: (number | string)[];
 
 }
@@ -41,10 +42,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const cartItems: CartItem[] = storeItems.map((item) => ({
         id: String(item.id),
         name: item.name,
-        price: item.price,
+        price: Number(item.price),
         image: item.image,
         quantity: item.quantity,
         stock_quantity: item.stock_quantity ?? Number.POSITIVE_INFINITY,
+        size: item.size,
         sizes: item.sizes,
     }));
     const [isCartOpen, setIsCartOpen] = useState(false);
@@ -56,8 +58,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
             name: product.name,
             price: product.price,
             image: product.image,
-            quantity: 1,
+            quantity: product.quantity,
             stock_quantity: product.stock_quantity,
+            size: product.size,
             sizes: product.sizes,
         });
         // setIsCartOpen(true); // Автоматично відкриваємо кошик при додаванні
