@@ -4,8 +4,9 @@ import { useState, useId } from 'react';
 import Image from 'next/image';
 import { useCart } from './context/CartContext';
 import { useAuth } from './AuthContext'; // Підключили AuthContext
-import styles from './ProductCard.module.css';
 import { useRouter } from 'next/navigation'; // Підключили роутер
+import Swal from 'sweetalert2';
+import styles from './ProductCard.module.css';
 
 interface ProductCardProps {
     id: string;
@@ -35,6 +36,7 @@ export default function ProductCard({
     sizes,
 }: ProductCardProps) {
     const [isFavorite, setIsFavorite] = useState(false);
+    const [isNotifying, setIsNotifying] = useState(false);
 
     const { cartItems } = useCart();
     const { user } = useAuth(); // Дістаємо юзера
@@ -56,14 +58,83 @@ export default function ProductCard({
         router.push(`/product/${id}`);
     };
 
-    const handleNotifyClick = () => {
+    const handleNotifyClick = async () => {
+        if (isNotifying) return;
+
         if (!user) {
-            alert('Please log in to your account to receive notifications.');
-            router.push('/login');
+            Swal.fire({
+                icon: 'info',
+                title: 'Login Required',
+                text: 'Please log in to your account to receive notifications.',
+                confirmButtonText: 'Go to Login',
+                confirmButtonColor: '#000',
+                background: '#fff',
+                color: '#000',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    router.push('/login');
+                }
+            });
             return;
         }
 
-        alert(`Great! We will send an email to ${user.email} when the sneakers "${name}" are back in stock.`);
+        setIsNotifying(true);
+
+        try {
+            // Показуємо loading
+            Swal.fire({
+                title: 'Adding to waitlist...',
+                icon: 'info',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Робимо запит до API
+            const response = await fetch('https://shoesstore-server.onrender.com/api/waitlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+                },
+                body: JSON.stringify({
+                    good_id: id,
+                    email: user.email,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+
+            // Success
+            Swal.fire({
+                icon: 'success',
+                title: 'Done!',
+                text: `We added "${name}" to your waitlist. You'll receive an email notification at ${user.email} when the sneakers are back in stock.`,
+                confirmButtonText: 'Close',
+                confirmButtonColor: '#000',
+                background: '#fff',
+                color: '#000',
+            });
+        } catch (error) {
+            console.error('Notify error:', error);
+
+            // Помилка
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to add to waitlist. Please try again.',
+                confirmButtonText: 'Close',
+                confirmButtonColor: '#000',
+                background: '#fff',
+                color: '#000',
+            });
+        } finally {
+            setIsNotifying(false);
+        }
     };
 
     return (
@@ -119,8 +190,13 @@ export default function ProductCard({
                     </div>
 
                     {isOutOfStock ? (
-                        <button className={styles.notifyBtn} onClick={handleNotifyClick}>
-                            Notify
+                        <button 
+                            className={styles.notifyBtn} 
+                            onClick={handleNotifyClick}
+                            disabled={isNotifying}
+                            style={{ opacity: isNotifying ? 0.6 : 1 }}
+                        >
+                            {isNotifying ? 'Adding...' : 'Notify'}
                         </button>
                     ) : (
                         <button className={styles.card__btn} onClick={handleOpenProduct}>

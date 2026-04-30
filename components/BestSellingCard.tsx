@@ -6,6 +6,7 @@ import { useCart } from './context/CartContext';
 // 1. Імпортуємо контекст авторизації та роутер
 import { useAuth } from './AuthContext';
 import { useRouter } from 'next/navigation';
+import Swal from 'sweetalert2';
 import styles from './BestSellingCard.module.css';
 
 interface ProductCardProps {
@@ -32,6 +33,7 @@ export default function BestSellingCard({
     sizes,
 }: ProductCardProps) {
     const [isFavorite, setIsFavorite] = useState(false);
+    const [isNotifying, setIsNotifying] = useState(false);
 
     const { cartItems } = useCart();
     const { user } = useAuth();
@@ -54,14 +56,83 @@ export default function BestSellingCard({
         router.push(`/product/${id}`);
     };
 
-    const handleNotifyClick = () => {
+    const handleNotifyClick = async () => {
+        if (isNotifying) return;
+
         if (!user) {
-            alert('Будь ласка, увійдіть в акаунт, щоб отримувати сповіщення.');
-            router.push('/login');
+            Swal.fire({
+                icon: 'info',
+                title: 'Вхід потрібен',
+                text: 'Будь ласка, увійдіть в акаунт, щоб отримувати сповіщення.',
+                confirmButtonText: 'Перейти до входу',
+                confirmButtonColor: '#000',
+                background: '#fff',
+                color: '#000',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    router.push('/login');
+                }
+            });
             return;
         }
 
-        alert(`Супер! Ми надішлемо листа на ${user.email}, коли кросівки "${name}" знову з'являться на складі.`);
+        setIsNotifying(true);
+
+        try {
+            // Показуємо loading
+            Swal.fire({
+                title: 'Додаємо в список очікування...',
+                icon: 'info',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Робимо запит до API
+            const response = await fetch('https://shoesstore-server.onrender.com/api/waitlist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+                },
+                body: JSON.stringify({
+                    good_id: id,
+                    email: user.email,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+
+            // Успіх
+            Swal.fire({
+                icon: 'success',
+                title: 'Готово!',
+                text: `Ми додали "${name}" до вашого списку очікування. Сповіщення буде надіслано на ${user.email}, коли кросівки знову з'являться на складі.`,
+                confirmButtonText: 'Закрити',
+                confirmButtonColor: '#000',
+                background: '#fff',
+                color: '#000',
+            });
+        } catch (error) {
+            console.error('Notify error:', error);
+
+            // Помилка
+            Swal.fire({
+                icon: 'error',
+                title: 'Помилка',
+                text: 'Не вдалося додати до списку очікування. Спробуйте ще раз.',
+                confirmButtonText: 'Закрити',
+                confirmButtonColor: '#000',
+                background: '#fff',
+                color: '#000',
+            });
+        } finally {
+            setIsNotifying(false);
+        }
     };
 
     return (
@@ -128,8 +199,13 @@ export default function BestSellingCard({
                     </div>
 
                     {isOutOfStock ? (
-                        <button className={styles.notifyBtn} onClick={handleNotifyClick}>
-                            Notify
+                        <button 
+                            className={styles.notifyBtn} 
+                            onClick={handleNotifyClick}
+                            disabled={isNotifying}
+                            style={{ opacity: isNotifying ? 0.6 : 1 }}
+                        >
+                            {isNotifying ? 'Додавання...' : 'Notify'}
                         </button>
                     ) : (
                         <button className={styles.card__btn} onClick={handleOpenProduct}>
