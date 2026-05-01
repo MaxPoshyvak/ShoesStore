@@ -3,8 +3,8 @@
 import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import styles from './Trending.module.css';
-import ProductCard from './ProductCard';
 import { ServerStatusPopup } from '@/components/ServerStatusPopup/ServerStatusPopup';
+import BestSellingCard from '@/components/BestSellingCard';
 
 interface Good {
     id: string;
@@ -23,6 +23,23 @@ export default function Trending() {
     const [goods, setGoods] = useState<Good[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [activeIndex, setActiveIndex] = useState(0);
+    const [itemsPerPage, setItemsPerPage] = useState(3);
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth <= 600) {
+                setItemsPerPage(1);
+            } else if (window.innerWidth <= 1024) {
+                setItemsPerPage(2);
+            } else {
+                setItemsPerPage(3);
+            }
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         const fetchGoods = async () => {
@@ -33,23 +50,17 @@ export default function Trending() {
                 }
                 const data: Good[] = await response.json();
 
-                // 1. Сортуємо товари: спочатку зі знижкою, потім найдешевші
                 const sortedData = data.sort((a, b) => {
                     const aHasDiscount = a.old_price && a.old_price > a.price;
                     const bHasDiscount = b.old_price && b.old_price > b.price;
 
-                    // Якщо товар 'a' має знижку, а 'b' ні — 'a' йде вище
                     if (aHasDiscount && !bHasDiscount) return -1;
-                    // Якщо товар 'b' має знижку, а 'a' ні — 'b' йде вище
                     if (!aHasDiscount && bHasDiscount) return 1;
 
-                    // Якщо в обох є знижка, АБО в обох немає — сортуємо від найдешевшого
                     return a.price - b.price;
                 });
 
-                // 2. Відрізаємо рівно 9 найкращих кросівок
                 const top9Goods = sortedData.slice(0, 9);
-
                 setGoods(top9Goods);
             } catch (error) {
                 console.error('Помилка завантаження товарів:', error);
@@ -61,12 +72,29 @@ export default function Trending() {
         fetchGoods();
     }, []);
 
-    const totalPages = Math.ceil(goods.length / 3) || 1;
+    const totalPages = Math.ceil(goods.length / itemsPerPage) || 1;
+
+    useEffect(() => {
+        if (activeIndex >= totalPages && totalPages > 0) {
+            setActiveIndex(totalPages - 1);
+        }
+    }, [totalPages, activeIndex]);
 
     const goToPage = (pageIndex: number) => {
         setActiveIndex(pageIndex);
         if (sliderRef.current) {
-            const scrollAmount = 840 * pageIndex;
+            const containerWidth = sliderRef.current.clientWidth;
+
+            // 🔥 ВИПРАВЛЕНО: Тепер відступи ідеально збігаються з медіа-запитами CSS
+            let gap = 30; // Для ПК
+            if (window.innerWidth <= 600) {
+                gap = 15; // Для телефону
+            } else if (window.innerWidth <= 1024) {
+                gap = 20; // Для планшета
+            }
+
+            const scrollAmount = (containerWidth + gap) * pageIndex;
+
             sliderRef.current.scrollTo({
                 left: scrollAmount,
                 behavior: 'smooth',
@@ -112,18 +140,19 @@ export default function Trending() {
                                 <p style={{ fontFamily: 'Poppins, sans-serif' }}>Завантаження товарів...</p>
                             ) : goods.length > 0 ? (
                                 goods.map((product) => (
-                                    <ProductCard
-                                        key={product.id}
-                                        id={String(product.id)}
-                                        image={product.main_image_url}
-                                        name={product.name}
-                                        price={product.price}
-                                        oldPrice={product.old_price ? product.old_price : undefined}
-                                        stockQuantity={product.stock_quantity}
-                                        isNew={product.is_new}
-                                        showHeart={true}
-                                        sizes={product.sizes}
-                                    />
+                                    <div key={product.id} className={styles.cardWrapper}>
+                                        <BestSellingCard
+                                            id={String(product.id)}
+                                            image={product.main_image_url}
+                                            name={product.name}
+                                            price={product.price}
+                                            oldPrice={product.old_price ? product.old_price : undefined}
+                                            stockQuantity={product.stock_quantity}
+                                            isNew={product.is_new}
+                                            showHeart={true}
+                                            sizes={product.sizes}
+                                        />
+                                    </div>
                                 ))
                             ) : (
                                 <p style={{ fontFamily: 'Poppins, sans-serif' }}>Товарів поки немає</p>

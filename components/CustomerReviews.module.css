@@ -1,6 +1,5 @@
 .reviewsSection {
     max-width: 1557px;
-    /* Трохи вужче, щоб картки не були занадто довгими */
     margin: 80px auto;
     padding: 0 5%;
 }
@@ -28,6 +27,7 @@
     margin: 0;
 }
 
+/* === СЛАЙДЕР === */
 .sliderWindow {
     width: 100%;
     overflow: hidden;
@@ -36,34 +36,43 @@
 
 .sliderTrack {
     display: flex;
-    gap: 30px;
+    gap: 30px; /* Відстань між картками на ПК */
     transition: transform 0.5s ease-in-out;
 }
 
 .card {
+    /* На ПК картка займає рівно половину контейнера мінус половину gap */
     flex: 0 0 calc(50% - 15px);
     background-color: #f8f8f8;
-    /* Світло-сірий фон як у Фігмі */
     border-radius: 12px;
     padding: 30px;
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 25px;
     border: 1px solid #eaeaea;
 }
 
-.imageWrapper {
+/* === НОВА АВАТАРКА === */
+.avatarWrapper {
     flex-shrink: 0;
-    border-radius: 8px;
-    overflow: hidden;
-    /* Крута тінь від самої фотографії, як на макеті */
-    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.15);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    color: #ffffff;
 }
 
-.avatar {
-    display: block;
+.avatarLetter {
+    font-family: 'Poppins', sans-serif;
+    font-size: 32px;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
+/* === КОНТЕНТ === */
 .content {
     display: flex;
     flex-direction: column;
@@ -74,12 +83,19 @@
     font-size: 20px;
     font-weight: 600;
     color: #000;
-    margin: 0 0 5px 0;
+    margin: 0 0 2px 0;
+}
+
+.goodName {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: #888;
+    margin: 0 0 10px 0;
+    line-height: 1.2;
 }
 
 .stars {
     color: #ffc107;
-    /* Жовто-золотий колір зірочок */
     font-size: 16px;
     margin-bottom: 10px;
     letter-spacing: 2px;
@@ -88,7 +104,7 @@
 .text {
     font-family: 'Poppins', sans-serif;
     font-size: 14px;
-    color: #666;
+    color: #444;
     line-height: 1.6;
     margin: 0;
 }
@@ -106,7 +122,6 @@
     width: 8px;
     height: 8px;
     background-color: #c4c4c4;
-    /* Світло-сірі неактивні крапочки */
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -114,7 +129,8 @@
 
 .dotActive {
     background-color: #333333;
-    /* Темно-сіра активна крапочка */
+    width: 20px;
+    border-radius: 10px; /* Робимо активну крапочку витягнутою, як у трендових блоках */
 }
 
 /* =========================================
@@ -123,7 +139,11 @@
 
 @media (max-width: 1024px) {
     .card {
-        flex: 0 0 calc(100% - 15px); /* На планшетах показуємо по одному відгуку на всю ширину */
+        /* На планшетах і телефонах картка займає 100% ширини */
+        flex: 0 0 100%;
+    }
+    .sliderTrack {
+        gap: 15px; /* Зменшуємо gap на мобільних */
     }
 }
 
@@ -144,12 +164,25 @@
         flex-direction: column;
         text-align: center;
         gap: 20px;
-        padding: 20px;
+        padding: 24px 20px;
     }
-    .imageWrapper {
-        margin: 0 auto;
+}
+
+@media (max-width: 480px) {
+    .title {
+        font-size: 22px;
     }
-    .sliderTrack {
-        gap: 15px;
+    .name {
+        font-size: 18px;
+    }
+    .avatarWrapper {
+        width: 70px;
+        height: 70px;
+    }
+    .avatarLetter {
+        font-size: 28px;
+    }
+    .text {
+        font-size: 13px;
     }
 }

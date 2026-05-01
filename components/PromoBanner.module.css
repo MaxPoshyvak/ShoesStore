@@ -5,8 +5,7 @@
 }
 
 .promo__container {
-
-   transition: background-color 0.5s ease-in-out;
+    transition: background-color 0.5s ease-in-out;
 
     position: relative;
     min-height: 420px;
@@ -21,7 +20,7 @@
     left: -10px;
     top: 74%;
 
-    transform: translateY(-50%)  scaleY(1.2);
+    transform: translateY(-50%) scaleY(1.2);
     font-family: 'Poppins', sans-serif;
     font-size: 320px;
     /* Зробили величезним, як у Фігмі */
@@ -69,7 +68,6 @@
     bottom: -549px;
     left: -15%;
     z-index: 3;
-
 }
 
 /* ПРАВА ЧАСТИНА (ТЕКСТ) */
@@ -108,7 +106,7 @@
 
 .promo__btn {
     background-color: #ffffff;
-    color: var(--theme-color, #FD8B92);
+    color: var(--theme-color, #fd8b92);
     font-family: 'Poppins', sans-serif;
     font-size: 18px;
     font-weight: 600;
@@ -152,17 +150,19 @@
 }
 
 .miniShoe {
-  width: 100%;
+    width: 100%;
     height: 100%;
     object-fit: contain;
-    
+
     /* Зберегли твою круту анімацію кросівок */
-    transform: rotate(-15deg) scale(1.35); 
+    transform: rotate(-15deg) scale(1.35);
     filter: drop-shadow(0px 15px 15px rgba(0, 0, 0, 0.15));
     transition: transform 0.3s ease;
-    
+
     /* Додали плавну зміну для проявлення нових кросівок */
-    transition: transform 0.3s ease, opacity 0.5s ease-in-out;
+    transition:
+        transform 0.3s ease,
+        opacity 0.5s ease-in-out;
 }
 .thumbnail:hover .miniShoe {
     transform: rotate(-5deg) scale(1.5);
@@ -181,9 +181,8 @@
     background-color: #ffffff;
     border-radius: 50%;
 
-cursor: pointer;
-    
-  
+    cursor: pointer;
+
     transition: all 0.3s ease-in-out;
 }
 
@@ -210,4 +209,100 @@ cursor: pointer;
     display: flex;
     width: 100%;
     height: 100%;
+}
+
+/* =========================================
+   RESPONSIVE STYLES
+   ========================================= */
+
+@media (max-width: 1024px) {
+    .promo__container {
+        flex-direction: column;
+        padding: 40px 20px;
+        overflow: hidden;
+    }
+    .promo__left {
+        width: 100%;
+        height: 300px;
+        order: 2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 40px;
+    }
+    .promo__legs {
+        position: absolute;
+        bottom: -300px;
+        left: 50%;
+        transform: translateX(-50%) scale(0.6);
+        transform-origin: center bottom;
+    }
+    .promo__right {
+        width: 100%;
+        order: 1;
+        padding: 20px 0;
+        text-align: center;
+        align-items: center;
+        flex: none;
+    }
+    .promo__actions {
+        align-items: center;
+    }
+    .promo__bgText {
+        font-size: 180px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        letter-spacing: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .promo__title {
+        font-size: 36px;
+    }
+    .promo__desc {
+        font-size: 18px;
+    }
+    .promo__bgText {
+        font-size: 120px;
+    }
+    .promo__left {
+        height: 200px;
+    }
+    .promo__legs {
+        bottom: -400px;
+        transform: translateX(-50%) scale(0.4);
+    }
+    .promo__thumbnails {
+        justify-content: center;
+        gap: 15px;
+    }
+    .thumbnail {
+        width: 70px;
+        height: 60px;
+    }
+    .promo__arrow {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .promo__title {
+        font-size: 28px;
+    }
+    .promo__desc {
+        font-size: 15px;
+    }
+    .promo__bgText {
+        font-size: 80px;
+    }
+    .promo__btn {
+        padding: 12px 40px;
+        font-size: 16px;
+    }
+    .promo__legs {
+        transform: translateX(-50%) scale(0.3);
+        bottom: -450px;
+    }
 }
