@@ -27,7 +27,7 @@ export default function CartSidebar() {
                         <p className={styles.emptyMsg}>Your cart is empt :(</p>
                     ) : (
                         cartItems.map((item, index) => (
-                            <div key={`${item.id}-${index}`} className={styles.item}>
+                            <div key={`${item.id}-${item.size ?? 'nosize'}-${index}`} className={styles.item}>
                                 <div className={styles.imgWrapper}>
                                     <Image
                                         src={item.image}
@@ -42,12 +42,12 @@ export default function CartSidebar() {
                                     <p>₴ {Number(item.price).toFixed(2)}</p>
                                     {item.size && <p className={styles.size}>Size: {item.size}</p>}
                                     <div className={styles.quantityControls}>
-                                        <button onClick={() => updateQuantity(item.id, -1)}>−</button>
+                                        <button onClick={() => updateQuantity(item.id, -1, item.size)}>−</button>
                                         <span>{item.quantity}</span>
-                                        <button onClick={() => updateQuantity(item.id, 1)}>+</button>
+                                        <button onClick={() => updateQuantity(item.id, 1, item.size)}>+</button>
                                     </div>
                                 </div>
-                                <button className={styles.removeBtn} onClick={() => removeFromCart(item.id)}>
+                                <button className={styles.removeBtn} onClick={() => removeFromCart(item.id, item.size)}>
                                     <Trash2 width={20} height={20}/>
                                 </button>
                             </div>

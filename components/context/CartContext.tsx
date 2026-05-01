@@ -18,8 +18,8 @@ interface CartItem {
 interface CartContextType {
     cartItems: CartItem[];
     addToCart: (item: CartItem) => void;
-    removeFromCart: (id: string) => void; // Додаємо видалення
-    updateQuantity: (id: string, delta: number) => void; // Додаємо зміну кількості
+    removeFromCart: (id: string, size?: string) => void; // Додаємо видалення
+    updateQuantity: (id: string, delta: number, size?: string) => void; // Додаємо зміну кількості
     totalItems: number;
     totalPrice: number; // Додаємо загальну суму
     isCartOpen: boolean; // Стан кошика
@@ -46,7 +46,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         image: item.image,
         quantity: item.quantity,
         stock_quantity: item.stock_quantity ?? Number.POSITIVE_INFINITY,
-        size: item.size,
+        size: item.size == null ? undefined : String(item.size),
         sizes: item.sizes,
     }));
     const [isCartOpen, setIsCartOpen] = useState(false);
@@ -66,12 +66,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
         // setIsCartOpen(true); // Автоматично відкриваємо кошик при додаванні
     };
 
-    const removeFromCart = (id: string) => {
-        removeStoreItem(id);
+    const removeFromCart = (id: string, size?: string) => {
+        removeStoreItem(id, size);
     };
 
-    const updateQuantity = (id: string, delta: number) => {
-        updateStoreQuantity(id, delta);
+    const updateQuantity = (id: string, delta: number, size?: string) => {
+        updateStoreQuantity(id, delta, size);
     };
 
     const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);

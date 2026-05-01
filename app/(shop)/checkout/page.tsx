@@ -11,7 +11,7 @@ export default function Checkout() {
         shipping_address: string;
         payment_method: string;
         customer_notes: string;
-        items: Array<{ good_id: number; quantity: number }>;
+        items: Array<{ good_id: number; quantity: number; size: number | string }>;
     }) => {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/orders`, {
@@ -139,6 +139,7 @@ export default function Checkout() {
                 items: payload.items.map((item) => ({
                     good_id: item.good_id,
                     quantity: item.quantity,
+                    size: item.size,
                 })),
             });
 
