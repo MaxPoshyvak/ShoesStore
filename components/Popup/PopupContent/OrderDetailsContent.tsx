@@ -1,6 +1,7 @@
 import React from 'react';
 import { MapPin, CreditCard, User, FileText, Package } from 'lucide-react';
 import type { Order } from '@/types/backendTypes';
+import Image from 'next/image';
 
 interface OrderDetailsContentProps {
     order: Order;
@@ -58,9 +59,7 @@ export const OrderDetailsContent: React.FC<OrderDetailsContentProps> = ({ order,
                 <div className="bg-yellow-50 border border-yellow-100 p-4 rounded-xl flex gap-3">
                     <FileText size={20} className="text-yellow-600 shrink-0 mt-0.5" />
                     <div>
-                        <p className="text-xs font-bold text-yellow-800 uppercase tracking-wide mb-1">
-                            Customer note
-                        </p>
+                        <p className="text-xs font-bold text-yellow-800 uppercase tracking-wide mb-1">Customer note</p>
                         <p className="text-sm text-yellow-900 italic leading-relaxed">
                             &quot;{order.customer_notes}&quot;
                         </p>
@@ -78,22 +77,32 @@ export const OrderDetailsContent: React.FC<OrderDetailsContentProps> = ({ order,
                         <div
                             key={index}
                             className="flex items-center gap-4 p-3 border border-gray-100 rounded-xl hover:border-gray-200 transition-colors bg-white">
-                            <img
+                            <Image
                                 src={item.main_image_url}
                                 alt={item.name}
+                                width={80}
+                                height={80}
                                 className="w-16 h-16 object-cover rounded-lg bg-gray-50 border border-gray-100"
                             />
                             <div className="flex-1 min-w-0">
                                 <p className="font-bold text-gray-900 text-sm truncate">{item.name}</p>
-                                <p className="text-xs text-gray-500 mt-1">
-                                    Product code: <span className="font-mono text-gray-700">#{item.good_id}</span>
-                                </p>
+
+                                <div className="flex items-center gap-3 mt-1.5">
+                                    {/* Плашка для розміру */}
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-gray-100 border border-gray-200 text-xs font-semibold text-gray-800">
+                                        Size {item.size}
+                                    </span>
+
+                                    {/* Код товару просто поруч */}
+                                    <span className="text-xs text-gray-500">
+                                        Code: <span className="font-mono text-gray-700">#{item.good_id}</span>
+                                    </span>
+                                </div>
                             </div>
+
                             <div className="text-right shrink-0">
                                 <p className="text-sm font-black text-gray-900">{item.price_at_purchase} ₴</p>
-                                <p className="text-xs text-gray-500 mt-1 font-medium">
-                                    Qty: {item.quantity}
-                                </p>
+                                <p className="text-xs text-gray-500 mt-1 font-medium">Qty: {item.quantity}</p>
                             </div>
                         </div>
                     ))}
