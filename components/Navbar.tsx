@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
-import styles from "./Navbar.module.css";
-import { useCart } from "./context/CartContext";
-import { useAuth } from "./AuthContext";
+import Image from 'next/image';
+import Link from 'next/link';
+import styles from './Navbar.module.css';
+import { useCart } from './context/CartContext';
+import { useAuth } from './AuthContext';
 
-import { Alata } from "next/font/google";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Alata } from 'next/font/google';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const alata = Alata({
     weight: '400',
-    subsets: ["latin"]
+    subsets: ['latin'],
 });
 
-const availableSizes = ["36", "37", "38", "39", "40", "41", "42", "43", "44", "45"];
+const availableSizes = ['36', '37', '38', '39', '40', '41', '42', '43', '44', '45'];
 
 // Helper function to generate avatar gradient
 const generateAvatarGradient = (name: string) => {
@@ -43,8 +43,10 @@ export default function Navbar() {
     const [isMounted, setIsMounted] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
 
+    // 🔥 НОВИЙ СТАН ДЛЯ БУРГЕР-МЕНЮ
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsMounted(true);
     }, []);
 
@@ -59,13 +61,18 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    // Закриваємо мобільне меню при зміні маршруту
+    useEffect(() => {
+        setIsMobileMenuOpen(false);
+    }, [pathname]);
+
     // Hide Navbar on auth pages
     if (pathname === '/login' || pathname === '/register') {
         return null;
     }
 
     const resolvedUser = isMounted ? user : null;
-    const initial = resolvedUser?.username ? resolvedUser.username.charAt(0).toUpperCase() : "?";
+    const initial = resolvedUser?.username ? resolvedUser.username.charAt(0).toUpperCase() : '?';
 
     const currentSize = searchParams.get('size');
     const currentSort = searchParams.get('sort') || 'default';
@@ -73,7 +80,7 @@ export default function Navbar() {
 
     const avatarBackground = resolvedUser?.username
         ? generateAvatarGradient(resolvedUser.username)
-        : "linear-gradient(180deg, #EAEAEA 0%, #D4D4D4 100%)";
+        : 'linear-gradient(180deg, #EAEAEA 0%, #D4D4D4 100%)';
 
     const navbarThemeClass = isScrolled ? styles.navbarScrolled : styles.navbarTransparent;
 
@@ -86,26 +93,41 @@ export default function Navbar() {
 
     return (
         <header className={`${styles.navbar} ${navbarThemeClass}`}>
+            {/* 🔥 КНОПКА БУРГЕРА */}
+            <button
+                className={`${styles.burgerBtn} ${isMobileMenuOpen ? styles.burgerBtnOpen : ''}`}
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
 
             <Link href="/" className={styles.navbar__logo}>
                 Slick
             </Link>
 
-            <nav className={styles.navbar__nav}>
-                <Link href="/" className={styles.navbar__link}>Home</Link>
-                <Link href="/#trending" className={styles.navbar__link}>Popular</Link>
-                <Link href="/#best-selling" className={styles.navbar__link}>Best Selling</Link>
-                <Link href="/#reviews" className={styles.navbar__link}>Review</Link>
+            {/* 🔥 НАВІГАЦІЯ З МОБІЛЬНИМ КЛАСОМ */}
+            <nav className={`${styles.navbar__nav} ${isMobileMenuOpen ? styles.navbar__navOpen : ''}`}>
+                <Link href="/" className={styles.navbar__link} onClick={() => setIsMobileMenuOpen(false)}>
+                    Home
+                </Link>
+                <Link href="/#trending" className={styles.navbar__link} onClick={() => setIsMobileMenuOpen(false)}>
+                    Popular
+                </Link>
+                <Link href="/#best-selling" className={styles.navbar__link} onClick={() => setIsMobileMenuOpen(false)}>
+                    Best Selling
+                </Link>
+                <Link href="/#reviews" className={styles.navbar__link} onClick={() => setIsMobileMenuOpen(false)}>
+                    Review
+                </Link>
             </nav>
 
             <div className={styles.navbar__actions}>
-
+                {/* ... (Фільтри залишаються без змін) ... */}
                 {pathname === '/shop' && (
                     <div style={{ position: 'relative' }}>
-                        <button
-                            className={styles["navbar__btn-search"]}
-                            onClick={() => setIsFilterOpen(!isFilterOpen)}
-                        >
+                        <button className={styles['navbar__btn-search']} onClick={() => setIsFilterOpen(!isFilterOpen)}>
                             <Image src="/filter.svg" alt="Filter" width={24} height={24} />
                         </button>
 
@@ -118,16 +140,14 @@ export default function Navbar() {
                                     <div className={styles.sizeGrid}>
                                         <button
                                             onClick={() => updateFilter('size', null)}
-                                            className={`${styles.sizeBtn} ${!currentSize ? styles.sizeBtnActive : ''}`}
-                                        >
+                                            className={`${styles.sizeBtn} ${!currentSize ? styles.sizeBtnActive : ''}`}>
                                             All
                                         </button>
-                                        {availableSizes.map(size => (
+                                        {availableSizes.map((size) => (
                                             <button
                                                 key={size}
                                                 onClick={() => updateFilter('size', size)}
-                                                className={`${styles.sizeBtn} ${currentSize === size ? styles.sizeBtnActive : ''}`}
-                                            >
+                                                className={`${styles.sizeBtn} ${currentSize === size ? styles.sizeBtnActive : ''}`}>
                                                 {size}
                                             </button>
                                         ))}
@@ -137,15 +157,15 @@ export default function Navbar() {
                                 <div className={styles.filterBottomRow}>
                                     <div className={styles.sortWrapper}>
                                         <h4 className={styles.filterTitle}>Sort by</h4>
-                                        <div
-                                            onClick={() => setIsSortOpen(!isSortOpen)}
-                                            className={styles.sortTrigger}
-                                        >
-                                            {currentSort === 'price_asc' ? 'Price: Low to High' : currentSort === 'price_desc' ? 'Price: High to Low' : 'Default'}
+                                        <div onClick={() => setIsSortOpen(!isSortOpen)} className={styles.sortTrigger}>
+                                            {currentSort === 'price_asc'
+                                                ? 'Price: Low to High'
+                                                : currentSort === 'price_desc'
+                                                  ? 'Price: High to Low'
+                                                  : 'Default'}
                                             <span
                                                 className={styles.sortIcon}
-                                                style={{ transform: isSortOpen ? 'rotate(180deg)' : 'rotate(0)' }}
-                                            >
+                                                style={{ transform: isSortOpen ? 'rotate(180deg)' : 'rotate(0)' }}>
                                                 ▼
                                             </span>
                                         </div>
@@ -153,21 +173,27 @@ export default function Navbar() {
                                         {isSortOpen && (
                                             <ul className={styles.sortList}>
                                                 <li
-                                                    onClick={() => { updateFilter('sort', 'default'); setIsSortOpen(false); }}
-                                                    className={`${styles.sortItem} ${currentSort === 'default' ? styles.sortItemActive : ''}`}
-                                                >
+                                                    onClick={() => {
+                                                        updateFilter('sort', 'default');
+                                                        setIsSortOpen(false);
+                                                    }}
+                                                    className={`${styles.sortItem} ${currentSort === 'default' ? styles.sortItemActive : ''}`}>
                                                     Default
                                                 </li>
                                                 <li
-                                                    onClick={() => { updateFilter('sort', 'price_asc'); setIsSortOpen(false); }}
-                                                    className={`${styles.sortItem} ${currentSort === 'price_asc' ? styles.sortItemActive : ''}`}
-                                                >
+                                                    onClick={() => {
+                                                        updateFilter('sort', 'price_asc');
+                                                        setIsSortOpen(false);
+                                                    }}
+                                                    className={`${styles.sortItem} ${currentSort === 'price_asc' ? styles.sortItemActive : ''}`}>
                                                     Price: Low to High
                                                 </li>
                                                 <li
-                                                    onClick={() => { updateFilter('sort', 'price_desc'); setIsSortOpen(false); }}
-                                                    className={`${styles.sortItem} ${currentSort === 'price_desc' ? styles.sortItemActive : ''}`}
-                                                >
+                                                    onClick={() => {
+                                                        updateFilter('sort', 'price_desc');
+                                                        setIsSortOpen(false);
+                                                    }}
+                                                    className={`${styles.sortItem} ${currentSort === 'price_desc' ? styles.sortItemActive : ''}`}>
                                                     Price: High to Low
                                                 </li>
                                             </ul>
@@ -189,34 +215,26 @@ export default function Navbar() {
                         )}
                     </div>
                 )}
-                <button className={styles["navbar__btn-search"]}>
+                <button className={styles['navbar__btn-search']}>
                     <Image src="/search.png" alt="Search" width={21} height={21} />
                 </button>
 
-                <button
-                    className={styles["navbar__btn-cart"]}
-                    onClick={() => setIsCartOpen(true)}
-                >
+                <button className={styles['navbar__btn-cart']} onClick={() => setIsCartOpen(true)}>
                     <div id="cart-icon-target" className={styles.cartWrapper}>
                         <Image src="/trolley.png" alt="Cart" width={30} height={30} />
-                        <span
-                            suppressHydrationWarning
-                            className={`${alata.className} ${styles.cartBadge}`}
-                        >
-                            {totalItems > 0 ? totalItems : ""}
+                        <span suppressHydrationWarning className={`${alata.className} ${styles.cartBadge}`}>
+                            {totalItems > 0 ? totalItems : ''}
                         </span>
                     </div>
                 </button>
 
                 <Link
-                    href={resolvedUser ? "/profile" : "/login"}
+                    href={resolvedUser ? '/profile' : '/login'}
                     className={styles.userAvatar}
                     style={{ background: avatarBackground }}
-                    title={resolvedUser?.username || "Login"}
-                >
+                    title={resolvedUser?.username || 'Login'}>
                     {initial}
                 </Link>
-
             </div>
         </header>
     );

@@ -34,7 +34,7 @@
 
 .desc {
     font-size: 14px;
-    color: #CCCCCC;
+    color: #cccccc;
     line-height: 1.6;
     margin-bottom: 30px;
 }
@@ -54,7 +54,7 @@
     align-items: center;
     transition: transform 0.2s ease;
 
-    position: relative; 
+    position: relative;
     overflow: hidden;
 }
 
@@ -95,7 +95,7 @@
 }
 
 .divider {
-    color: #CCCCCC;
+    color: #cccccc;
     margin: 0 15px;
     font-weight: 300;
 }
@@ -131,7 +131,7 @@
 }
 
 .linksList a {
-    color: #CCCCCC;
+    color: #cccccc;
     text-decoration: none;
     font-size: 14px;
     transition: color 0.2s ease;
@@ -161,4 +161,67 @@
     font-size: 12px;
     color: #999999;
     margin: 0;
+    text-align: center;
+}
+
+/* =========================================
+   RESPONSIVE STYLES
+   ========================================= */
+
+@media (max-width: 1024px) {
+    .container {
+        gap: 30px;
+    }
+    .colCenter {
+        min-width: 100%;
+        order: -1; /* Make it appear first on medium screens or just adapt */
+    }
+}
+
+@media (max-width: 768px) {
+    .footer {
+        padding: 50px 5% 20px 5%;
+        margin-top: 60px;
+    }
+    .container {
+        flex-direction: column;
+        gap: 40px;
+    }
+    .colLeft,
+    .colCenter,
+    .colRight {
+        min-width: 100%;
+        width: 100%;
+        text-align: center;
+    }
+    .socials {
+        justify-content: center;
+    }
+    .subscribeForm {
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .subscribeForm {
+        flex-direction: column;
+        padding: 10px;
+        background: transparent;
+    }
+    .input {
+        background: #ffffff;
+        width: 100%;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    .divider {
+        display: none;
+    }
+    .submitBtn {
+        background: #ffffff;
+        width: 100%;
+        border-radius: 8px;
+        padding: 10px;
+    }
 }

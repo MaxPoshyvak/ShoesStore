@@ -1,7 +1,7 @@
 .trending {
     max-width: 1557px;
     margin: 0 auto;
-    padding: 70px 5%; /* Прибрали зайві відступи зверху і знизу */
+    padding: 70px 5%;
     display: flex;
     align-items: center;
     gap: 50px;
@@ -75,18 +75,17 @@
     overflow: hidden;
 }
 
-/* 🔥 МАГІЯ CSS GRID (Один контейнер керує всім) */
+/* 🔥 МАГІЯ CSS GRID */
 .trending__sliderGrid {
     display: grid;
-    grid-template-columns: auto 1fr auto; /* Ліва кнопка | Картки | Права кнопка */
-    grid-template-rows: auto auto; /* Картки | Крапочки */
-    align-items: center; 
-    column-gap: 20px; /* Відстань між стрілками і картками */
-    row-gap: 25px; /* Відстань між картками і крапочками */
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 20px;
+    row-gap: 25px;
     width: 100%;
 }
 
-/* Призначаємо місця в сітці Grid */
 .btn__left {
     grid-column: 1;
     grid-row: 1;
@@ -97,30 +96,15 @@
     grid-row: 1;
 }
 
-.trending__cards {
-    grid-column: 2;
-    grid-row: 1;
-    display: flex;
-    gap: 30px;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    width: 100%;
-    padding-bottom: 10px; /* Місце для тіні карток */
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
 .trending__pagination {
     grid-column: 2;
-    grid-row: 2; /* Ставимо крапочки під картки */
+    grid-row: 2;
     display: flex;
     gap: 10px;
     align-items: center;
     justify-content: center;
 }
 
-/* Загальні стилі для кнопок і крапочок */
 .slider__btn {
     background: transparent;
     border: none;
@@ -146,4 +130,124 @@
 .dotActive {
     width: 30px;
     border-radius: 10px;
+}
+
+/* 🔥 ВИПРАВЛЕНО: Додано display: flex, щоб картки були однакової висоти */
+
+/* =========================================
+   RESPONSIVE STYLES
+   ========================================= */
+
+/* 🔥 ІДЕАЛЬНА МАТЕМАТИКА ДЛЯ ПК */
+.trending__cards {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    gap: 30px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    width: 100%;
+
+    /* 🔥 МАГІЧНИЙ ФІКС: забороняє Grid-контейнеру розширюватися до безкінечності */
+    min-width: 0;
+
+    padding-top: 15px;
+    padding-bottom: 35px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.cardWrapper {
+    flex: 0 0 calc((100% - 60px) / 3);
+    /* 🔥 Додаємо max-width для залізобетонної фіксації ширини */
+    max-width: calc((100% - 60px) / 3);
+    display: flex;
+}
+
+/* =========================================
+   RESPONSIVE STYLES
+   ========================================= */
+
+@media (max-width: 1024px) {
+    .trending {
+        flex-direction: column;
+        padding: 50px 5%;
+    }
+    .trending__left {
+        flex: none;
+        width: 100%;
+        text-align: center;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+    .trending__right {
+        flex: none;
+        width: 100%;
+    }
+
+    /* 🔥 ІДЕАЛЬНА МАТЕМАТИКА ДЛЯ ПЛАНШЕТА */
+    .trending__cards {
+        gap: 20px; /* Зменшуємо відступ для планшета */
+    }
+    .cardWrapper {
+        flex: 0 0 calc((100% - 20px) / 2);
+        max-width: calc((100% - 20px) / 2); /* 🔥 Теж фіксуємо */
+    }
+}
+
+@media (max-width: 768px) {
+    .trending__title {
+        font-size: 36px;
+    }
+    .trending__desc {
+        font-size: 14px;
+    }
+    .trending__sliderGrid {
+        column-gap: 10px;
+    }
+    .btn__left,
+    .btn__right {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .trending__title {
+        font-size: 28px;
+    }
+
+    /* 🔥 ІДЕАЛЬНА МАТЕМАТИКА ДЛЯ ТЕЛЕФОНУ */
+    .trending__cards {
+        gap: 15px;
+        padding-right: 0;
+    }
+
+    .cardWrapper {
+        flex: 0 0 100%;
+        max-width: 100%; /* 🔥 ОСЬ ЦЕЙ РЯДОК ЗНІМАЄ БЛОКУВАННЯ ВІД ПЛАНШЕТА */
+    }
+
+    .trending__sliderGrid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        row-gap: 20px;
+    }
+
+    /* ... далі все залишається без змін ... */
+    .trending__cards {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .trending__pagination {
+        grid-column: 1;
+        grid-row: 2;
+        margin-top: 10px;
+    }
+
+    .btn__left,
+    .btn__right {
+        display: none;
+    }
 }

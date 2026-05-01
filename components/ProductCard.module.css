@@ -1,33 +1,33 @@
 .card {
-    background-color: #F4F4F4;
-    border: 1px solid #DEDEDE;
+    background-color: #f4f4f4;
+    border: 1px solid #dedede;
     border-radius: 13px;
     display: flex;
-    width: 250px;
     flex-direction: column;
-    transition: box-shadow 0.3s ease;
+    transition: all 0.3s ease;
     flex-shrink: 0;
 
-    height: max-content;
+    /* ВИДАЛИЛИ жорстку ширину 250px, тепер ширина керується батьківським контейнером (grid/flex) */
+    width: 100%;
+    height: 100%; /* ЗМУШУЄМО картку тягнутися на всю висоту рядка */
+    overflow: hidden;
 }
 
 .card:hover {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transform: translateY(-4px); /* Легке підняття при наведенні для преміальності */
 }
 
 .card__imageBox {
-    background-color: #f4f4f4;
+    background-color: #fff;
     border-radius: 12px 12px 0 0;
-    height: 200px;
+    height: 200px; /* Залишаємо компактну висоту */
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 10px;
     position: relative;
-    overflow: hidden;
 }
-
 
 .cardFullWidth {
     width: 100%;
@@ -36,7 +36,7 @@
 
 .bestSellingCard {
     background-color: #ffffff;
-    border: 1px solid #EAEAEA;
+    border: 1px solid #eaeaea;
 }
 
 .bestSellingCard .card__imageBox {
@@ -45,23 +45,24 @@
 
 .badgeNew {
     position: absolute;
-    top: 20px;
-    left: 0;
+    top: 16px; /* Трохи змінили відступи для акуратності */
+    left: 16px;
     background-color: #000;
     color: #fff;
     font-family: 'Poppins', sans-serif;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
-    padding: 6px 14px;
-    border-radius: 0 4px 4px 0;
+    padding: 6px 12px;
+    border-radius: 20px; /* Сучасна кругла плашка */
     z-index: 2;
-    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.15);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .heartBtn {
     position: absolute;
-    top: 15px;
-    right: 15px;
+    top: 16px;
+    right: 16px;
     background: transparent;
     border: none;
     cursor: pointer;
@@ -80,41 +81,60 @@
 }
 
 .card:hover .shoeImage {
-    transform: scale(1.1);
+    transform: scale(1.08) rotate(-2deg); /* Красива динаміка кросівка */
 }
 
 .card__info {
     display: flex;
     flex-direction: column;
-    padding: 10px 20px 16px 20px;
+    padding: 16px; /* Зменшили внутрішні відступи для компактності */
+    flex: 1; /* Змушує цей блок займати всю доступну висоту! */
 }
 
 .card__name {
-    font-family: "inter", sans-serif;
-    font-weight: 500;
-    color: #000000;
+    font-family: 'Poppins', sans-serif; /* Використовуємо один шрифт для консистентності */
+    font-weight: 600;
+    color: #111;
     font-size: 16px;
-    margin: 0 0 5px 0;
-    /* Відступ до контейнера stock */
-    flex: 1;
+    line-height: 1.3;
+    margin: 0 0 8px 0;
+
+    /* Обрізаємо назву, якщо вона довша за 2 рядки */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 42px; /* Фіксуємо висоту під 2 рядки, щоб усі картки були рівні */
 }
 
 .stockContainer {
-    min-height: 18px;
-    margin-bottom: 15px;
     display: flex;
-    align-items: flex-start;
+    flex-direction: column; /* Вертикальний стек замість горизонтального */
+    gap: 4px;
+    margin-bottom: 12px;
 }
 
 .lowStock {
-    font-size: 13px;
-    color: #888888;
-    /* Повернули яскраво-червоний колір */
+    font-size: 12px;
+    color: #000;
     font-weight: 500;
     font-family: 'Poppins', sans-serif;
-    white-space: nowrap;
-    margin: 0;
-    line-height: 1;
+    background: #e9e9e9; /* Світло-сіра плашка, як у BestSelling */
+    padding: 4px 10px;
+    border-radius: 6px;
+    display: inline-block;
+    align-self: flex-start;
+}
+
+.sizesList {
+    font-size: 13px;
+    color: #666;
+    font-family: 'Poppins', sans-serif;
+    white-space: nowrap; /* Забороняємо перенос рядка */
+    overflow: hidden; /* Ховаємо все, що не влазить */
+    text-overflow: ellipsis; /* Ставимо "..." в кінці */
+    max-width: 100%;
 }
 
 /* Об'єднаний outOfStockCard */
@@ -122,76 +142,71 @@
     opacity: 0.6;
     filter: grayscale(100%);
     pointer-events: none;
-    /* Вимикаємо кліки по самій картці */
 }
 
 .outOfStockCard .notifyBtn {
     pointer-events: auto;
-    /* Вмикаємо кліки назад для кнопки */
 }
 
 .card__bottom {
+    margin-top: auto; /* МАГІЯ: Притискає ціну і кнопку завжди до самого низу картки! */
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    min-height: 40px;
-    /* Фіксуємо висоту нижнього блоку */
+    align-items: flex-end;
+    padding-top: 12px;
+    border-top: 1px solid #e0e0e0; /* Легка лінія відділення */
 }
 
 .priceContainer {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 6px;
-    white-space: nowrap;
+    flex-direction: column; /* Ставимо ціни одна під одною для акуратності */
+    gap: 2px;
 }
 
 .card__price {
-    font-family: "inter", sans-serif;
-    font-size: 17px;
-    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
     color: #000;
     margin: 0;
-    white-space: nowrap;
 }
 
 .card__oldPrice {
     font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: #000000;
+    font-size: 13px;
+    color: #999;
     text-decoration: line-through;
     margin: 0;
-    white-space: nowrap;
 }
 
 .card__btn {
     background-color: #000;
     border: none;
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    width: 44px; /* Збільшили для зручнішого тапу */
+    height: 44px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .card__btn:hover {
     transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Об'єднана і виправлена кнопка Notify */
 .notifyBtn {
-    background-color: transparent;
+    background-color: #fff;
     border: 1px solid #000;
     color: #000;
-    padding: 0 12px;
-    height: 32px;
-    /* Чітка висота, щоб не ламати дизайн */
+    padding: 0 16px;
+    height: 36px;
     border-radius: 20px;
     font-family: 'Poppins', sans-serif;
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -202,4 +217,33 @@
 .notifyBtn:hover {
     background-color: #000;
     color: #fff;
+}
+
+/* =========================================
+   RESPONSIVE STYLES
+   ========================================= */
+
+@media (max-width: 768px) {
+    .card__imageBox {
+        height: 180px;
+    }
+    .card__btn {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card__info {
+        padding: 12px;
+    }
+    .card__name {
+        font-size: 15px;
+    }
+    .card__price {
+        font-size: 16px;
+    }
+    .card__oldPrice {
+        font-size: 12px;
+    }
 }

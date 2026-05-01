@@ -391,32 +391,80 @@
     }
 }
 
+/* Базові стилі для кнопки бургера (схована на ПК) */
+.burgerBtn {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 100;
+}
+
+.burgerBtn span {
+    width: 100%;
+    height: 2px;
+    background-color: #000; /* Зміни колір під свій дизайн, якщо треба */
+    border-radius: 2px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Анімація перетворення бургера на хрестик */
+.burgerBtnOpen span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+.burgerBtnOpen span:nth-child(2) {
+    opacity: 0;
+}
+.burgerBtnOpen span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+/* Медіа-запит для телефонів та невеликих планшетів */
 @media (max-width: 768px) {
-    .navbar {
-        padding: 15px 5%;
+    .burgerBtn {
+        display: flex;
     }
+
+    /* Оновлені стилі для мобільного меню */
     .navbar__nav {
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        width: 300px;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
         background-color: #ffffff;
         flex-direction: column;
-        padding: 90px 40px 40px; /* Верхній відступ більший, щоб звільнити місце для кнопки закриття або хедера */
-        box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
-        transform: translateX(100%); /* Ховаємо меню за правий край екрана */
-        transition: transform 0.3s ease-in-out;
-        z-index: 100;
+        align-items: flex-start;
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition:
+            max-height 0.4s ease-in-out,
+            padding 0.4s ease-in-out;
+
+        /* 🔥 ДОДАНО ДЛЯ ВИРІШЕННЯ ПРОБЛЕМИ: */
+        z-index: 1000; /* Змушує меню бути ПОВЕРХ усього сайту */
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); /* Тінь для відриву від фону */
+        border-top: 1px solid #eaeaea; /* Легка лінія відділення від шапки */
     }
+
     .navbar__navOpen {
-        transform: translateX(0); /* Показуємо меню */
+        max-height: 400px; /* Трохи збільшив запас висоти */
+        padding: 20px;
     }
-    .navbar__logo {
-        font-size: 24px;
+
+    .navbar__link {
+        width: 100%;
+        padding: 12px 0; /* Трохи більше місця для тапу пальцем */
+        font-size: 18px;
+        border-bottom: 1px solid #f0f0f0;
     }
-    .filterWrapper {
-        right: -20px;
-        width: 280px;
+
+    .navbar__link:last-child {
+        border-bottom: none;
     }
 }

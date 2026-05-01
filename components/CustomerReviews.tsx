@@ -1,24 +1,51 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import styles from "./CustomerReviews.module.css";
+import { useState, useEffect } from 'react';
+import styles from './CustomerReviews.module.css';
 
+// Генератор красивого градієнта на основі імені юзера
+const generateAvatarGradient = (name: string) => {
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const baseHue = Math.abs(hash) % 360;
+    const color1 = `hsl(${baseHue}, 90%, 65%)`;
+    const color2 = `hsl(${(baseHue + 40) % 360}, 90%, 75%)`;
+    return `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
+};
 
+// Оновлений інтерфейс згідно з твоїм скріншотом бази даних
+interface Feedback {
+    _id: string;
+    comment: string;
+    rating: number;
+    goodId: string;
+    goodName: string;
+    username: string;
+    createdAt?: string;
+}
 
 export default function CustomerReviews() {
-    interface Feedback {
-        id?: string;
-        comment: string;
-        rating: number;
-        goodId: string;
-    }
-
     const [currentSlide, setCurrentSlide] = useState(0);
-
     const [reviews, setReviews] = useState<Feedback[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [itemsPerPage, setItemsPerPage] = useState(2); // За замовчуванням 2 картки на ПК
 
+    // Відслідковуємо розмір екрана для правильної роботи пагінації слайдера
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth <= 1024) {
+                setItemsPerPage(1); // 1 картка на телефонах і планшетах
+            } else {
+                setItemsPerPage(2); // 2 картки на ПК
+            }
+        };
+
+        handleResize(); // Перевіряємо при завантаженні
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         const fetchReviews = async () => {
@@ -27,10 +54,9 @@ export default function CustomerReviews() {
                 if (!response.ok) throw new Error('Помилка мережі');
 
                 const data = await response.json();
-                // Зверни увагу: беремо data.feedbacks згідно з документацією API
                 setReviews(data.feedbacks || []);
             } catch (error) {
-                console.error("Не вдалося завантажити відгуки:", error);
+                console.error('Не вдалося завантажити відгуки:', error);
             } finally {
                 setIsLoading(false);
             }
@@ -38,10 +64,23 @@ export default function CustomerReviews() {
 
         fetchReviews();
     }, []);
-    const totalSlides = Math.ceil(reviews.length / 2);
+
+    // Рахуємо кількість "сторінок" пагінації залежно від ширини екрана
+    const totalSlides = Math.ceil(reviews.length / itemsPerPage);
+
+    // Захист від помилок при ресайзі (якщо currentSlide більший за нову кількість сторінок)
+    useEffect(() => {
+        if (currentSlide >= totalSlides && totalSlides > 0) {
+            setCurrentSlide(totalSlides - 1);
+        }
+    }, [totalSlides, currentSlide]);
+
     const goToSlide = (index: number) => {
         setCurrentSlide(index);
     };
+
+    // Розраховуємо зсув залежно від поточного екрану (відступи збігаються з CSS)
+    const gap = itemsPerPage === 2 ? 30 : 15;
 
     return (
         <section className={styles.reviewsSection}>
@@ -56,36 +95,40 @@ export default function CustomerReviews() {
             ) : reviews.length > 0 ? (
                 <>
                     <div className={styles.sliderWindow}>
+                        {/* Математика зсуву: (100% / itemsPerPage) * номер слайду */}
                         <div
                             className={styles.sliderTrack}
-                            style={{ transform: `translateX(calc(-${currentSlide * 100}% - ${currentSlide * 30}px))` }}
-                        >
-                            {reviews.map((review, index) => (
-                                <div key={review.id || index} className={styles.card}>
-                                    <div className={styles.imageWrapper}>
-                                        <Image
-                                            src={"/ava-cropped.jpg"}
-                                            alt="User"
-                                            width={120}
-                                            height={150}
-                                            className={styles.avatar}
-                                            style={{ objectFit: 'cover', width: 'auto', height: 'auto' }}
-                                        />
-                                    </div>
+                            style={{
+                                transform: `translateX(calc(-${currentSlide * (100 / itemsPerPage)}% - ${currentSlide * gap}px))`,
+                            }}>
+                            {reviews.map((review) => {
+                                // Беремо першу літеру (або заглушку, якщо імені раптом немає)
+                                const initial = review.username ? review.username.charAt(0).toUpperCase() : '?';
+                                const avatarBg = review.username ? generateAvatarGradient(review.username) : '#ccc';
 
-                                    <div className={styles.content}>
-                                        {/* Уявимо, що в базі є ім'я юзера. Якщо ні - заглушка */}
-                                        <h4 className={styles.name}>Customer User</h4>
-                                        <div className={styles.stars}>
-                                            {/* Малюємо зірочки на основі рейтингу Максима */}
-                                            {[...Array(review.rating || 5)].map((_, i) => (
-                                                <span key={i}>★</span>
-                                            ))}
+                                return (
+                                    <div key={review._id} className={styles.card}>
+                                        {/* Нова аватарка з літерою */}
+                                        <div className={styles.avatarWrapper} style={{ background: avatarBg }}>
+                                            <span className={styles.avatarLetter}>{initial}</span>
                                         </div>
-                                        <p className={styles.text}>{review.comment}</p>
+
+                                        <div className={styles.content}>
+                                            <h4 className={styles.name}>{review.username}</h4>
+
+                                            {/* Додано назву товару, на який залишено відгук */}
+                                            <p className={styles.goodName}>{review.goodName}</p>
+
+                                            <div className={styles.stars}>
+                                                {[...Array(review.rating || 5)].map((_, i) => (
+                                                    <span key={i}>★</span>
+                                                ))}
+                                            </div>
+                                            <p className={styles.text}>{review.comment}</p>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -93,9 +136,8 @@ export default function CustomerReviews() {
                         {[...Array(totalSlides)].map((_, index) => (
                             <span
                                 key={index}
-                                className={`${styles.dot} ${currentSlide === index ? styles.dotActive : ""}`}
-                                onClick={() => goToSlide(index)}
-                            ></span>
+                                className={`${styles.dot} ${currentSlide === index ? styles.dotActive : ''}`}
+                                onClick={() => goToSlide(index)}></span>
                         ))}
                     </div>
                 </>
