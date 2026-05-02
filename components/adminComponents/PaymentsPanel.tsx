@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CreditCard, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { getPayments, Payment } from '@/utils/backendData/backendPayments';
+import { TableSkeleton } from './TableSkeleton';
 
 export const PaymentsPanel = () => {
     const [payments, setPayments] = useState<Payment[]>([]);
@@ -69,11 +70,9 @@ export const PaymentsPanel = () => {
                     </thead>
                     <tbody className="divide-y divide-gray-200">
                         {isLoading ? (
-                            <tr>
-                                <td colSpan={6} className="p-8 text-center text-gray-400 text-sm">
-                                    Loading payments...
-                                </td>
-                            </tr>
+                            <>
+                                <TableSkeleton columns={6} rows={10} />
+                            </>
                         ) : payments.length === 0 ? (
                             <tr>
                                 <td colSpan={6} className="p-8 text-center text-gray-400 text-sm">

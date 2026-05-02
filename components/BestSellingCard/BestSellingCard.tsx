@@ -2,8 +2,8 @@
 
 import { useState, useId } from 'react';
 import Image from 'next/image';
-import { useCart } from './context/CartContext';
-import { useAuth } from './AuthContext';
+import { useCart } from '../context/CartContext';
+import { useAuth } from '../AuthContext';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import styles from './BestSellingCard.module.css';

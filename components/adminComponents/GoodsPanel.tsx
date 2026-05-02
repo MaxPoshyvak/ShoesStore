@@ -6,6 +6,7 @@ import Popup from '@/components/Popup/Popup';
 import { AddGoodContent } from '@/components/Popup/PopupContent/AddGoodContent';
 import { EditGoodContent } from '@/components/Popup/PopupContent/EditGoodContent';
 import type { Good } from '@/types/backendTypes';
+import { TableSkeleton } from '@/components/adminComponents/TableSkeleton';
 
 export const GoodsPanel = () => {
     const [goods, setGoods] = useState<Good[]>([]);
@@ -14,14 +15,22 @@ export const GoodsPanel = () => {
 
     const [editingGood, setEditingGood] = useState<Good | null>(null);
 
+    const [isLoading, setIsLoading] = useState(true);
+
     const fetchGoods = () => {
+        setIsLoading(true);
         getGoods()
             .then((data) => setGoods(data))
-            .catch((error) => console.error('Error loading products:', error));
+            .catch((error) => console.error('Error loading products:', error))
+            .finally(() => setIsLoading(false));
     };
 
     useEffect(() => {
-        fetchGoods();
+        function loadGoods() {
+            fetchGoods();
+        }
+
+        loadGoods();
     }, []);
 
     const handleDelete = (id: number) => {
@@ -72,45 +81,51 @@ export const GoodsPanel = () => {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                        {goods.map((good) => (
-                            <tr key={good.id} className="hover:bg-gray-50 transition-colors">
-                                <td className="p-4 text-sm text-gray-600">#{good.id}</td>
-                                <td className="p-4 text-sm font-medium text-gray-900">
-                                    {good.name}
-                                    {good.is_new && (
-                                        <span className="ml-2 bg-black text-white text-[10px] px-2 py-0.5 rounded-full">
-                                            NEW
+                        {isLoading ? (
+                            <>
+                                <TableSkeleton columns={6} rows={10} />
+                            </>
+                        ) : (
+                            goods.map((good) => (
+                                <tr key={good.id} className="hover:bg-gray-50 transition-colors">
+                                    <td className="p-4 text-sm text-gray-600">#{good.id}</td>
+                                    <td className="p-4 text-sm font-medium text-gray-900">
+                                        {good.name}
+                                        {good.is_new && (
+                                            <span className="ml-2 bg-black text-white text-[10px] px-2 py-0.5 rounded-full">
+                                                NEW
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td className="p-4 text-sm text-gray-600">{good.category}</td>
+                                    <td className="p-4 text-sm font-medium">{good.price} ₴</td>
+                                    <td className="p-4 text-sm">
+                                        <span
+                                            className={`px-2.5 py-1 rounded-full text-xs font-medium ${
+                                                good.stock_quantity > 10
+                                                    ? 'bg-green-100 text-green-800'
+                                                    : good.stock_quantity > 0
+                                                      ? 'bg-yellow-100 text-yellow-800'
+                                                      : 'bg-red-100 text-red-800'
+                                            }`}>
+                                            {good.stock_quantity > 0 ? `${good.stock_quantity} pcs` : 'Out of stock'}
                                         </span>
-                                    )}
-                                </td>
-                                <td className="p-4 text-sm text-gray-600">{good.category}</td>
-                                <td className="p-4 text-sm font-medium">{good.price} ₴</td>
-                                <td className="p-4 text-sm">
-                                    <span
-                                        className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                                            good.stock_quantity > 10
-                                                ? 'bg-green-100 text-green-800'
-                                                : good.stock_quantity > 0
-                                                  ? 'bg-yellow-100 text-yellow-800'
-                                                  : 'bg-red-100 text-red-800'
-                                        }`}>
-                                        {good.stock_quantity > 0 ? `${good.stock_quantity} pcs` : 'Out of stock'}
-                                    </span>
-                                </td>
-                                <td className="p-4 text-sm text-right">
-                                    <button
-                                        className="text-gray-400 hover:text-blue-600 p-1 transition-colors"
-                                        onClick={() => setEditingGood(good)}>
-                                        <Edit size={18} />
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(good.id)}
-                                        className="text-gray-400 hover:text-red-600 p-1 ml-2 transition-colors">
-                                        <Trash2 size={18} />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
+                                    </td>
+                                    <td className="p-4 text-sm text-right">
+                                        <button
+                                            className="text-gray-400 hover:text-blue-600 p-1 transition-colors"
+                                            onClick={() => setEditingGood(good)}>
+                                            <Edit size={18} />
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(good.id)}
+                                            className="text-gray-400 hover:text-red-600 p-1 ml-2 transition-colors">
+                                            <Trash2 size={18} />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                 </table>
             </div>

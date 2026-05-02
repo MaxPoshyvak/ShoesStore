@@ -5,6 +5,7 @@ import Popup from '@/components/Popup/Popup';
 import { UserDetailsContent } from '@/components/Popup/PopupContent/UserDetailsContent';
 import { OrderDetailsContent } from '@/components/Popup/PopupContent/OrderDetailsContent';
 import type { Order } from '@/types/backendTypes';
+import { TableSkeleton } from '@/components/adminComponents/TableSkeleton';
 
 export interface User {
     id: string;
@@ -19,11 +20,17 @@ export const UsersPanel = () => {
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        getUsers()
-            .then((data) => setUsers(data))
-            .catch((error) => console.error('Error loading users:', error));
+        const fetchUsers = () => {
+            setIsLoading(true);
+            getUsers()
+                .then((data) => setUsers(data))
+                .catch((error) => console.error('Error loading users:', error))
+                .finally(() => setIsLoading(false));
+        };
+        fetchUsers();
     }, []);
 
     return (
@@ -45,42 +52,48 @@ export const UsersPanel = () => {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                        {users.map((user) => (
-                            <tr key={user.id} className="hover:bg-gray-50 transition-colors">
-                                <td className="p-4">
-                                    <div className="flex items-center gap-3">
-                                        <div
-                                            className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold ${user.role === 'admin' ? 'bg-black' : 'bg-gray-300'}`}>
-                                            {user.username.charAt(0).toUpperCase()}
+                        {isLoading ? (
+                            <TableSkeleton columns={5} rows={10} />
+                        ) : (
+                            users.map((user) => (
+                                <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                                    <td className="p-4">
+                                        <div className="flex items-center gap-3">
+                                            <div
+                                                className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold ${user.role === 'admin' ? 'bg-black' : 'bg-gray-300'}`}>
+                                                {user.username.charAt(0).toUpperCase()}
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-bold text-gray-900">{user.username}</p>
+                                                <p className="text-xs text-gray-400">ID: {user.id}</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p className="text-sm font-bold text-gray-900">{user.username}</p>
-                                            <p className="text-xs text-gray-400">ID: {user.id}</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="p-4 text-sm text-gray-600 font-medium">{user.email}</td>
-                                <td className="p-4">
-                                    <span
-                                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
-                                            user.role === 'admin' ? 'bg-black text-white' : 'bg-gray-100 text-gray-600'
-                                        }`}>
-                                        {user.role === 'admin' ? <Shield size={12} /> : <UserIcon size={12} />}
-                                        {user.role}
-                                    </span>
-                                </td>
-                                <td className="p-4 text-sm text-gray-500">
-                                    {new Date(user.created_at).toLocaleDateString('en-US')}
-                                </td>
-                                <td className="p-4 text-right">
-                                    <button
-                                        onClick={() => setSelectedUser(user)}
-                                        className="text-gray-500 hover:text-black bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg font-medium transition-colors text-xs">
-                                        Profile
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
+                                    </td>
+                                    <td className="p-4 text-sm text-gray-600 font-medium">{user.email}</td>
+                                    <td className="p-4">
+                                        <span
+                                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+                                                user.role === 'admin'
+                                                    ? 'bg-black text-white'
+                                                    : 'bg-gray-100 text-gray-600'
+                                            }`}>
+                                            {user.role === 'admin' ? <Shield size={12} /> : <UserIcon size={12} />}
+                                            {user.role}
+                                        </span>
+                                    </td>
+                                    <td className="p-4 text-sm text-gray-500">
+                                        {new Date(user.created_at).toLocaleDateString('en-US')}
+                                    </td>
+                                    <td className="p-4 text-right">
+                                        <button
+                                            onClick={() => setSelectedUser(user)}
+                                            className="text-gray-500 hover:text-black bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg font-medium transition-colors text-xs">
+                                            Profile
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                 </table>
             </div>

@@ -468,3 +468,55 @@
         border-bottom: none;
     }
 }
+
+@media (max-width: 768px) {
+    .filterWrapper {
+        /* Відв'язуємо від іконки пошуку і робимо блок по центру екрана під шапкою */
+        position: fixed;
+        top: 80px; /* Зроби відступ таким, щоб фільтр був одразу під навігацією */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 92%; /* Займає майже всю ширину екрана */
+        max-width: 380px;
+        padding: 20px;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15); /* Трохи сильніша тінь для виділення */
+    }
+
+    .filterArrow {
+        display: none; /* Ховаємо стрілочку, бо блок тепер не прив'язаний до іконки */
+    }
+
+    .filterSection {
+        margin-bottom: 20px;
+    }
+
+    /* Розтягуємо кнопки розмірів, щоб вони рівномірно заповнювали простір */
+    .sizeBtn {
+        flex: 1 1 calc(25% - 8px);
+        padding: 0 5px;
+    }
+
+    .filterBottomRow {
+        /* На мобільному сортування і чекбокс краще ставити один під одним */
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+
+    .sortWrapper {
+        width: 100%; /* Сортування на всю ширину */
+    }
+
+    .checkboxLabel {
+        padding-bottom: 0;
+        padding-top: 4px;
+        justify-content: flex-start; /* Притискаємо чекбокс до лівого краю */
+    }
+}
+
+/* Для зовсім маленьких екранів (наприклад, iPhone SE) */
+@media (max-width: 380px) {
+    .sizeBtn {
+        flex: 1 1 calc(33.333% - 8px); /* По 3 кнопки в ряд замість 4 */
+    }
+}

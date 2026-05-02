@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import styles from './BestSelling.module.css';
-import BestSellingCard from './BestSellingCard';
+import BestSellingCard from './BestSellingCard/BestSellingCard';
 import Link from 'next/link';
+import { BestSellingCardSkeleton } from '@/components/BestSellingCard/BestSellingCardSkeleton';
 
 const categories = ['Man', 'Woman', 'Boy', 'Child'];
 
@@ -21,6 +22,8 @@ export default function BestSelling() {
     }
 
     const [activeCategory, setActiveCategory] = useState('Man');
+
+    const skeletonArray = [1, 2, 3, 4, 5, 6];
 
     //СТАНИ ДЛЯ API
 
@@ -68,9 +71,11 @@ export default function BestSelling() {
 
             <div className={styles.grid}>
                 {isLoading ? (
-                    <p style={{ textAlign: 'center', gridColumn: '1 / -1', fontFamily: 'Poppins, sans-serif' }}>
-                        Завантаження товарів...
-                    </p>
+                    <>
+                        {skeletonArray.map((_, index) => (
+                            <BestSellingCardSkeleton key={index} />
+                        ))}
+                    </>
                 ) : filteredGoods.length > 0 ? (
                     filteredGoods.map((product) => (
                         <BestSellingCard // Використовуємо новий компонент

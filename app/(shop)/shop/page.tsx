@@ -3,7 +3,8 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import styles from '../../../components/BestSelling.module.css';
-import BestSellingCard from '../../../components/BestSellingCard';
+import BestSellingCard from '../../../components/BestSellingCard/BestSellingCard';
+import { BestSellingCardSkeleton } from '@/components/BestSellingCard/BestSellingCardSkeleton';
 
 const categories = ['Man', 'Woman', 'Boy', 'Child'];
 
@@ -90,7 +91,11 @@ function ShopContent() {
 
             <div className={styles.grid}>
                 {isLoading ? (
-                    <p style={{ textAlign: 'center', gridColumn: 'span 3', fontFamily: 'Poppins' }}>Loading...</p>
+                    <>
+                        {[1, 2, 3, 4, 5, 6].map((i) => (
+                            <BestSellingCardSkeleton key={i} />
+                        ))}
+                    </>
                 ) : filteredGoods.length > 0 ? (
                     filteredGoods.map((product) => (
                         <BestSellingCard

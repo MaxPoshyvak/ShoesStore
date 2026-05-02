@@ -4,7 +4,8 @@ import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import styles from './Trending.module.css';
 import { ServerStatusPopup } from '@/components/ServerStatusPopup/ServerStatusPopup';
-import BestSellingCard from '@/components/BestSellingCard';
+import BestSellingCard from '@/components/BestSellingCard/BestSellingCard';
+import { BestSellingCardSkeleton } from '@/components/BestSellingCard/BestSellingCardSkeleton';
 
 interface Good {
     id: string;
@@ -24,6 +25,8 @@ export default function Trending() {
     const [isLoading, setIsLoading] = useState(true);
     const [activeIndex, setActiveIndex] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(3);
+
+    const skeletonArray = [1, 2, 3];
 
     useEffect(() => {
         const handleResize = () => {
@@ -138,7 +141,13 @@ export default function Trending() {
 
                         <div className={styles.trending__cards} ref={sliderRef}>
                             {isLoading ? (
-                                <p style={{ fontFamily: 'Poppins, sans-serif' }}>Завантаження товарів...</p>
+                                <>
+                                    {skeletonArray.map((_, index) => (
+                                        <div key={index} className={styles.cardWrapper}>
+                                            <BestSellingCardSkeleton />
+                                        </div>
+                                    ))}
+                                </>
                             ) : goods.length > 0 ? (
                                 goods.map((product) => (
                                     <div key={product.id} className={styles.cardWrapper}>

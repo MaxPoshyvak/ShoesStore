@@ -4,19 +4,27 @@ import Popup from '@/components/Popup/Popup';
 import { OrderDetailsContent } from '@/components/Popup/PopupContent/OrderDetailsContent';
 
 import type { Order } from '@/types/backendTypes';
+import { TableSkeleton } from '@/components/adminComponents/TableSkeleton';
 
 export const OrdersPanel = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const fetchOrders = () => {
+        setIsLoading(true);
         getOrders()
             .then((data) => setOrders(data))
-            .catch((error) => console.error('Error loading orders:', error));
+            .catch((error) => console.error('Error loading orders:', error))
+            .finally(() => setIsLoading(false));
     };
 
     useEffect(() => {
-        fetchOrders();
+        function loadOrders() {
+            fetchOrders();
+        }
+
+        loadOrders();
     }, []);
 
     const getStatusBadge = (status: string) => {
@@ -74,33 +82,37 @@ export const OrdersPanel = () => {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                        {orders.map((order) => (
-                            <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                                <td className="p-4 text-sm font-medium text-black">#{order.id}</td>
-                                <td className="p-4 text-sm text-gray-700">
-                                    <p className="font-semibold">{order.customer_name}</p>
-                                    <p className="text-xs text-gray-400">{order.customer_email}</p>
-                                </td>
-                                <td className="p-4 text-sm font-bold">{order.total_amount} ₴</td>
-                                <td className="p-4 text-sm">{getStatusBadge(order.status)}</td>
-                                <td className="p-4 text-sm text-gray-500">
-                                    {new Date(order.created_at).toLocaleString('en-US', {
-                                        day: '2-digit',
-                                        month: 'short',
-                                        year: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                    })}
-                                </td>
-                                <td className="p-4 text-sm text-right">
-                                    <button
-                                        onClick={() => setSelectedOrder(order)}
-                                        className="text-gray-500 hover:text-black bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg font-medium transition-colors text-xs">
-                                        Details
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
+                        {isLoading ? (
+                            <TableSkeleton columns={6} rows={10} />
+                        ) : (
+                            orders.map((order) => (
+                                <tr key={order.id} className="hover:bg-gray-50 transition-colors">
+                                    <td className="p-4 text-sm font-medium text-black">#{order.id}</td>
+                                    <td className="p-4 text-sm text-gray-700">
+                                        <p className="font-semibold">{order.customer_name}</p>
+                                        <p className="text-xs text-gray-400">{order.customer_email}</p>
+                                    </td>
+                                    <td className="p-4 text-sm font-bold">{order.total_amount} ₴</td>
+                                    <td className="p-4 text-sm">{getStatusBadge(order.status)}</td>
+                                    <td className="p-4 text-sm text-gray-500">
+                                        {new Date(order.created_at).toLocaleString('en-US', {
+                                            day: '2-digit',
+                                            month: 'short',
+                                            year: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                        })}
+                                    </td>
+                                    <td className="p-4 text-sm text-right">
+                                        <button
+                                            onClick={() => setSelectedOrder(order)}
+                                            className="text-gray-500 hover:text-black bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg font-medium transition-colors text-xs">
+                                            Details
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                 </table>
             </div>
