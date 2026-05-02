@@ -20,6 +20,7 @@ interface CartContextType {
     addToCart: (item: CartItem) => void;
     removeFromCart: (id: string, size?: string) => void; // Додаємо видалення
     updateQuantity: (id: string, delta: number, size?: string) => void; // Додаємо зміну кількості
+    clearCart: () => void; // Очищення кошика
     totalItems: number;
     totalPrice: number; // Додаємо загальну суму
     isCartOpen: boolean; // Стан кошика
@@ -33,6 +34,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const updateStoreQuantity = useCartStore((state) => state.updateQuantity);
     const removeStoreItem = useCartStore((state) => state.removeItem);
     const addStoreItem = useCartStore((state) => state.addItem);
+    const clearStoreCart = useCartStore((state) => state.clearCart);
     useEffect(() => {
         // Ensure persist rehydrates ASAP (esp. after refresh)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -74,12 +76,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
         updateStoreQuantity(id, delta, size);
     };
 
+    const clearCart = () => {
+        clearStoreCart();
+    };
+
     const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
     return (
         <CartContext.Provider value={{
-            cartItems, addToCart, removeFromCart, updateQuantity,
+            cartItems, addToCart, removeFromCart, updateQuantity, clearCart,
             totalItems, totalPrice, isCartOpen, setIsCartOpen
         }}>
             {children}

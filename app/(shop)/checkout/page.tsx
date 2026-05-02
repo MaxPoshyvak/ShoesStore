@@ -1,12 +1,15 @@
 'use client';
 
 import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
+import Image from 'next/image';
 import Swal from 'sweetalert2';
 import { CreditCard, MapPin, FileText, CheckCircle2, Mail, Lock, User, Truck, Loader2 } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
-import Image from 'next/image';
+import { useCart } from '@/components/context/CartContext';
 
 export default function Checkout() {
+    const { clearCart, setIsCartOpen } = useCart();
+
     const handlePayment = async (payload: {
         shipping_address: string;
         payment_method: string;
@@ -173,6 +176,8 @@ export default function Checkout() {
             }
 
             // 3. If Cash on Delivery OR card payment returned no URL but succeeded
+            clearCart();
+            setIsCartOpen(false);
             setIsSubmitted(true);
         } catch (error) {
             const message = error instanceof Error ? error.message : 'Order failed.';
