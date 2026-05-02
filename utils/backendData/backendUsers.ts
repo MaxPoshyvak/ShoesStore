@@ -1,4 +1,4 @@
-import { UserProfileData } from '@/app/(shop)/profile/page';
+import { UserProfileData } from '@/components/profileComponents/types';
 import { unauthorized } from './401Error';
 
 export const getUsers = async () => {
