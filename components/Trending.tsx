@@ -29,7 +29,8 @@ export default function Trending() {
         const handleResize = () => {
             if (window.innerWidth <= 600) {
                 setItemsPerPage(1);
-            } else if (window.innerWidth <= 1024) {
+            } else if (window.innerWidth <= 1500) {
+                // Змінили 1024 на 1500
                 setItemsPerPage(2);
             } else {
                 setItemsPerPage(3);
@@ -85,12 +86,12 @@ export default function Trending() {
         if (sliderRef.current) {
             const containerWidth = sliderRef.current.clientWidth;
 
-            // 🔥 ВИПРАВЛЕНО: Тепер відступи ідеально збігаються з медіа-запитами CSS
-            let gap = 30; // Для ПК
+            let gap = 30; // Для екранів > 1500px
             if (window.innerWidth <= 600) {
                 gap = 15; // Для телефону
-            } else if (window.innerWidth <= 1024) {
-                gap = 20; // Для планшета
+            } else if (window.innerWidth <= 1500) {
+                // Змінили 1024 на 1500
+                gap = 20; // Для планшета та екранів до 1500px
             }
 
             const scrollAmount = (containerWidth + gap) * pageIndex;

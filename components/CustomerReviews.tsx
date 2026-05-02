@@ -83,7 +83,7 @@ export default function CustomerReviews() {
     const gap = itemsPerPage === 2 ? 30 : 15;
 
     return (
-        <section className={styles.reviewsSection}>
+        <section className={styles.reviewsSection} id="reviews">
             <div className={styles.header}>
                 <span className={styles.line}></span>
                 <h2 className={styles.title}>Customer Review</h2>
