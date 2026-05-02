@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Clock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { getUserProfile, updateUserProfile } from '@/utils/backendData/backendUsers';
-import { UserProfileData } from '@/components/profileComponents/types'; // Шлях до твоїх типів
+import type { UserProfileData } from '@/components/profileComponents'; // Шлях до твоїх типів
 
 // Імпортуємо наші розбиті компоненти
 import { Sidebar, ProfileTab, OrdersTab, ReviewsTab, ProfileSkeleton } from '@/components/profileComponents';
