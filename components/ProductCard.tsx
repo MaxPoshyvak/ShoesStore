@@ -92,7 +92,7 @@ export default function ProductCard({
                 },
             });
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/waitlist`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/waitlist`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

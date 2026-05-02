@@ -45,7 +45,7 @@ export default function Trending() {
     useEffect(() => {
         const fetchGoods = async () => {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/goods`);
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/goods`);
                 if (!response.ok) {
                     throw new Error('Помилка мережі');
                 }

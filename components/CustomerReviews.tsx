@@ -50,7 +50,7 @@ export default function CustomerReviews() {
     useEffect(() => {
         const fetchReviews = async () => {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/feedbacks/get`);
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/feedbacks/get`);
                 if (!response.ok) throw new Error('Помилка мережі');
 
                 const data = await response.json();
