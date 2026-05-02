@@ -41,13 +41,14 @@ export default function RegisterPage() {
 
             await Swal.fire({
                 icon: 'success',
-                title: 'Registration successful!',
-                text: 'Please log in to your account.',
-                confirmButtonColor: '#000'
+                title: 'Реєстрація успішна!',
+                text: 'Дивіться свою пошту для коду верифікації. Код надійде протягом кількох хвилин.',
+                confirmButtonColor: '#000',
+                confirmButtonText: 'Перейти до верифікації'
             });
 
-            // Routing simulation for Canvas. In Next.js use: router.push("/login");
-            window.location.href = "/login"; 
+            // Redirect to verification page
+            window.location.href = "/verify"; 
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);
