@@ -44,7 +44,7 @@ export default function Trending() {
     useEffect(() => {
         const fetchGoods = async () => {
             try {
-                const response = await fetch('https://shoesstore-server.onrender.com/api/goods');
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/goods`);
                 if (!response.ok) {
                     throw new Error('Помилка мережі');
                 }

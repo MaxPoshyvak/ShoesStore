@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useEffect, useId, useMemo, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import { ChevronLeft, CheckCircle2, Heart, Minus, Plus, ShoppingCart } from "lucide-react";
-import { useCart } from "@/components/context/CartContext";
+import { useEffect, useId, useMemo, useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { ChevronLeft, CheckCircle2, Heart, Minus, Plus, ShoppingCart } from 'lucide-react';
+import { useCart } from '@/components/context/CartContext';
 
 type Good = {
     id: string | number;
@@ -27,7 +27,7 @@ export default function ProductDetailPage() {
 
     const [product, setProduct] = useState<Good | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [selectedSize, setSelectedSize] = useState<string>("");
+    const [selectedSize, setSelectedSize] = useState<string>('');
     const [quantity, setQuantity] = useState(1);
     const [isAdded, setIsAdded] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
@@ -35,13 +35,13 @@ export default function ProductDetailPage() {
     useEffect(() => {
         const loadProduct = async () => {
             try {
-                const response = await fetch("https://shoesstore-server.onrender.com/api/goods");
-                if (!response.ok) throw new Error("Failed to load product");
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/goods`);
+                if (!response.ok) throw new Error('Failed to load product');
                 const goods: Good[] = await response.json();
                 const found = goods.find((item) => String(item.id) === params.id);
                 setProduct(found || null);
             } catch (error) {
-                console.error("Failed to load product", error);
+                console.error('Failed to load product', error);
                 setProduct(null);
             } finally {
                 setIsLoading(false);
@@ -69,7 +69,7 @@ export default function ProductDetailPage() {
     const displayOldPrice = product?.old_price == null ? null : Number(product.old_price);
 
     const flyToCart = () => {
-        const cartTarget = document.getElementById("cart-icon-target");
+        const cartTarget = document.getElementById('cart-icon-target');
         const productImage = document.getElementById(imageId);
 
         if (!cartTarget || !productImage) return;
@@ -77,28 +77,28 @@ export default function ProductDetailPage() {
         const cartRect = cartTarget.getBoundingClientRect();
         const imgRect = productImage.getBoundingClientRect();
 
-        const flyingImg = document.createElement("img");
+        const flyingImg = document.createElement('img');
         flyingImg.src = product!.main_image_url;
-        flyingImg.style.position = "fixed";
+        flyingImg.style.position = 'fixed';
         flyingImg.style.left = `${imgRect.left}px`;
         flyingImg.style.top = `${imgRect.top}px`;
         flyingImg.style.width = `${imgRect.width}px`;
         flyingImg.style.height = `${imgRect.height}px`;
-        flyingImg.style.objectFit = "contain";
-        flyingImg.style.zIndex = "2147483647";
-        flyingImg.style.borderRadius = "20px";
-        flyingImg.style.pointerEvents = "none";
-        flyingImg.style.transition = "none";
+        flyingImg.style.objectFit = 'contain';
+        flyingImg.style.zIndex = '2147483647';
+        flyingImg.style.borderRadius = '20px';
+        flyingImg.style.pointerEvents = 'none';
+        flyingImg.style.transition = 'none';
 
         document.body.appendChild(flyingImg);
 
         setTimeout(() => {
-            flyingImg.style.transition = "all 1.1s cubic-bezier(0.4, 0, 0.2, 1)";
+            flyingImg.style.transition = 'all 1.1s cubic-bezier(0.4, 0, 0.2, 1)';
             flyingImg.style.left = `${cartRect.left + cartRect.width / 2 - 10}px`;
             flyingImg.style.top = `${cartRect.top + cartRect.height / 2 - 10}px`;
-            flyingImg.style.width = "20px";
-            flyingImg.style.height = "20px";
-            flyingImg.style.opacity = "0.2";
+            flyingImg.style.width = '20px';
+            flyingImg.style.height = '20px';
+            flyingImg.style.opacity = '0.2';
         }, 10);
 
         setTimeout(() => {
@@ -163,7 +163,9 @@ export default function ProductDetailPage() {
                     <p className="text-sm font-semibold uppercase tracking-[0.25em] text-gray-400">Product not found</p>
                     <h1 className="mt-4 text-3xl font-black text-gray-900">We could not find this shoe</h1>
                     <p className="mt-3 text-gray-500">The item may have been removed or the link is invalid.</p>
-                    <Link href="/shop" className="mt-8 inline-flex items-center gap-2 rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-800">
+                    <Link
+                        href="/shop"
+                        className="mt-8 inline-flex items-center gap-2 rounded-full bg-black px-6 py-3 text-sm font-semibold text-white transition hover:bg-gray-800">
                         <ChevronLeft className="h-4 w-4" /> Back to shop
                     </Link>
                 </div>
@@ -174,7 +176,9 @@ export default function ProductDetailPage() {
     return (
         <main className="min-h-screen bg-[#f8f8f6] px-4 pt-28 pb-16">
             <div className="mx-auto max-w-7xl">
-                <Link href="/shop" className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 transition hover:text-black">
+                <Link
+                    href="/shop"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 transition hover:text-black">
                     <ChevronLeft className="h-4 w-4" /> Back to shop
                 </Link>
 
@@ -220,7 +224,9 @@ export default function ProductDetailPage() {
                         <div className="mt-4 flex items-end gap-4">
                             <p className="text-3xl font-black text-black">₴ {displayPrice.toFixed(2)}</p>
                             {displayOldPrice !== null && displayOldPrice > displayPrice && (
-                                <p className="pb-1 text-lg font-semibold text-gray-400 line-through">₴ {displayOldPrice.toFixed(2)}</p>
+                                <p className="pb-1 text-lg font-semibold text-gray-400 line-through">
+                                    ₴ {displayOldPrice.toFixed(2)}
+                                </p>
                             )}
                         </div>
 
@@ -230,7 +236,9 @@ export default function ProductDetailPage() {
 
                         <div className="mt-8">
                             <div className="mb-3 flex items-center justify-between">
-                                <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-gray-500">Choose size</h2>
+                                <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-gray-500">
+                                    Choose size
+                                </h2>
                                 <span className="text-sm text-gray-500">Required</span>
                             </div>
 
@@ -241,11 +249,11 @@ export default function ProductDetailPage() {
                                             key={size}
                                             type="button"
                                             onClick={() => setSelectedSize(size)}
-                                            className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${selectedSize === size
-                                                ? 'border-black bg-black text-white'
-                                                : 'border-gray-200 bg-white text-gray-700 hover:border-gray-400'
-                                                }`}
-                                        >
+                                            className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
+                                                selectedSize === size
+                                                    ? 'border-black bg-black text-white'
+                                                    : 'border-gray-200 bg-white text-gray-700 hover:border-gray-400'
+                                            }`}>
                                             {size}
                                         </button>
                                     ))
@@ -264,8 +272,7 @@ export default function ProductDetailPage() {
                                     <button
                                         type="button"
                                         className="grid h-9 w-9 place-items-center rounded-full border border-gray-200 bg-white transition hover:border-black"
-                                        onClick={handleDecreaseQuantity}
-                                    >
+                                        onClick={handleDecreaseQuantity}>
                                         <Minus className="h-4 w-4" />
                                     </button>
                                     <span className="text-base font-bold">{quantity}</span>
@@ -273,8 +280,7 @@ export default function ProductDetailPage() {
                                         type="button"
                                         className="grid h-9 w-9 place-items-center rounded-full border border-gray-200 bg-white transition hover:border-black"
                                         onClick={handleIncreaseQuantity}
-                                        disabled={isOutOfStock || quantity >= remainingStock}
-                                    >
+                                        disabled={isOutOfStock || quantity >= remainingStock}>
                                         <Plus className="h-4 w-4" />
                                     </button>
                                 </div>
@@ -285,11 +291,11 @@ export default function ProductDetailPage() {
                                 <button
                                     type="button"
                                     onClick={() => setIsFavorite((prev) => !prev)}
-                                    className={`mt-2 flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-semibold transition ${isFavorite
-                                        ? 'border-black bg-black text-white'
-                                        : 'border-gray-200 bg-white text-gray-700 hover:border-black'
-                                        }`}
-                                >
+                                    className={`mt-2 flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-semibold transition ${
+                                        isFavorite
+                                            ? 'border-black bg-black text-white'
+                                            : 'border-gray-200 bg-white text-gray-700 hover:border-black'
+                                    }`}>
                                     <Heart className="h-4 w-4" fill={isFavorite ? 'currentColor' : 'none'} />
                                     {isFavorite ? 'Added to favourite' : 'Add to favourite'}
                                 </button>
@@ -300,14 +306,15 @@ export default function ProductDetailPage() {
                             type="button"
                             onClick={handleAddToCart}
                             disabled={isOutOfStock || !selectedSize}
-                            className="mt-8 flex w-full items-center justify-center gap-3 rounded-2xl bg-black px-6 py-4 text-base font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300"
-                        >
+                            className="mt-8 flex w-full items-center justify-center gap-3 rounded-2xl bg-black px-6 py-4 text-base font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300">
                             <ShoppingCart className="h-5 w-5" />
                             {isOutOfStock ? 'Notify' : isAdded ? 'Added to cart' : 'Add to cart'}
                         </button>
 
                         {!selectedSize && sizes.length > 0 && (
-                            <p className="mt-3 text-sm text-amber-600">Please choose a size before adding the product.</p>
+                            <p className="mt-3 text-sm text-amber-600">
+                                Please choose a size before adding the product.
+                            </p>
                         )}
 
                         <div className="mt-8 rounded-2xl border border-gray-200 bg-white p-4">

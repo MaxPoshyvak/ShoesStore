@@ -15,7 +15,7 @@ export default function VerifyPage() {
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const urlToken = params.get('token');
-        
+
         if (urlToken) {
             setToken(urlToken);
             verifyEmail(urlToken);
@@ -45,16 +45,13 @@ export default function VerifyPage() {
                 Swal.showLoading();
 
                 try {
-                    const response = await fetch(
-                        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/verify-email`,
-                        {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ token: verificationToken }),
-                        }
-                    );
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/verify-email`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ token: verificationToken }),
+                    });
 
                     const data = await response.json();
 
@@ -75,8 +72,7 @@ export default function VerifyPage() {
                         router.push('/login');
                     });
                 } catch (error) {
-                    const errorMessage =
-                        error instanceof Error ? error.message : 'Невідома помилка';
+                    const errorMessage = error instanceof Error ? error.message : 'Невідома помилка';
 
                     Swal.fire({
                         icon: 'error',
@@ -102,9 +98,7 @@ export default function VerifyPage() {
             <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
                 <div className="w-full max-w-md text-center">
                     <CheckCircle2 className="w-16 h-16 mx-auto text-green-600 mb-4" />
-                    <h1 className="text-2xl font-bold text-gray-900 mb-2">
-                        Пошта підтверджена!
-                    </h1>
+                    <h1 className="text-2xl font-bold text-gray-900 mb-2">Пошта підтверджена!</h1>
                     <p className="text-gray-600">Переводимо на вхід...</p>
                 </div>
             </div>
@@ -117,12 +111,8 @@ export default function VerifyPage() {
                 {/* Заголовок */}
                 <div className="text-center mb-8">
                     <Mail className="w-12 h-12 mx-auto text-gray-900 mb-4" />
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                        Підтвердіть вашу пошту
-                    </h1>
-                    <p className="text-gray-600">
-                        Ми відправили код на вашу поштову скриньку. Введіть його нижче.
-                    </p>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Підтвердіть вашу пошту</h1>
+                    <p className="text-gray-600">Ми відправили код на вашу поштову скриньку. Введіть його нижче.</p>
                 </div>
 
                 {/* Форма верифікації */}
@@ -147,8 +137,7 @@ export default function VerifyPage() {
                     <button
                         type="submit"
                         disabled={isLoading || !token.trim()}
-                        className="w-full bg-gray-900 text-white py-3 rounded-lg font-semibold hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
-                    >
+                        className="w-full bg-gray-900 text-white py-3 rounded-lg font-semibold hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition">
                         {isLoading ? 'Перевіряємо...' : 'Підтвердити пошту'}
                     </button>
                 </form>
@@ -158,7 +147,7 @@ export default function VerifyPage() {
                     <AlertCircle className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
                     <div className="text-sm text-blue-700">
                         <p className="font-semibold mb-1">Не отримали лист?</p>
-                        <p>Перевірте теку "Спам" або спробуйте зареєструватися ще раз.</p>
+                        <p>Перевірте теку &quot;Спам&quot; або спробуйте зареєструватися ще раз.</p>
                     </div>
                 </div>
 
@@ -168,8 +157,7 @@ export default function VerifyPage() {
                         Вже верифіковані?{' '}
                         <button
                             onClick={() => router.push('/login')}
-                            className="text-gray-900 font-semibold hover:underline"
-                        >
+                            className="text-gray-900 font-semibold hover:underline">
                             Перейти на вхід
                         </button>
                     </p>
