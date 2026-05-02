@@ -24,7 +24,7 @@ export default function LoginPage() {
         setIsLoading(true);
 
         try {
-            const res = await fetch('https://shoesstore-server.onrender.com/api/users/login', {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
@@ -33,7 +33,7 @@ export default function LoginPage() {
             const data = await res.json().catch(() => ({}));
 
             if (!res.ok) {
-                throw new Error(data.message || 'Login error. Please check your email or password.');
+                throw new Error(data.message || 'Login error. Please check your email or password. ');
             }
 
             localStorage.setItem('token', data.token);
