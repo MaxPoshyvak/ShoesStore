@@ -72,7 +72,7 @@ export const updateUserProfile = async (profileData: Partial<UserProfileData>) =
             username: profileData.username,
             email: profileData.email,
             phone: profileData.phone,
-            delivery_address: profileData.address,
+            delivery_address: profileData.delivery_address,
         }),
     });
 
