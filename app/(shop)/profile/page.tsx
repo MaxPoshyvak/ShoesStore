@@ -39,7 +39,7 @@ export interface UserProfileData {
     email: string;
     created_at: string;
     phone?: string;
-    address?: string;
+    delivery_address?: string;
     avatarUrl?: string;
     orders: Order[];
     reviews: Review[];
@@ -280,16 +280,18 @@ export default function UserProfile() {
                                     {isEditing ? (
                                         <input
                                             type="text"
-                                            name="address"
-                                            value={formData.address || ''}
-                                            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                            name="delivery_address"
+                                            value={formData.delivery_address || ''}
+                                            onChange={(e) =>
+                                                setFormData({ ...formData, delivery_address: e.target.value })
+                                            }
                                             className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none"
                                             placeholder="City, Street..."
                                         />
                                     ) : (
                                         <div className="flex items-center gap-3 text-gray-900 font-medium bg-gray-50 px-4 py-3 rounded-xl border border-transparent">
                                             <MapPin size={18} className="text-gray-400" />{' '}
-                                            {user.address || (
+                                            {user.delivery_address || (
                                                 <span className="text-gray-400 font-normal">Not specified</span>
                                             )}
                                         </div>
