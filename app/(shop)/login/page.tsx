@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../components/AuthContext';
 
 import { Mail, Lock, AlertCircle, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LoginPage() {
     // In the original Next.js, uncomment these:
@@ -66,10 +67,25 @@ export default function LoginPage() {
                     <p className="text-gray-500 text-sm">Log in to your account to continue.</p>
                 </div>
 
-                {error && (
+                {error && error !== 'Please verify your email first' && (
                     <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl flex items-start gap-3 text-sm">
                         <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
                         <span>{error}</span>
+                    </div>
+                )}
+
+                {error === 'Please verify your email first' && (
+                    <div className="mb-6 p-4 bg-yellow-50 border border-yellow-100 text-yellow-600 rounded-xl flex items-start gap-3 text-sm">
+                        <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                        <span>
+                            Please verify your email first. Click{' '}
+                            <Link
+                                href="/verify" // In the original Next.js, uncomment this:
+                                // href={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/resend-verification`}
+                                className="underline">
+                                verify my email
+                            </Link>
+                        </span>
                     </div>
                 )}
 

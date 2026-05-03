@@ -1,30 +1,45 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { useCart } from "./context/CartContext";
-import styles from "./CartSidebar.module.css";
-import Link from "next/link";
-import { Trash2 } from "lucide-react";
+import Image from 'next/image';
+import { useCart } from './context/CartContext';
+import styles from './CartSidebar.module.css';
+import Link from 'next/link';
+// 🔥 Додали ShoppingBag з lucide-react
+import { Trash2, ShoppingBag } from 'lucide-react';
 
 export default function CartSidebar() {
     const { isCartOpen, setIsCartOpen, cartItems, removeFromCart, updateQuantity, totalPrice } = useCart();
+
     return (
         <div
             className={`${styles.overlay} ${isCartOpen ? styles.overlayOpen : styles.overlayClosed}`}
-            onClick={() => setIsCartOpen(false)}
-        >
+            onClick={() => setIsCartOpen(false)}>
             <div
                 className={`${styles.sidebar} ${isCartOpen ? styles.sidebarOpen : styles.sidebarClosed}`}
-                onClick={(e) => e.stopPropagation()}
-            >
+                onClick={(e) => e.stopPropagation()}>
                 <div className={styles.header}>
                     <h2>Your Cart</h2>
-                    <button className={styles.closeBtn} onClick={() => setIsCartOpen(false)}>✕</button>
+                    <button className={styles.closeBtn} onClick={() => setIsCartOpen(false)}>
+                        ✕
+                    </button>
                 </div>
 
                 <div className={styles.itemsList}>
                     {cartItems.length === 0 ? (
-                        <p className={styles.emptyMsg}>Your cart is empt :(</p>
+                        /* 🔥 НОВИЙ КРУТИЙ ДИЗАЙН ПУСТОГО КОШИКА */
+                        <div className={styles.emptyCartContainer}>
+                            <div className={styles.emptyCartIcon}>
+                                <ShoppingBag size={48} strokeWidth={1.5} />
+                            </div>
+                            <h3 className={styles.emptyCartTitle}>Your cart is empty</h3>
+                            <p className={styles.emptyCartDesc}>
+                                Looks like you haven&apos;t added any sneakers yet.
+                                <br /> Discover our latest drops!
+                            </p>
+                            <Link href="/shop" onClick={() => setIsCartOpen(false)} className={styles.emptyCartBtn}>
+                                Start Shopping
+                            </Link>
+                        </div>
                     ) : (
                         cartItems.map((item, index) => (
                             <div key={`${item.id}-${item.size ?? 'nosize'}-${index}`} className={styles.item}>
@@ -34,22 +49,30 @@ export default function CartSidebar() {
                                         alt={item.name}
                                         width={80}
                                         height={80}
-                                        style={{ objectFit: 'contain', width: 'auto', height: 'auto' }}
+                                        style={{ objectFit: 'contain', width: '100%', height: '100%' }}
                                     />
                                 </div>
                                 <div className={styles.details}>
-                                    <h4>{item.name}</h4>
-                                    <p>₴ {Number(item.price).toFixed(2)}</p>
-                                    {item.size && <p className={styles.size}>Size: {item.size}</p>}
-                                    <div className={styles.quantityControls}>
-                                        <button onClick={() => updateQuantity(item.id, -1, item.size)}>−</button>
-                                        <span>{item.quantity}</span>
-                                        <button onClick={() => updateQuantity(item.id, 1, item.size)}>+</button>
+                                    <div className={styles.detailsTop}>
+                                        <h4>{item.name}</h4>
+                                        {item.size && <p className={styles.size}>Size: {item.size}</p>}
+                                        <p className={styles.price}>₴ {Number(item.price).toFixed(2)}</p>
+                                    </div>
+
+                                    {/* Групуємо кнопки кількості та видалення в один рядок */}
+                                    <div className={styles.actionsRow}>
+                                        <div className={styles.quantityControls}>
+                                            <button onClick={() => updateQuantity(item.id, -1, item.size)}>−</button>
+                                            <span>{item.quantity}</span>
+                                            <button onClick={() => updateQuantity(item.id, 1, item.size)}>+</button>
+                                        </div>
+                                        <button
+                                            className={styles.removeBtn}
+                                            onClick={() => removeFromCart(item.id, item.size)}>
+                                            <Trash2 width={18} height={18} />
+                                        </button>
                                     </div>
                                 </div>
-                                <button className={styles.removeBtn} onClick={() => removeFromCart(item.id, item.size)}>
-                                    <Trash2 width={20} height={20}/>
-                                </button>
                             </div>
                         ))
                     )}
@@ -61,11 +84,10 @@ export default function CartSidebar() {
                             <span>Total:</span>
                             <span>₴ {totalPrice.toFixed(2)}</span>
                         </div>
-                        <Link href="/checkout" >
-                            <button
-                                onClick={setIsCartOpen.bind(null, false)} // Close cart when going to checkout
-                                className={styles.checkoutBtn} // Your button class
-                            >Checkout</button>
+                        <Link href="/checkout">
+                            <button onClick={() => setIsCartOpen(false)} className={styles.checkoutBtn}>
+                                Checkout
+                            </button>
                         </Link>
                     </div>
                 )}

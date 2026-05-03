@@ -1,96 +1,6 @@
-.overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 1000;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.sidebar {
-    width: 400px;
-    background: white;
-    height: 100%;
-    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    animation: slideIn 0.3s ease-out;
-}
-
-.header {
-    padding: 20px;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.itemsList {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
-}
-
-.item {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #f9f9f9;
-}
-
-.details h4 {
-    margin: 0 0 5px 0;
-    font-size: 14px;
-}
-.details {
-    flex: 1; /* РОЗТЯГУЄМО ЦЕЙ БЛОК: він забере весь вільний простір і виштовхне кнопку вправо */
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.quantityControls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.quantityControls button {
-    border: 1px solid #ddd;
-    background: white;
-    width: 25px;
-    height: 25px;
-    cursor: pointer;
-}
-
-.footer {
-    padding: 20px;
-    border-top: 1px solid #eee;
-}
-
-.total {
-    display: flex;
-    justify-content: space-between;
-    font-weight: 600;
-    font-size: 18px;
-    margin-bottom: 20px;
-}
-
-.checkoutBtn {
-    width: 100%;
-    padding: 15px;
-    background: black;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-/* --- НОВІ СТИЛІ ДЛЯ АНІМАЦІЇ --- */
+/* =========================================
+   OVERLAY & ANIMATIONS
+   ========================================= */
 
 .overlay {
     position: fixed;
@@ -99,19 +9,16 @@
     z-index: 1000;
     display: flex;
     justify-content: flex-end;
-    /* Додаємо плавність для темного фону */
     transition:
         opacity 0.3s ease,
         visibility 0.3s ease;
 }
 
-/* Коли відкрито - показуємо фон */
 .overlayOpen {
     opacity: 1;
     visibility: visible;
 }
 
-/* Коли закрито - ховаємо фон, щоб він не заважав клікати на сайт */
 .overlayClosed {
     opacity: 0;
     visibility: hidden;
@@ -119,44 +26,318 @@
 
 .sidebar {
     width: 400px;
-    background: white;
+    background: #ffffff;
     height: 100%;
-    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    /* Додаємо плавність для виїзду самої панелі */
     transition: transform 0.3s ease-out;
 }
 
-/* Коли відкрито - панель стоїть на своєму місці */
 .sidebarOpen {
     transform: translateX(0);
 }
 
-/* Коли закрито - ховаємо її рівно на 100% її ширини вправо (за екран) */
 .sidebarClosed {
     transform: translateX(100%);
 }
 
+/* =========================================
+   HEADER
+   ========================================= */
+
+.header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h2 {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #111;
+}
+
+.closeBtn {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: #999;
+    cursor: pointer;
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.closeBtn:hover {
+    color: #000;
+    transform: scale(1.1);
+}
+
+/* =========================================
+   SCROLLBAR & LIST CONTAINER
+   ========================================= */
+
+.itemsList {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+/* Робимо гарний скролбар для списку товарів */
+.itemsList::-webkit-scrollbar {
+    width: 6px;
+}
+.itemsList::-webkit-scrollbar-track {
+    background: transparent;
+}
+.itemsList::-webkit-scrollbar-thumb {
+    background: #e5e5e5;
+    border-radius: 10px;
+}
+
+/* =========================================
+   EMPTY CART STYLES
+   ========================================= */
+
+.emptyCartContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.emptyCartIcon {
+    width: 96px;
+    height: 96px;
+    background-color: #f9f9f9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+    margin-bottom: 24px;
+}
+
+.emptyCartTitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #000;
+    margin: 0 0 10px 0;
+}
+
+.emptyCartDesc {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+    margin: 0 0 32px 0;
+}
+
+.emptyCartBtn {
+    background-color: #000;
+    color: #fff;
+    padding: 16px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.emptyCartBtn:hover {
+    background-color: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* =========================================
+   CART ITEMS (FILLED STATE)
+   ========================================= */
+
+.item {
+    display: flex;
+    gap: 16px;
+    align-items: stretch;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.imgWrapper {
+    width: 90px;
+    height: 90px;
+    background-color: #fff;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    flex-shrink: 0;
+    border: 1px solid #eaeaea;
+}
+
+.details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.detailsTop h4 {
+    margin: 0 0 4px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #111;
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.3;
+}
+
+.size {
+    font-size: 12px;
+    color: #888;
+    margin: 0 0 6px 0;
+}
+
+.price {
+    font-size: 15px;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+}
+
+.actionsRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 12px;
+}
+
+/* Дизайн "пігулки" для кнопок кількості */
+.quantityControls {
+    display: inline-flex;
+    align-items: center;
+    background: #f9f9f9;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    height: 32px;
+    overflow: hidden;
+}
+
+.quantityControls button {
+    border: none;
+    background: transparent;
+    width: 32px;
+    height: 100%;
+    cursor: pointer;
+    font-size: 16px;
+    color: #666;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.quantityControls button:hover {
+    background: #ebebeb;
+    color: #000;
+}
+
+.quantityControls span {
+    min-width: 24px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #000;
+    user-select: none;
+}
+
+/* Кнопка видалення */
 .removeBtn {
     background: transparent;
     border: none;
     cursor: pointer;
+    color: #9ca3af;
+    padding: 6px;
+    border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 8px;
-    transition:
-        transform 0.1s ease,
-        opacity 0.2s ease; /* Плавність для анімації */
+    transition: all 0.2s ease;
 }
 
 .removeBtn:hover {
-    opacity: 0.7;
+    color: #ef4444;
+    background: #fef2f2;
 }
 
 .removeBtn:active {
-    transform: scale(0.85); /* Зменшуємо до 85% від оригінального розміру */
+    transform: scale(0.9);
+}
+
+/* =========================================
+   FOOTER (TOTAL & CHECKOUT)
+   ========================================= */
+
+.footer {
+    padding: 24px;
+    background: #fff;
+    border-top: 1px solid #eee;
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.total span:first-child {
+    font-size: 14px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.total span:last-child {
+    font-size: 22px;
+    font-weight: 700;
+    color: #000;
+}
+
+.checkoutBtn {
+    width: 100%;
+    padding: 16px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.checkoutBtn:hover {
+    background: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* =========================================

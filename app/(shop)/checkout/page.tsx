@@ -11,6 +11,9 @@ export default function Checkout() {
     const { clearCart, setIsCartOpen } = useCart();
 
     const handlePayment = async (payload: {
+        email?: string;
+        username?: string;
+        password?: string;
         shipping_address: string;
         payment_method: string;
         customer_notes: string;
@@ -57,12 +60,19 @@ export default function Checkout() {
         customer_notes: string;
     };
 
+    const userLocalStore = isAuthenticated ? localStorage.getItem('user') : null;
+    const parsedUserLocalStore = userLocalStore ? JSON.parse(userLocalStore) : null;
+
+    if (isAuthenticated && !userLocalStore) {
+        _setIsAuthenticated(false);
+    }
+
     const [formData, setFormData] = useState<FormDataType>({
         email: '',
         username: '',
         password: '',
         delivery_method: 'standard_post',
-        shipping_address: '',
+        shipping_address: isAuthenticated ? parsedUserLocalStore?.delivery_address : '', // Prefill for guests
         payment_method: 'card',
         customer_notes: '',
     });
@@ -135,16 +145,8 @@ export default function Checkout() {
 
         try {
             // 1. Create the Order
-            const orderData = await handlePayment({
-                shipping_address: payload.shipping_address,
-                payment_method: payload.payment_method,
-                customer_notes: payload.customer_notes,
-                items: payload.items.map((item) => ({
-                    good_id: item.good_id,
-                    quantity: item.quantity,
-                    size: item.size,
-                })),
-            });
+
+            const orderData = await handlePayment(payload);
 
             const orderId = orderData?.order?.id || orderData?.id;
 
@@ -185,7 +187,7 @@ export default function Checkout() {
                 icon: 'error',
                 title: 'Order error',
                 text: message,
-                confirmButtonColor: '#000'
+                confirmButtonColor: '#000',
             });
         } finally {
             setIsProcessing(false); // End loading
@@ -201,7 +203,10 @@ export default function Checkout() {
                     Thank you for your purchase. Your order has been successfully processed and is now being prepared.
                 </p>
                 <button
-                    onClick={() => setIsSubmitted(false)}
+                    onClick={() => {
+                        setIsSubmitted(false);
+                        window.location.href = '/';
+                    }}
                     className="bg-black text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors">
                     Back to Shop
                 </button>
@@ -249,7 +254,7 @@ export default function Checkout() {
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div>
                                                 <label className="block text-sm font-semibold mb-2 text-gray-700">
-                                                    Full Name <span className="text-red-500">*</span>
+                                                    Username <span className="text-red-500">*</span>
                                                 </label>
                                                 <input
                                                     type="text"
@@ -501,8 +506,10 @@ export default function Checkout() {
                                             <Loader2 className="w-5 h-5 animate-spin" />
                                             Processing...
                                         </>
+                                    ) : formData.payment_method === 'card' ? (
+                                        'Proceed to Payment'
                                     ) : (
-                                        'Pay Now'
+                                        'Place Order'
                                     )}
                                 </button>
                             </div>
