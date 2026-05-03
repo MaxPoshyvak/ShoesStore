@@ -2,11 +2,8 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import '@/app/globals.css';
 import { CartProvider } from '@/components/context/CartContext';
-import Navbar from '@/components/Navbar';
-import CartSidebar from '@/components/CartSidebar';
-import Footer from '@/components/Footer';
 import { AuthProvider } from '../../components/AuthContext';
-import { Suspense } from 'react';
+import ShopShell from '@/components/ShopShell';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -47,12 +44,7 @@ export default function RootLayout({
             <body className="min-h-full flex flex-col">
                 <AuthProvider>
                     <CartProvider>
-                        <Suspense fallback={<div>Loading header...</div>}>
-                            <Navbar />
-                        </Suspense>
-                        <CartSidebar />
-                        {children}
-                        <Footer />
+                        <ShopShell>{children}</ShopShell>
                     </CartProvider>
                 </AuthProvider>
             </body>

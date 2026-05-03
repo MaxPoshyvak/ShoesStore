@@ -66,8 +66,8 @@ export default function Navbar() {
         setIsMobileMenuOpen(false);
     }, [pathname]);
 
-    // Hide Navbar on auth pages
-    if (pathname === '/login' || pathname === '/register') {
+    // Hide Navbar on auth/verification pages
+    if (pathname === '/login' || pathname === '/register' || pathname === '/verify') {
         return null;
     }
 
