@@ -8,7 +8,7 @@ import { useAuth } from './AuthContext';
 
 import { Alata } from 'next/font/google';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 
 const alata = Alata({
     weight: '400',
@@ -40,15 +40,18 @@ export default function Navbar() {
 
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isSortOpen, setIsSortOpen] = useState(false);
-    const [isMounted, setIsMounted] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
 
-    // 🔥 НОВИЙ СТАН ДЛЯ БУРГЕР-МЕНЮ
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    // Avoid hydration mismatch for user-dependent UI without setting state in an effect.
+    const isHydrated = useSyncExternalStore(
+        () => () => {},
+        () => true,
+        () => false
+    );
 
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
+    // Keep menu state bound to the path where it was opened.
+    const [mobileMenuPath, setMobileMenuPath] = useState<string | null>(null);
+    const isMobileMenuOpen = mobileMenuPath === pathname;
 
     useEffect(() => {
         const handleScroll = () => {
@@ -61,17 +64,12 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Закриваємо мобільне меню при зміні маршруту
-    useEffect(() => {
-        setIsMobileMenuOpen(false);
-    }, [pathname]);
-
     // Hide Navbar on auth/verification pages
     if (pathname === '/login' || pathname === '/register' || pathname === '/verify') {
         return null;
     }
 
-    const resolvedUser = isMounted ? user : null;
+    const resolvedUser = isHydrated ? user : null;
     const initial = resolvedUser?.username ? resolvedUser.username.charAt(0).toUpperCase() : '?';
 
     const currentSize = searchParams.get('size');
@@ -96,7 +94,7 @@ export default function Navbar() {
             {/* 🔥 КНОПКА БУРГЕРА */}
             <button
                 className={`${styles.burgerBtn} ${isMobileMenuOpen ? styles.burgerBtnOpen : ''}`}
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                onClick={() => setMobileMenuPath((prev) => (prev === pathname ? null : pathname))}
                 aria-label="Toggle menu">
                 <span></span>
                 <span></span>
@@ -109,16 +107,16 @@ export default function Navbar() {
 
             {/* 🔥 НАВІГАЦІЯ З МОБІЛЬНИМ КЛАСОМ */}
             <nav className={`${styles.navbar__nav} ${isMobileMenuOpen ? styles.navbar__navOpen : ''}`}>
-                <Link href="/" className={styles.navbar__link} onClick={() => setIsMobileMenuOpen(false)}>
+                <Link href="/" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
                     Home
                 </Link>
-                <Link href="/#trending" className={styles.navbar__link} onClick={() => setIsMobileMenuOpen(false)}>
+                <Link href="/#trending" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
                     Popular
                 </Link>
-                <Link href="/#best-selling" className={styles.navbar__link} onClick={() => setIsMobileMenuOpen(false)}>
+                <Link href="/#best-selling" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
                     Best Selling
                 </Link>
-                <Link href="/#reviews" className={styles.navbar__link} onClick={() => setIsMobileMenuOpen(false)}>
+                <Link href="/#reviews" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
                     Review
                 </Link>
             </nav>
