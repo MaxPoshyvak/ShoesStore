@@ -112,56 +112,49 @@ export default function VerifyPage() {
 
         try {
             const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-            if (!baseUrl) {
-                throw new Error('NEXT_PUBLIC_BACKEND_URL не налаштований');
-            }
+            if (!baseUrl) throw new Error('NEXT_PUBLIC_BACKEND_URL не налаштований');
 
-            const endpoints = [
-                '/users/resend-verification',
-                '/users/send-verification',
-                '/auth/resend-verification',
-            ];
+            const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
 
-            let success = false;
-            let lastStatus = 0;
-            let lastMessage = '';
-
-            for (const endpoint of endpoints) {
-                const response = await fetch(`${baseUrl}${endpoint}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email }),
-                });
-
-                const data = await response.json().catch(() => ({}));
-
-                if (response.ok) {
-                    success = true;
-                    break;
-                }
-
-                lastStatus = response.status;
-                lastMessage =
-                    typeof data?.message === 'string'
-                        ? data.message
-                        : `Endpoint ${endpoint} повернув ${response.status}`;
-
-                // 404 -> пробуємо наступний endpoint, інакше зупиняємося
-                if (response.status !== 404) {
-                    break;
-                }
-            }
-
-            if (!success) {
-                throw new Error(lastMessage || `Помилка надсилання коду (status ${lastStatus})`);
-            }
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Лист надіслано',
-                text: 'Ми надіслали код верифікації на зазначену пошту. Перевірте папку Спам якщо потрібно.',
-                confirmButtonColor: '#000',
+            const response = await fetch(`${baseUrl}/users/resend-verification-email`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ email }),
             });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (response.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Лист надіслано',
+                    text: 'Ми надіслали код верифікації на зазначену пошту. Перевірте папку Спам якщо потрібно.',
+                    confirmButtonColor: '#000',
+                });
+                setIsResending(false);
+                return;
+            }
+
+            // Handle common server responses
+            if (response.status === 401) {
+                const msg = (data && data.message) ? String(data.message) : 'Токен відсутній. Доступ заборонено';
+                const result = await Swal.fire({ icon: 'error', title: 'Помилка', text: msg, confirmButtonText: 'Увійти', showCancelButton: true });
+                if (result.isConfirmed) router.push('/login');
+                setIsResending(false);
+                return;
+            }
+
+            if (response.status === 404) {
+                Swal.fire({ icon: 'error', title: 'Користувача не знайдено', text: (data && data.message) ? String(data.message) : 'User not found', confirmButtonColor: '#000' });
+                setIsResending(false);
+                return;
+            }
+
+            // Generic error
+            const errMsg = (data && data.message) ? String(data.message) : `Помилка: ${response.status}`;
+            Swal.fire({ icon: 'error', title: 'Помилка', text: errMsg, confirmButtonColor: '#000' });
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Невідома помилка';
             Swal.fire({ icon: 'error', title: 'Помилка', text: message, confirmButtonColor: '#000' });
