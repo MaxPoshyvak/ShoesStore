@@ -44,6 +44,7 @@ export default function UserProfile() {
             const data = await updateUserProfile(formData);
             setUser((prev) => (prev ? { ...prev, ...data.user } : null));
             setIsEditing(false);
+            localStorage.setItem('user', JSON.stringify(data.user));
         } catch (error) {
             console.error(error);
         } finally {
