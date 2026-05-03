@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import { Mail, CheckCircle2, AlertCircle } from 'lucide-react';
@@ -10,19 +10,9 @@ export default function VerifyPage() {
     const [token, setToken] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
+    const [isResending, setIsResending] = useState(false);
 
-    // Якщо в URL є token, автоматично перевіряємо
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const urlToken = params.get('token');
-
-        if (urlToken) {
-            setToken(urlToken);
-            verifyEmail(urlToken);
-        }
-    }, []);
-
-    const verifyEmail = async (verificationToken: string) => {
+    const verifyEmail = useCallback(async (verificationToken: string) => {
         if (!verificationToken.trim()) {
             Swal.fire({
                 icon: 'error',
@@ -86,6 +76,65 @@ export default function VerifyPage() {
                 }
             },
         });
+    }, [router]);
+
+    // Якщо в URL є token, автоматично перевіряємо
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const urlToken = params.get('token');
+
+        if (urlToken) {
+            setToken(urlToken);
+            verifyEmail(urlToken);
+        }
+    }, [verifyEmail]);
+
+    const resendVerification = async () => {
+        const { value: email } = await Swal.fire({
+            title: 'Повторно надіслати код',
+            input: 'email',
+            inputLabel: 'Вкажіть вашу пошту',
+            inputPlaceholder: 'your@email.com',
+            showCancelButton: true,
+            confirmButtonText: 'Надіслати',
+            cancelButtonText: 'Скасувати',
+            preConfirm: (val) => {
+                if (!val || !val.includes('@')) {
+                    Swal.showValidationMessage('Вкажіть дійсну електронну пошту');
+                }
+                return val;
+            },
+        });
+
+        if (!email) return;
+
+        setIsResending(true);
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/resend-verification`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Помилка надсилання коду');
+            }
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Лист надіслано',
+                text: 'Ми надіслали код верифікації на зазначену пошту. Перевірте папку Спам якщо потрібно.',
+                confirmButtonColor: '#000',
+            });
+        } catch (err) {
+            const message = err instanceof Error ? err.message : 'Невідома помилка';
+            Swal.fire({ icon: 'error', title: 'Помилка', text: message, confirmButtonColor: '#000' });
+        } finally {
+            setIsResending(false);
+        }
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -133,13 +182,23 @@ export default function VerifyPage() {
                         />
                     </div>
 
-                    {/* Кнопка верифікації */}
-                    <button
-                        type="submit"
-                        disabled={isLoading || !token.trim()}
-                        className="w-full bg-gray-900 text-white py-3 rounded-lg font-semibold hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition">
-                        {isLoading ? 'Перевіряємо...' : 'Підтвердити пошту'}
-                    </button>
+                    {/* Кнопка верифікації + resend поруч */}
+                    <div className="flex gap-3">
+                        <button
+                            type="submit"
+                            disabled={isLoading || !token.trim()}
+                            className="flex-1 bg-gray-900 text-white py-3 rounded-lg font-semibold hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition">
+                            {isLoading ? 'Перевіряємо...' : 'Підтвердити пошту'}
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={resendVerification}
+                            disabled={isResending}
+                            className="flex-none border border-gray-200 bg-white text-gray-900 px-4 py-3 rounded-lg font-semibold hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed transition">
+                            {isResending ? 'Надсилаємо...' : 'resend'}
+                        </button>
+                    </div>
                 </form>
 
                 {/* Інформаційний блок */}
@@ -150,6 +209,8 @@ export default function VerifyPage() {
                         <p>Перевірте теку &quot;Спам&quot; або спробуйте зареєструватися ще раз.</p>
                     </div>
                 </div>
+
+                {/* Resend moved next to submit button above */}
 
                 {/* Посилання на login */}
                 <div className="mt-6 text-center">
