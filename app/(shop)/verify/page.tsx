@@ -111,16 +111,49 @@ export default function VerifyPage() {
         setIsResending(true);
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/resend-verification`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email }),
-            });
+            const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+            if (!baseUrl) {
+                throw new Error('NEXT_PUBLIC_BACKEND_URL не налаштований');
+            }
 
-            const data = await response.json().catch(() => ({}));
+            const endpoints = [
+                '/users/resend-verification',
+                '/users/send-verification',
+                '/auth/resend-verification',
+            ];
 
-            if (!response.ok) {
-                throw new Error(data.message || 'Помилка надсилання коду');
+            let success = false;
+            let lastStatus = 0;
+            let lastMessage = '';
+
+            for (const endpoint of endpoints) {
+                const response = await fetch(`${baseUrl}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email }),
+                });
+
+                const data = await response.json().catch(() => ({}));
+
+                if (response.ok) {
+                    success = true;
+                    break;
+                }
+
+                lastStatus = response.status;
+                lastMessage =
+                    typeof data?.message === 'string'
+                        ? data.message
+                        : `Endpoint ${endpoint} повернув ${response.status}`;
+
+                // 404 -> пробуємо наступний endpoint, інакше зупиняємося
+                if (response.status !== 404) {
+                    break;
+                }
+            }
+
+            if (!success) {
+                throw new Error(lastMessage || `Помилка надсилання коду (status ${lastStatus})`);
             }
 
             Swal.fire({
