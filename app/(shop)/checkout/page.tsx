@@ -215,7 +215,7 @@ export default function Checkout() {
     }
 
     return (
-        <div className="min-h-screen bg-white font-sans text-black py-12">
+        <div className="min-h-screen bg-white font-sans text-black pt-20">
             <main className="max-w-7xl mx-auto px-4 py-8 md:py-12">
                 <div className="mb-8 text-center md:text-left">
                     <h1 className="text-3xl md:text-4xl font-bold mb-2">Checkout</h1>
