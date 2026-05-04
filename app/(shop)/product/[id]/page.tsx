@@ -35,14 +35,9 @@ export default function ProductDetailPage() {
     const [isAdded, setIsAdded] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
     const [showReviewModal, setShowReviewModal] = useState(false);
-    const { isAuthenticated, isLoading: authLoading, user } = useAuth();
+    const { isAuthenticated, isLoading: authLoading } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
-
-    const userRecord = user as unknown as Record<string, unknown> | null;
-    const isVerified = Boolean(
-        userRecord && (userRecord['verified'] === true || userRecord['isVerified'] === true || userRecord['emailVerified'] === true)
-    );
 
     const handleOpenReview = () => {
         if (authLoading) return;
@@ -50,10 +45,7 @@ export default function ProductDetailPage() {
             router.push(`/register?next=/product/${product?.id}&openReview=1`);
             return;
         }
-        if (!isVerified) {
-            router.push(`/verify?next=/product/${product?.id}&openReview=1`);
-            return;
-        }
+        // Authenticated users can write reviews without frontend verification check.
         setShowReviewModal(true);
     };
 
@@ -64,7 +56,7 @@ export default function ProductDetailPage() {
             if (open === '1') {
                 setShowReviewModal(true);
             }
-        } catch (e) {
+        } catch {
             // ignore
         }
     }, [searchParams]);

@@ -4,14 +4,16 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import { Mail, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useAuth } from '@/components/AuthContext';
 
 export default function VerifyPage() {
     const router = useRouter();
     const [token, setToken] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [isVerified, setIsVerified] = useState(false);
+    
     const [isResending, setIsResending] = useState(false);
     const [resendCooldown, setResendCooldown] = useState(0); // 0 = available, counts down after click
+    const { user, token: authToken } = useAuth();
 
     const verifyEmail = useCallback(async (verificationToken: string) => {
         if (!verificationToken.trim()) {
@@ -51,7 +53,6 @@ export default function VerifyPage() {
                     }
 
                     // Успіх!
-                    setIsVerified(true);
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
@@ -116,33 +117,40 @@ export default function VerifyPage() {
     }, [verifyEmail]);
 
     const resendVerification = async () => {
-        const { value: email } = await Swal.fire({
-            title: 'Resend code',
-            input: 'email',
-            inputLabel: 'Enter your email',
-            inputPlaceholder: 'your@email.com',
-            showCancelButton: true,
-            confirmButtonText: 'Send',
-            cancelButtonText: 'Cancel',
-            preConfirm: (val) => {
-                if (!val || !val.includes('@')) {
-                    Swal.showValidationMessage('Please enter a valid email address');
-                }
-                return val;
-            },
-        });
+        // Prefer the authenticated user's email; fall back to prompting if not available
+        let email = user?.email ?? null;
 
-        if (!email) return;
+        if (!email) {
+            const { value } = await Swal.fire({
+                title: 'Resend code',
+                input: 'email',
+                inputLabel: 'Enter your email',
+                inputPlaceholder: 'your@email.com',
+                showCancelButton: true,
+                confirmButtonText: 'Send',
+                cancelButtonText: 'Cancel',
+                preConfirm: (val) => {
+                    if (!val || !val.includes('@')) {
+                        Swal.showValidationMessage('Please enter a valid email address');
+                    }
+                    return val;
+                },
+            });
 
+            if (!value) return;
+            email = value;
+        }
+
+        // Start cooldown immediately after user action
+        setResendCooldown(60);
         setIsResending(true);
 
         try {
             const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
             if (!baseUrl) throw new Error('NEXT_PUBLIC_BACKEND_URL is not configured');
 
-            const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
             const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-            if (token) headers['Authorization'] = `Bearer ${token}`;
+            if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
 
             const response = await fetch(`${baseUrl}/users/resend-verification-email`, {
                 method: 'POST',
@@ -156,10 +164,9 @@ export default function VerifyPage() {
                 Swal.fire({
                     icon: 'success',
                     title: 'Email sent',
-                    text: 'We sent a new verification code to the email address you entered. Check your Spam folder if needed.',
+                    text: 'We sent a new verification code to your email. Check your Spam folder if needed.',
                     confirmButtonColor: '#000',
                 });
-                setResendCooldown(60); // Start 60-second cooldown after successful resend
                 setIsResending(false);
                 return;
             }
@@ -195,17 +202,7 @@ export default function VerifyPage() {
         verifyEmail(token);
     };
 
-    if (isVerified) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-                <div className="w-full max-w-md text-center">
-                    <CheckCircle2 className="w-16 h-16 mx-auto text-green-600 mb-4" />
-                    <h1 className="text-2xl font-bold text-gray-900 mb-2">Email verified!</h1>
-                    <p className="text-gray-600">Redirecting to login...</p>
-                </div>
-            </div>
-        );
-    }
+    
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
