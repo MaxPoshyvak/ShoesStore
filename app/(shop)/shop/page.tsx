@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import styles from '../../../components/BestSelling.module.css';
 import BestSellingCard from '../../../components/BestSellingCard/BestSellingCard';
 import { BestSellingCardSkeleton } from '@/components/BestSellingCard/BestSellingCardSkeleton';
+import { useAuth } from '@/components/AuthContext'; // 🔥 Імпортуємо контекст (перевір шлях, якщо він інший)
 
 const categories = ['Man', 'Woman', 'Boy', 'Child'];
 
@@ -20,9 +21,9 @@ interface Good {
     sizes: string[];
 }
 
-// 1. МИ ПЕРЕЙМЕНУВАЛИ ГОЛОВНУ ФУНКЦІЮ НА ShopContent
 function ShopContent() {
     const searchParams = useSearchParams();
+    const { user } = useAuth(); // 🔥 Дістаємо юзера
 
     const activeCategory = searchParams.get('category') || 'Man';
     const sizeFilter = searchParams.get('size');
@@ -30,23 +31,50 @@ function ShopContent() {
     const instockFilter = searchParams.get('instock') === 'true';
 
     const [goods, setGoods] = useState<Good[]>([]);
+    const [favoriteIds, setFavoriteIds] = useState<number[]>([]); // 🔥 Стейт для лайків
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const fetchGoods = async () => {
+        const loadData = async () => {
+            setIsLoading(true);
+
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/goods`);
-                if (!response.ok) throw new Error('Помилка');
-                const data = await response.json();
-                setGoods(data);
+                // 1. Запит на всі товари
+                const goodsPromise = fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/goods`).then((res) => {
+                    if (!res.ok) throw new Error('Помилка завантаження товарів');
+                    return res.json();
+                });
+
+                // 2. Запит на улюблені товари (якщо юзер авторизований)
+                const token = localStorage.getItem('token');
+                let favoritesPromise = Promise.resolve({ favorites: [] });
+
+                if (token) {
+                    favoritesPromise = fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/favorites/get`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }).then((res) => res.json());
+                }
+
+                // 3. 🔥 Чекаємо обидва запити
+                const [goodsData, favoritesData] = await Promise.all([goodsPromise, favoritesPromise]);
+
+                // 4. Оновлюємо стейти
+                setGoods(goodsData);
+
+                if (favoritesData && Array.isArray(favoritesData.favorites)) {
+                    setFavoriteIds(favoritesData.favorites.map((fav: { goodId: number }) => fav.goodId));
+                } else {
+                    setFavoriteIds([]);
+                }
             } catch (error) {
                 console.error(error);
             } finally {
-                setIsLoading(false);
+                setIsLoading(false); // Вимикаємо скелетони тільки після того, як усе готово
             }
         };
-        fetchGoods();
-    }, []);
+
+        loadData();
+    }, [user]); // 🔥 Запускаємо повторно, якщо юзер змінився
 
     let filteredGoods = goods.filter((good) => good.category === activeCategory);
 
@@ -100,7 +128,7 @@ function ShopContent() {
                     filteredGoods.map((product) => (
                         <BestSellingCard
                             key={product.id}
-                            id={String(product.id)}
+                            id={Number(product.id)}
                             image={product.main_image_url}
                             name={product.name}
                             price={product.price}
@@ -109,6 +137,7 @@ function ShopContent() {
                             showHeart={true}
                             isNew={product.is_new}
                             sizes={product.sizes}
+                            initialIsFavorite={favoriteIds.includes(Number(product.id))} // 🔥 Передаємо статус лайка
                         />
                     ))
                 ) : (
@@ -121,7 +150,6 @@ function ShopContent() {
     );
 }
 
-// 2. СТВОРИЛИ НОВУ ГОЛОВНУ ФУНКЦІЮ, ЯКА ОБГОРТАЄ ВСЕ В SUSPENSE
 export default function ShopPage() {
     return (
         <Suspense
