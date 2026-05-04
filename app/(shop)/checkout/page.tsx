@@ -6,9 +6,11 @@ import Swal from 'sweetalert2';
 import { CreditCard, MapPin, FileText, CheckCircle2, Mail, Lock, User, Truck, Loader2 } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 import { useCart } from '@/components/context/CartContext';
+import { useAuth } from '@/components/AuthContext';
 
 export default function Checkout() {
     const { clearCart, setIsCartOpen } = useCart();
+    const { token: authToken, isAuthenticated, isLoading: authLoading } = useAuth();
 
     const handlePayment = async (payload: {
         email?: string;
@@ -24,7 +26,7 @@ export default function Checkout() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
+                    ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
                 },
                 body: JSON.stringify(payload),
             });
@@ -42,14 +44,6 @@ export default function Checkout() {
         }
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [isAuthenticated, _setIsAuthenticated] = useState(() => {
-        if (typeof window !== 'undefined') {
-            return !!localStorage.getItem('token');
-        }
-        return false;
-    });
-
     type FormDataType = {
         email: string;
         username: string;
@@ -60,19 +54,12 @@ export default function Checkout() {
         customer_notes: string;
     };
 
-    const userLocalStore = isAuthenticated ? localStorage.getItem('user') : null;
-    const parsedUserLocalStore = userLocalStore ? JSON.parse(userLocalStore) : null;
-
-    if (isAuthenticated && !userLocalStore) {
-        _setIsAuthenticated(false);
-    }
-
     const [formData, setFormData] = useState<FormDataType>({
         email: '',
         username: '',
         password: '',
         delivery_method: 'standard_post',
-        shipping_address: isAuthenticated ? parsedUserLocalStore?.delivery_address : '', // Prefill for guests
+        shipping_address: '',
         payment_method: 'card',
         customer_notes: '',
     });
@@ -120,6 +107,7 @@ export default function Checkout() {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (authLoading) return;
         setIsProcessing(true); // Start loading
 
         const payload: PayloadType = {
@@ -159,7 +147,7 @@ export default function Checkout() {
                         method: 'POST', // Assuming POST to create a payment session
                         headers: {
                             'Content-Type': 'application/json',
-                            Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
+                            ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
                         },
                     },
                 );
