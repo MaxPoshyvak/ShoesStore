@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
-import { Mail, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Mail, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/components/AuthContext';
 
 export default function VerifyPage() {
