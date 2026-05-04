@@ -11,6 +11,7 @@ export default function VerifyPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
     const [isResending, setIsResending] = useState(false);
+    const [resendCooldown, setResendCooldown] = useState(0); // 0 = available, counts down after click
 
     const verifyEmail = useCallback(async (verificationToken: string) => {
         if (!verificationToken.trim()) {
@@ -92,6 +93,17 @@ export default function VerifyPage() {
         });
     }, [router]);
 
+    // Cooldown timer for resend button
+    useEffect(() => {
+        if (resendCooldown <= 0) return;
+
+        const timer = setInterval(() => {
+            setResendCooldown((prev) => Math.max(prev - 1, 0));
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [resendCooldown]);
+
     // Якщо в URL є token, автоматично перевіряємо
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -147,6 +159,7 @@ export default function VerifyPage() {
                     text: 'We sent a new verification code to the email address you entered. Check your Spam folder if needed.',
                     confirmButtonColor: '#000',
                 });
+                setResendCooldown(60); // Start 60-second cooldown after successful resend
                 setIsResending(false);
                 return;
             }
@@ -234,9 +247,9 @@ export default function VerifyPage() {
                         <button
                             type="button"
                             onClick={resendVerification}
-                            disabled={isResending}
+                            disabled={isResending || resendCooldown > 0}
                             className="flex-none border border-gray-200 bg-white text-gray-900 px-4 py-3 rounded-lg font-semibold hover:bg-gray-50 disabled:opacity-60 disabled:cursor-not-allowed transition">
-                            {isResending ? 'Sending...' : 'resend'}
+                            {isResending ? 'Sending...' : resendCooldown > 0 ? `${resendCooldown}s` : 'resend'}
                         </button>
                     </div>
                 </form>
