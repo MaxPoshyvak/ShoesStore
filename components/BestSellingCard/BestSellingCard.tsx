@@ -1,15 +1,16 @@
 'use client';
 
-import { useState, useId } from 'react';
+import { useState, useId, useEffect } from 'react';
 import Image from 'next/image';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../AuthContext';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import styles from './BestSellingCard.module.css';
+import { addToFavorites, removeFromFavorites } from '@/utils/backendData/backendFavorites';
 
 interface ProductCardProps {
-    id: string;
+    id: number;
     image: string;
     name: string;
     price: string | number;
@@ -18,6 +19,7 @@ interface ProductCardProps {
     showHeart?: boolean;
     stockQuantity: number;
     sizes?: (number | string)[];
+    initialIsFavorite?: boolean;
 }
 
 export default function BestSellingCard({
@@ -30,8 +32,9 @@ export default function BestSellingCard({
     showHeart,
     stockQuantity,
     sizes,
+    initialIsFavorite,
 }: ProductCardProps) {
-    const [isFavorite, setIsFavorite] = useState(false);
+    const [isFavorite, setIsFavorite] = useState(initialIsFavorite ?? false);
     const [isNotifying, setIsNotifying] = useState(false);
 
     const { cartItems } = useCart();
@@ -46,8 +49,22 @@ export default function BestSellingCard({
     const remainingStock = Math.max(0, stock - cartQuantity);
     const isOutOfStock = remainingStock <= 0;
 
-    const toggleFavourite = () => {
+    const toggleFavourite = async () => {
+        if (!user) {
+            router.push('/login');
+            return;
+        }
         setIsFavorite(!isFavorite);
+        try {
+            if (!isFavorite) {
+                await addToFavorites(id);
+            } else {
+                await removeFromFavorites(id);
+            }
+        } catch (error) {
+            console.error('Error toggling favorite:', error);
+            setIsFavorite(isFavorite);
+        }
     };
 
     const handleOpenProduct = () => {
@@ -119,6 +136,8 @@ export default function BestSellingCard({
             setIsNotifying(false);
         }
     };
+
+    useEffect(() => {}, []);
 
     return (
         <div className={`${styles.card} ${isOutOfStock ? styles.outOfStockCard : ''}`}>

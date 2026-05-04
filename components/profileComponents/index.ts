@@ -3,4 +3,5 @@ export { ProfileTab } from './ProfileTab';
 export { OrdersTab } from './OrdersTab';
 export { ReviewsTab } from './ReviewsTab';
 export { ProfileSkeleton } from './ProfileSkeleton';
+export { FavoritesTab } from './FavoritesTab';
 export type { UserProfileData, Order, Review } from './types';

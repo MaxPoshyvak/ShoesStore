@@ -1,53 +1,76 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import styles from './BestSelling.module.css';
 import BestSellingCard from './BestSellingCard/BestSellingCard';
 import Link from 'next/link';
 import { BestSellingCardSkeleton } from '@/components/BestSellingCard/BestSellingCardSkeleton';
+import { useAuth } from '@/components/AuthContext';
 
-const categories = ['Man', 'Woman', 'Boy', 'Child'];
+interface Good {
+    id: string;
+    name: string;
+    price: number;
+    old_price: number | null;
+    category: string;
+    is_new: boolean;
+    main_image_url: string;
+    stock_quantity: number;
+    sizes: string[];
+}
 
 export default function BestSelling() {
-    interface Good {
-        id: string;
-        name: string;
-        price: number;
-        old_price: number | null;
-        category: string;
-        is_new: boolean;
-        main_image_url: string;
-        stock_quantity: number;
-        sizes: string[];
-    }
-
     const [activeCategory, setActiveCategory] = useState('Man');
-
-    const skeletonArray = [1, 2, 3, 4, 5, 6];
+    const [favoriteIds, setFavoriteIds] = useState<number[]>([]);
+    const categories = ['Man', 'Woman', 'Boy', 'Child'];
 
     //СТАНИ ДЛЯ API
 
     const [goods, setGoods] = useState<Good[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const { user } = useAuth();
 
     useEffect(() => {
-        const fetchGoods = async () => {
+        const loadData = async () => {
+            setIsLoading(true);
+
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/goods`);
-                if (!response.ok) {
-                    throw new Error('помилка мережі');
+                // 1. Створюємо запит на товари
+                const goodsPromise = fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/goods`).then((res) => {
+                    if (!res.ok) throw new Error('Помилка мережі товарів');
+                    return res.json();
+                });
+
+                // 2. Створюємо запит на улюблені (АЛЕ тільки якщо є токен/юзер)
+                const token = localStorage.getItem('token');
+                let favoritesPromise = Promise.resolve({ favorites: [] }); // Заглушка, якщо не авторизований
+
+                if (token) {
+                    favoritesPromise = fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/favorites/get`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }).then((res) => res.json());
                 }
-                const data = await response.json();
-                setGoods(data);
+
+                // 3. 🔥 ЧЕКАЄМО ОБИДВА ЗАПИТИ ОДНОЧАСНО
+                const [goodsData, favoritesData] = await Promise.all([goodsPromise, favoritesPromise]);
+
+                // 4. Записуємо дані в стейт
+                setGoods(goodsData);
+
+                if (favoritesData && Array.isArray(favoritesData.favorites)) {
+                    setFavoriteIds(favoritesData.favorites.map((fav: { goodId: number }) => fav.goodId));
+                } else {
+                    setFavoriteIds([]); // Очищаємо, якщо юзер вийшов
+                }
             } catch (error) {
-                console.error('Помилка завантаження товарів:', error);
+                console.error('Помилка завантаження даних:', error);
             } finally {
-                setIsLoading(false);
+                setIsLoading(false); // Вимикаємо скелетони ТІЛЬКИ коли все готово!
             }
         };
 
-        fetchGoods();
-    }, []);
+        loadData();
+    }, [user]);
     const filteredGoods = goods.filter((good) => good.category === activeCategory).slice(0, 6);
 
     return (
@@ -72,7 +95,7 @@ export default function BestSelling() {
             <div className={styles.grid}>
                 {isLoading ? (
                     <>
-                        {skeletonArray.map((_, index) => (
+                        {[1, 2, 3, 4, 5, 6].map((_, index) => (
                             <BestSellingCardSkeleton key={index} />
                         ))}
                     </>
@@ -80,7 +103,7 @@ export default function BestSelling() {
                     filteredGoods.map((product) => (
                         <BestSellingCard // Використовуємо новий компонент
                             key={product.id}
-                            id={String(product.id)}
+                            id={Number(product.id)}
                             image={product.main_image_url}
                             name={product.name}
                             price={product.price}
@@ -89,6 +112,7 @@ export default function BestSelling() {
                             showHeart={true}
                             isNew={product.is_new}
                             sizes={product.sizes}
+                            initialIsFavorite={favoriteIds.includes(Number(product.id))}
                         />
                     ))
                 ) : (

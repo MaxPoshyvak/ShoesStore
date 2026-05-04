@@ -32,4 +32,5 @@ export interface UserProfileData {
     avatarUrl?: string;
     orders: Order[];
     reviews: Review[];
+    favorites: any[];
 }

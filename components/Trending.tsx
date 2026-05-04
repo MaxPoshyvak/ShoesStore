@@ -6,6 +6,7 @@ import styles from './Trending.module.css';
 import { ServerStatusPopup } from '@/components/ServerStatusPopup/ServerStatusPopup';
 import BestSellingCard from '@/components/BestSellingCard/BestSellingCard';
 import { BestSellingCardSkeleton } from '@/components/BestSellingCard/BestSellingCardSkeleton';
+import { useAuth } from '@/components/AuthContext'; // 🔥 Імпортуємо контекст для юзера
 
 interface Good {
     id: string;
@@ -20,8 +21,10 @@ interface Good {
 
 export default function Trending() {
     const sliderRef = useRef<HTMLDivElement>(null);
+    const { user } = useAuth(); // 🔥 Дістаємо юзера
 
     const [goods, setGoods] = useState<Good[]>([]);
+    const [favoriteIds, setFavoriteIds] = useState<number[]>([]); // 🔥 Стейт для улюблених
     const [isLoading, setIsLoading] = useState(true);
     const [activeIndex, setActiveIndex] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(3);
@@ -33,7 +36,6 @@ export default function Trending() {
             if (window.innerWidth <= 600) {
                 setItemsPerPage(1);
             } else if (window.innerWidth <= 1500) {
-                // Змінили 1024 на 1500
                 setItemsPerPage(2);
             } else {
                 setItemsPerPage(3);
@@ -46,15 +48,31 @@ export default function Trending() {
     }, []);
 
     useEffect(() => {
-        const fetchGoods = async () => {
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/goods`);
-                if (!response.ok) {
-                    throw new Error('Помилка мережі');
-                }
-                const data: Good[] = await response.json();
+        const loadData = async () => {
+            setIsLoading(true);
 
-                const sortedData = data.sort((a, b) => {
+            try {
+                // 1. Запит на товари
+                const goodsPromise = fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/goods`).then((res) => {
+                    if (!res.ok) throw new Error('Помилка мережі товарів');
+                    return res.json();
+                });
+
+                // 2. Запит на лайки (тільки якщо є токен)
+                const token = localStorage.getItem('token');
+                let favoritesPromise = Promise.resolve({ favorites: [] });
+
+                if (token) {
+                    favoritesPromise = fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/favorites/get`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }).then((res) => res.json());
+                }
+
+                // 3. Чекаємо обидва запити одночасно
+                const [goodsData, favoritesData] = await Promise.all([goodsPromise, favoritesPromise]);
+
+                // 4. Логіка сортування товарів (твоя оригінальна)
+                const sortedData = goodsData.sort((a: Good, b: Good) => {
                     const aHasDiscount = a.old_price && a.old_price > a.price;
                     const bHasDiscount = b.old_price && b.old_price > b.price;
 
@@ -66,16 +84,24 @@ export default function Trending() {
 
                 const top9Goods = sortedData.slice(0, 9);
                 setGoods(top9Goods);
+
+                // 5. Записуємо лайки
+                if (favoritesData && Array.isArray(favoritesData.favorites)) {
+                    setFavoriteIds(favoritesData.favorites.map((fav: { goodId: number }) => fav.goodId));
+                } else {
+                    setFavoriteIds([]);
+                }
             } catch (error) {
-                console.error('Помилка завантаження товарів:', error);
+                console.error('Помилка завантаження даних:', error);
             } finally {
                 setIsLoading(false);
             }
         };
 
-        fetchGoods();
-    }, []);
+        loadData();
+    }, [user]); // Перезапускаємо, якщо юзер залогінився/розлогінився
 
+    // ... (Логіка пагінації та скролу залишається без змін)
     const totalPages = Math.ceil(goods.length / itemsPerPage) || 1;
 
     useEffect(() => {
@@ -88,33 +114,17 @@ export default function Trending() {
         setActiveIndex(pageIndex);
         if (sliderRef.current) {
             const containerWidth = sliderRef.current.clientWidth;
-
-            let gap = 30; // Для екранів > 1500px
-            if (window.innerWidth <= 600) {
-                gap = 15; // Для телефону
-            } else if (window.innerWidth <= 1500) {
-                // Змінили 1024 на 1500
-                gap = 20; // Для планшета та екранів до 1500px
-            }
+            let gap = 30;
+            if (window.innerWidth <= 600) gap = 15;
+            else if (window.innerWidth <= 1500) gap = 20;
 
             const scrollAmount = (containerWidth + gap) * pageIndex;
-
-            sliderRef.current.scrollTo({
-                left: scrollAmount,
-                behavior: 'smooth',
-            });
+            sliderRef.current.scrollTo({ left: scrollAmount, behavior: 'smooth' });
         }
     };
 
-    const scrollLeft = () => {
-        const newIndex = activeIndex > 0 ? activeIndex - 1 : 0;
-        goToPage(newIndex);
-    };
-
-    const scrollRight = () => {
-        const newIndex = activeIndex < totalPages - 1 ? activeIndex + 1 : totalPages - 1;
-        goToPage(newIndex);
-    };
+    const scrollLeft = () => goToPage(activeIndex > 0 ? activeIndex - 1 : 0);
+    const scrollRight = () => goToPage(activeIndex < totalPages - 1 ? activeIndex + 1 : totalPages - 1);
 
     return (
         <>
@@ -152,7 +162,7 @@ export default function Trending() {
                                 goods.map((product) => (
                                     <div key={product.id} className={styles.cardWrapper}>
                                         <BestSellingCard
-                                            id={String(product.id)}
+                                            id={Number(product.id)} /* 🔥 Передаємо як number */
                                             image={product.main_image_url}
                                             name={product.name}
                                             price={product.price}
@@ -161,6 +171,9 @@ export default function Trending() {
                                             isNew={product.is_new}
                                             showHeart={true}
                                             sizes={product.sizes}
+                                            initialIsFavorite={favoriteIds.includes(
+                                                Number(product.id),
+                                            )} /* 🔥 Передаємо лайк */
                                         />
                                     </div>
                                 ))

@@ -1,18 +1,25 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Clock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { getUserProfile, updateUserProfile } from '@/utils/backendData/backendUsers';
-import type { UserProfileData } from '@/components/profileComponents'; // Шлях до твоїх типів
+import type { UserProfileData } from '@/components/profileComponents';
 
-// Імпортуємо наші розбиті компоненти
-import { Sidebar, ProfileTab, OrdersTab, ReviewsTab, ProfileSkeleton } from '@/components/profileComponents';
+// 🔥 Імпортуємо FavoritesTab
+import {
+    Sidebar,
+    ProfileTab,
+    OrdersTab,
+    ReviewsTab,
+    ProfileSkeleton,
+    FavoritesTab,
+} from '@/components/profileComponents';
 
 export default function UserProfile() {
     const router = useRouter();
 
-    const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'reviews'>('profile');
+    // 🔥 Додали 'favorites' до можливих станів
+    const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'reviews' | 'favorites'>('profile');
     const [user, setUser] = useState<UserProfileData | null>(null);
     const [formData, setFormData] = useState<Partial<UserProfileData>>({});
 
@@ -83,6 +90,9 @@ export default function UserProfile() {
 
                     {activeTab === 'orders' && <OrdersTab orders={user.orders} />}
                     {activeTab === 'reviews' && <ReviewsTab reviews={user.reviews} />}
+
+                    {/* 🔥 Виводимо нову вкладку */}
+                    {activeTab === 'favorites' && <FavoritesTab favorites={user.favorites} />}
                 </div>
             </div>
         </div>

@@ -4,7 +4,7 @@ import { UserProfileData } from './types';
 
 interface SidebarProps {
     user: UserProfileData;
-    activeTab: 'profile' | 'orders' | 'reviews';
+    activeTab: 'profile' | 'orders' | 'reviews' | 'favorites';
     setActiveTab: (tab: 'profile' | 'orders' | 'reviews') => void;
     handleLogout: () => void;
 }
@@ -30,6 +30,7 @@ export function Sidebar({ user, activeTab, setActiveTab, handleLogout }: Sidebar
                         { id: 'profile', icon: User, label: 'Personal Information' },
                         { id: 'orders', icon: Package, label: 'My Orders', badge: user.orders?.length },
                         { id: 'reviews', icon: Star, label: 'My Reviews', badge: user.reviews?.length },
+                        { id: 'favorites', icon: Star, label: 'My Favorites', badge: user.favorites?.length },
                     ].map((item) => (
                         <button
                             key={item.id}
