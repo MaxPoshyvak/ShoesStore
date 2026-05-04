@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { Star } from 'lucide-react';
 import { useAuth } from './AuthContext';
 import { useRouter } from 'next/navigation';
 
@@ -19,15 +18,31 @@ export default function ReviewModal({
     onClose: () => void;
     onSubmitted?: () => void;
 }) {
-    const { user, token, isAuthenticated, isLoading } = useAuth();
+    const { token, isAuthenticated, isLoading } = useAuth();
     const router = useRouter();
     const [rating, setRating] = useState(0);
     const [content, setContent] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     
-    const userRecord = user as unknown as Record<string, unknown> | null;
-    const isVerified = Boolean(
-        userRecord && (userRecord['verified'] === true || userRecord['isVerified'] === true || userRecord['emailVerified'] === true)
+    // user info available from AuthContext if needed (kept minimal)
+
+    const StarIcon = ({ active }: { active: boolean }) => (
+        <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden
+            className={`transition-all duration-200 ease-out ${active ? 'scale-110 text-black' : 'scale-95 text-gray-300'}`}
+        >
+            <path
+                d="M12 2.5l2.9 6 6.6.6-5 4.3 1.6 6.3L12 17.8 5.9 20.7 7.5 14.4 2.5 10.1l6.6-.6L12 2.5z"
+                fill={active ? 'currentColor' : 'none'}
+                stroke={active ? 'currentColor' : 'currentColor'}
+                strokeWidth="1.2"
+            />
+        </svg>
     );
 
     const handleSubmit = async () => {
@@ -41,12 +56,6 @@ export default function ReviewModal({
             return;
         }
 
-        if (!isVerified) {
-            // redirect to verify page
-            router.push('/verify');
-            return;
-        }
-
         if (rating <= 0 || content.trim().length < 5) {
             alert('Please provide a rating and a short review.');
             return;
@@ -54,18 +63,34 @@ export default function ReviewModal({
 
         setIsSubmitting(true);
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/reviews`, {
+            const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/feedbacks/add`;
+            const payload = {
+                comment: content.trim(),
+                rating,
+                goodId: String(productId),
+            };
+            console.log('Submitting feedback', url, payload);
+
+            const res = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     ...(token ? { Authorization: `Bearer ${token}` } : {}),
                 },
-                body: JSON.stringify({ productId, rating, content }),
+                body: JSON.stringify(payload),
             });
 
             if (!res.ok) {
-                const err = await res.json().catch(() => ({}));
-                throw new Error(err.message || 'Failed to submit review');
+                const text = await res.text().catch(() => '');
+                let errMsg = text || `HTTP ${res.status}`;
+                try {
+                    const parsed = JSON.parse(text || '{}');
+                    errMsg = parsed.message || JSON.stringify(parsed) || errMsg;
+                } catch {
+                    // ignore parse errors
+                }
+                console.error('Feedback submission failed', res.status, errMsg);
+                throw new Error(errMsg || 'Failed to submit feedback');
             }
 
             if (onSubmitted) onSubmitted();
@@ -100,14 +125,17 @@ export default function ReviewModal({
                 </div>
 
                 <div className="mt-6">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 text-black">
                         {[1, 2, 3, 4, 5].map((s) => (
                             <button
                                 key={s}
                                 type="button"
                                 onClick={() => setRating(s)}
-                                className={`p-1 ${rating >= s ? 'text-yellow-500' : 'text-gray-400'}`}>
-                                <Star />
+                                style={rating >= s ? { animation: 'starPop 220ms ease-out' } : undefined}
+                                className="rounded-full p-1 transition-transform duration-150 ease-out hover:scale-110 active:scale-95"
+                                aria-label={`Set rating to ${s} stars`}
+                            >
+                                <StarIcon active={rating >= s} />
                             </button>
                         ))}
                         <div className="text-sm text-gray-500">{rating} / 5</div>
@@ -132,6 +160,19 @@ export default function ReviewModal({
                     </button>
                 </div>
             </div>
+            <style jsx global>{`
+            @keyframes starPop {
+                0% {
+                    transform: scale(0.85);
+                }
+                60% {
+                    transform: scale(1.18);
+                }
+                100% {
+                    transform: scale(1);
+                }
+            }
+        `}</style>
         </div>
     );
 }

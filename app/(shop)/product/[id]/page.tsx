@@ -3,7 +3,7 @@
 import { useEffect, useId, useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { ChevronLeft, CheckCircle2, Heart, Minus, Plus, ShoppingCart } from 'lucide-react';
 import ReviewModal from '@/components/ReviewModal';
 import { useCart } from '@/components/context/CartContext';
@@ -37,6 +37,7 @@ export default function ProductDetailPage() {
     const [showReviewModal, setShowReviewModal] = useState(false);
     const { isAuthenticated, isLoading: authLoading, user } = useAuth();
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     const userRecord = user as unknown as Record<string, unknown> | null;
     const isVerified = Boolean(
@@ -46,15 +47,27 @@ export default function ProductDetailPage() {
     const handleOpenReview = () => {
         if (authLoading) return;
         if (!isAuthenticated) {
-            router.push('/register');
+            router.push(`/register?next=/product/${product?.id}&openReview=1`);
             return;
         }
         if (!isVerified) {
-            router.push('/verify');
+            router.push(`/verify?next=/product/${product?.id}&openReview=1`);
             return;
         }
         setShowReviewModal(true);
     };
+
+    // Open modal if `openReview=1` present in query
+    useEffect(() => {
+        try {
+            const open = searchParams?.get('openReview');
+            if (open === '1') {
+                setShowReviewModal(true);
+            }
+        } catch (e) {
+            // ignore
+        }
+    }, [searchParams]);
 
     useEffect(() => {
         const loadProduct = async () => {

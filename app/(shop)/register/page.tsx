@@ -6,7 +6,6 @@ import Swal from 'sweetalert2';
 // import { useRouter } from "next/navigation";
 // import Link from "next/link";
 import { User, Mail, Lock, AlertCircle, ArrowRight } from 'lucide-react';
-import { p } from 'framer-motion/client';
 
 export default function RegisterPage() {
     // In the original Next.js, uncomment:
@@ -42,14 +41,15 @@ export default function RegisterPage() {
 
             await Swal.fire({
                 icon: 'success',
-                title: 'Реєстрація успішна!',
-                text: 'Дивіться свою пошту для коду верифікації. Код надійде протягом кількох хвилин.',
+                title: 'Registration successful!',
+                text: 'Check your email for the verification code. It should arrive within a few minutes.',
                 confirmButtonColor: '#000',
-                confirmButtonText: 'Перейти до верифікації',
+                confirmButtonText: 'Go to verification',
             });
 
-            // Redirect to verification page
-            window.location.href = '/verify';
+            // Redirect to verification page, preserve any next/openReview query params
+            const search = typeof window !== 'undefined' ? window.location.search : '';
+            window.location.href = `/verify${search}`;
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);

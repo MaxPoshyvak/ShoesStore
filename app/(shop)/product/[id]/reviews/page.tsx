@@ -7,11 +7,12 @@ import { useParams } from 'next/navigation';
 import { Star } from 'lucide-react';
 
 type Review = {
-    id: string;
-    productId: string;
+    _id?: string;
+    id?: string;
+    goodId: string;
     rating: number;
-    content: string;
-    author?: { username?: string } | string;
+    comment: string;
+    username?: string;
     createdAt?: string;
 };
 
@@ -26,7 +27,7 @@ export default function ReviewsPage() {
             setLoading(true);
             try {
                 const [rRes, pRes] = await Promise.all([
-                    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/reviews?productId=${id}`),
+                    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/feedbacks/get`),
                     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/goods`),
                 ]);
 
@@ -34,7 +35,8 @@ export default function ReviewsPage() {
                 const goods = await pRes.json().catch(() => []);
                 const found = goods.find((g: any) => String(g.id) === id);
 
-                setReviews(Array.isArray(rData) ? rData : []);
+                const allReviews = Array.isArray(rData?.feedbacks) ? rData.feedbacks : Array.isArray(rData) ? rData : [];
+                setReviews(allReviews.filter((review: Review) => String(review.goodId) === id));
                 setProduct(found || null);
             } catch (e) {
                 console.error(e);
@@ -61,8 +63,10 @@ export default function ReviewsPage() {
                             <p className="mt-2 text-2xl font-black">₴ {Number(product.price).toFixed(2)}</p>
                             <div className="mt-4 flex items-center gap-2">
                                 <div className="text-lg font-semibold">{avg.toFixed(1)}</div>
-                                <div className="flex items-center text-yellow-500">
-                                    {Array.from({ length: 5 }).map((_, i) => (<Star key={i} className={i < Math.round(avg) ? 'text-yellow-400' : 'text-gray-300'} />))}
+                                <div className="flex items-center text-black">
+                                    {Array.from({ length: 5 }).map((_, i) => (
+                                        <Star key={i} fill="black" color="black" className="h-4 w-4" />
+                                    ))}
                                 </div>
                                 <div className="text-sm text-gray-500">({reviews.length} reviews)</div>
                             </div>
@@ -80,15 +84,17 @@ export default function ReviewsPage() {
                         <div className="space-y-6">
                             {reviews.length === 0 && <p className="text-gray-600">No reviews yet.</p>}
                             {reviews.map((r) => (
-                                <article key={r.id} className="rounded-lg border p-4">
+                                <article key={r._id || r.id} className="rounded-lg border p-4">
                                     <div className="flex items-center justify-between">
-                                        <div className="font-semibold">{typeof r.author === 'string' ? r.author : r.author?.username || 'Anonymous'}</div>
+                                        <div className="font-semibold">{r.username || 'Anonymous'}</div>
                                         <div className="text-sm text-gray-500">{r.createdAt ? new Date(r.createdAt).toLocaleDateString() : ''}</div>
                                     </div>
-                                    <div className="mt-2 flex items-center gap-2 text-yellow-500">
-                                        {Array.from({ length: 5 }).map((_, i) => (<Star key={i} className={i < (r.rating || 0) ? 'text-yellow-400' : 'text-gray-300'} />))}
+                                    <div className="mt-2 flex items-center gap-2 text-black">
+                                        {Array.from({ length: 5 }).map((_, i) => (
+                                            <Star key={i} fill="black" color="black" className="h-4 w-4" />
+                                        ))}
                                     </div>
-                                    <p className="mt-3 text-gray-700">{r.content}</p>
+                                    <p className="mt-3 text-gray-700">{r.comment}</p>
                                 </article>
                             ))}
                         </div>
