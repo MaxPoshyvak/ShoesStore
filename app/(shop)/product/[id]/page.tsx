@@ -250,11 +250,11 @@ export default function ProductDetailPage() {
         <main className="min-h-screen bg-white px-4 pt-24 lg:pt-32 pb-16 lg:pb-24 font-sans">
             <div className="mx-auto max-w-7xl">
                 {/* Breadcrumbs */}
-                <Link
-                    href="/shop"
+                <div
+                    onClick={() => router.back()}
                     className="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 transition hover:text-black mb-6 lg:mb-8">
-                    <ChevronLeft className="h-4 w-4" /> Back to shop
-                </Link>
+                    <ChevronLeft className="h-4 w-4" /> Back
+                </div>
 
                 {/* 
                     Адаптивна сітка: 
