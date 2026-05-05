@@ -4,5 +4,5 @@ export const unauthorized = () => {
 
     window.location.href = '/login';
 
-    throw new Error('Сесія закінчилась. Будь ласка, увійдіть знову.');
+    throw new Error('Session expired. Please log in again.');
 };
