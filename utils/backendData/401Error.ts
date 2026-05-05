@@ -8,6 +8,7 @@ export const unauthorized = () => {
         icon: 'error',
         title: 'Error',
         text: 'Session expired. Please log in again.',
+        showCancelButton: true,
         confirmButtonColor: '#000',
         cancelButtonText: 'Cancel',
         confirmButtonText: 'Go to Login',
