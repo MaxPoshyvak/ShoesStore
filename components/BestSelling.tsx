@@ -6,6 +6,7 @@ import BestSellingCard from './BestSellingCard/BestSellingCard';
 import Link from 'next/link';
 import { BestSellingCardSkeleton } from '@/components/BestSellingCard/BestSellingCardSkeleton';
 import { useAuth } from '@/components/AuthContext';
+import { unauthorized } from '@/utils/backendData/401Error';
 
 interface Good {
     id: string;
@@ -42,6 +43,9 @@ export default function BestSelling() {
                     headers: { Authorization: `Bearer ${token}` },
                     method: 'GET',
                 }).then((res) => {
+                    if (res.status === 401) {
+                        unauthorized();
+                    }
                     if (!res.ok) throw new Error('Помилка мережі товарів');
                     return res.json();
                 });
