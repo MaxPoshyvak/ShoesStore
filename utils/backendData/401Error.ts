@@ -9,10 +9,13 @@ export const unauthorized = () => {
         title: 'Error',
         text: 'Session expired. Please log in again.',
         confirmButtonColor: '#000',
+        cancelButtonText: 'Cancel',
         confirmButtonText: 'Go to Login',
     }).then((result) => {
         if (result.isConfirmed) {
             window.location.href = '/login';
+        } else {
+            return;
         }
     });
 
