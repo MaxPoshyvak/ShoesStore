@@ -21,6 +21,7 @@ export function ProfileSkeleton() {
                             <div className="w-full h-[44px] bg-gray-100 rounded-xl"></div>
                             <div className="my-2 border-t border-gray-100"></div>
                             <div className="w-full h-[44px] bg-gray-50 rounded-xl"></div>
+                            <div className="w-full h-[44px] bg-gray-50 rounded-xl"></div>
                         </div>
                     </div>
                 </div>
