@@ -35,14 +35,18 @@ export default function BestSelling() {
             setIsLoading(true);
 
             try {
+                const token = localStorage.getItem('token');
+
                 // 1. Створюємо запит на товари
-                const goodsPromise = fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/goods`).then((res) => {
+                const goodsPromise = fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/goods`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                    method: 'GET',
+                }).then((res) => {
                     if (!res.ok) throw new Error('Помилка мережі товарів');
                     return res.json();
                 });
 
                 // 2. Створюємо запит на улюблені (АЛЕ тільки якщо є токен/юзер)
-                const token = localStorage.getItem('token');
                 let favoritesPromise = Promise.resolve({ favorites: [] }); // Заглушка, якщо не авторизований
 
                 if (token) {
