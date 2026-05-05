@@ -4,13 +4,16 @@ export const unauthorized = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
 
-    window.location.href = '/login';
-
     Swal.fire({
         icon: 'error',
         title: 'Error',
         text: 'Session expired. Please log in again.',
         confirmButtonColor: '#000',
+        confirmButtonText: 'Go to Login',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = '/login';
+        }
     });
 
     // throw new Error('Session expired. Please log in again.');
