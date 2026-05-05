@@ -7,7 +7,7 @@ export const unauthorized = () => {
     Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'Session expired. Please log in again.',
+        text: 'Please log in to your account.',
         showCancelButton: true,
         confirmButtonColor: '#000',
         cancelButtonText: 'Cancel',
