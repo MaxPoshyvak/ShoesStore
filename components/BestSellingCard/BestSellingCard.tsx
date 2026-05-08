@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import styles from './BestSellingCard.module.css';
 import { addToFavorites, removeFromFavorites } from '@/utils/backendData/backendFavorites';
+import { ArrowUpRight, Heart } from 'lucide-react';
 
 interface ProductCardProps {
     id: number;
@@ -154,13 +155,7 @@ export default function BestSellingCard({
                             e.stopPropagation();
                             toggleFavourite();
                         }}>
-                        <Image
-                            src={isFavorite ? '/heart-filled.svg' : '/heart-outline.svg'}
-                            alt="Favourite"
-                            width={24}
-                            height={24}
-                            style={{ objectFit: 'contain' }}
-                        />
+                        {isFavorite ? <Heart fill="black" size={20} /> : <Heart size={20} />}
                     </button>
                 )}
 
@@ -222,13 +217,7 @@ export default function BestSellingCard({
                         </button>
                     ) : (
                         <button className={styles.card__btn} onClick={handleOpenProduct}>
-                            <Image
-                                src="/btn.png"
-                                alt="Add to Cart"
-                                width={30}
-                                height={30}
-                                style={{ objectFit: 'contain' }}
-                            />
+                            <ArrowUpRight color="white" />
                         </button>
                     )}
                 </div>
