@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { getUserProfile, updateUserProfile } from '@/utils/backendData/backendUsers';
 import type { UserProfileData } from '@/components/profileComponents';
 
-// 🔥 Імпортуємо FavoritesTab
 import {
     Sidebar,
     ProfileTab,
@@ -16,11 +15,12 @@ import {
 } from '@/components/profileComponents';
 import { Reveal } from '@/components/ScrollAnimated/Reveal';
 
+type TabType = 'profile' | 'orders' | 'reviews' | 'favorites';
+
 export default function UserProfile() {
     const router = useRouter();
 
-    // 🔥 Додали 'favorites' до можливих станів
-    const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'reviews' | 'favorites'>('profile');
+    const [activeTab, setActiveTab] = useState<TabType>('profile');
     const [user, setUser] = useState<UserProfileData | null>(null);
     const [formData, setFormData] = useState<Partial<UserProfileData>>({});
 
@@ -72,8 +72,9 @@ export default function UserProfile() {
     if (!user) return null;
 
     return (
-        <div className="min-h-screen bg-[#F8F9FA] py-30 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-8">
+        <div className="min-h-screen bg-[#F8F9FA] py-4 sm:py-6 md:py-10 px-3 sm:px-4 md:px-6 lg:px-8">
+            <div className="max-w-6xl mx-auto mt-25 md:mt-20 flex flex-col md:flex-row gap-4 sm:gap-6 md:gap-8">
+                {/* Sidebar */}
                 <Reveal effect="fade-right">
                     <Sidebar
                         user={user}
@@ -83,7 +84,8 @@ export default function UserProfile() {
                     />
                 </Reveal>
 
-                <div className="flex-1">
+                {/* Main Content */}
+                <div className="flex-1 min-w-0">
                     <Reveal effect="fade-left">
                         {activeTab === 'profile' && (
                             <ProfileTab
@@ -99,8 +101,6 @@ export default function UserProfile() {
 
                         {activeTab === 'orders' && <OrdersTab orders={user.orders} />}
                         {activeTab === 'reviews' && <ReviewsTab reviews={user.reviews} />}
-
-                        {/* 🔥 Виводимо нову вкладку */}
                         {activeTab === 'favorites' && <FavoritesTab favorites={user.favorites} />}
                     </Reveal>
                 </div>

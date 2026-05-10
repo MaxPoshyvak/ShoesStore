@@ -101,20 +101,24 @@ function ShopContent() {
 
     return (
         <main style={{ paddingTop: '120px', paddingBottom: '40px', minHeight: '80vh' }}>
-            <div className={styles.header}>
-                <span className={styles.line}></span>
-                <h2 className={styles.title}>Shop Now</h2>
-                <span className={styles.line}></span>
-            </div>
+            <Reveal effect="blur">
+                <div className={styles.header}>
+                    <span className={styles.line}></span>
+                    <h2 className={styles.title}>Shop Now</h2>
+                    <span className={styles.line}></span>
+                </div>
+            </Reveal>
 
             <div className={styles.filters}>
                 {categories.map((cat) => (
-                    <button
-                        key={cat}
-                        className={`${styles.filterBtn} ${activeCategory === cat ? styles.activeFilter : ''}`}
-                        onClick={() => handleCategoryChange(cat)}>
-                        {cat}
-                    </button>
+                    <Reveal key={cat} effect={cat == 'Boy' || cat == 'Child' ? 'fade-left' : 'fade-right'}>
+                        <button
+                            key={cat}
+                            className={`${styles.filterBtn} ${activeCategory === cat ? styles.activeFilter : ''}`}
+                            onClick={() => handleCategoryChange(cat)}>
+                            {cat}
+                        </button>
+                    </Reveal>
                 ))}
             </div>
 

@@ -22,24 +22,29 @@ export function ProfileTab({
     handleSaveProfile,
 }: ProfileTabProps) {
     return (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 md:p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex justify-between items-start mb-8">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6 md:p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-6 sm:mb-8">
                 <div>
-                    <h2 className="text-2xl font-black text-gray-900">Personal Information</h2>
-                    <p className="text-gray-500 text-sm mt-1">Manage your account details and preferences.</p>
+                    <h2 className="text-xl sm:text-2xl font-black text-gray-900">Personal Information</h2>
+                    <p className="text-gray-500 text-xs sm:text-sm mt-1">
+                        Manage your account details and preferences.
+                    </p>
                 </div>
                 {!isEditing && (
                     <button
                         onClick={() => setIsEditing(true)}
-                        className="flex items-center gap-2 text-sm font-bold text-gray-700 hover:text-black bg-gray-50 px-4 py-2 rounded-xl transition-colors">
-                        <Edit2 size={16} /> Edit Profile
+                        className="self-start flex items-center gap-2 text-xs sm:text-sm font-bold text-gray-700 hover:text-black bg-gray-50 px-3 sm:px-4 py-2 rounded-xl transition-colors">
+                        <Edit2 size={14} /> <span className="hidden sm:inline">Edit Profile</span>
+                        <span className="sm:hidden">Edit</span>
                     </button>
                 )}
             </div>
 
-            <form onSubmit={handleSaveProfile} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={handleSaveProfile} className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                {/* Full Name */}
                 <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 sm:mb-2">
                         Full Name
                     </label>
                     {isEditing ? (
@@ -48,18 +53,20 @@ export function ProfileTab({
                             name="username"
                             value={formData.username || ''}
                             onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none"
+                            className="w-full bg-white border border-gray-200 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:ring-2 focus:ring-black outline-none transition-shadow"
                             required
                         />
                     ) : (
-                        <div className="flex items-center gap-3 text-gray-900 font-medium bg-gray-50 px-4 py-3 rounded-xl border border-transparent">
-                            <User size={18} className="text-gray-400" /> {user.username}
+                        <div className="flex items-center gap-3 text-gray-900 font-medium bg-gray-50 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border border-transparent text-sm">
+                            <User size={16} className="text-gray-400 shrink-0" />
+                            <span className="truncate">{user.username}</span>
                         </div>
                     )}
                 </div>
 
+                {/* Email */}
                 <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 sm:mb-2">
                         Email Address
                     </label>
                     {isEditing ? (
@@ -68,18 +75,20 @@ export function ProfileTab({
                             name="email"
                             value={formData.email || ''}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none"
+                            className="w-full bg-white border border-gray-200 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:ring-2 focus:ring-black outline-none transition-shadow"
                             required
                         />
                     ) : (
-                        <div className="flex items-center gap-3 text-gray-900 font-medium bg-gray-50 px-4 py-3 rounded-xl border border-transparent">
-                            <Mail size={18} className="text-gray-400" /> {user.email}
+                        <div className="flex items-center gap-3 text-gray-900 font-medium bg-gray-50 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border border-transparent text-sm">
+                            <Mail size={16} className="text-gray-400 shrink-0" />
+                            <span className="truncate">{user.email}</span>
                         </div>
                     )}
                 </div>
 
+                {/* Phone */}
                 <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 sm:mb-2">
                         Phone Number
                     </label>
                     {isEditing ? (
@@ -88,19 +97,20 @@ export function ProfileTab({
                             name="phone"
                             value={formData.phone || ''}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none"
+                            className="w-full bg-white border border-gray-200 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:ring-2 focus:ring-black outline-none transition-shadow"
                             placeholder="+380..."
                         />
                     ) : (
-                        <div className="flex items-center gap-3 text-gray-900 font-medium bg-gray-50 px-4 py-3 rounded-xl border border-transparent">
-                            <Phone size={18} className="text-gray-400" />{' '}
+                        <div className="flex items-center gap-3 text-gray-900 font-medium bg-gray-50 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border border-transparent text-sm">
+                            <Phone size={16} className="text-gray-400 shrink-0" />
                             {user.phone || <span className="text-gray-400 font-normal">Not specified</span>}
                         </div>
                     )}
                 </div>
 
+                {/* Address */}
                 <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 sm:mb-2">
                         Delivery Address
                     </label>
                     {isEditing ? (
@@ -109,32 +119,33 @@ export function ProfileTab({
                             name="delivery_address"
                             value={formData.delivery_address || ''}
                             onChange={(e) => setFormData({ ...formData, delivery_address: e.target.value })}
-                            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-black outline-none"
+                            className="w-full bg-white border border-gray-200 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:ring-2 focus:ring-black outline-none transition-shadow"
                             placeholder="City, Street..."
                         />
                     ) : (
-                        <div className="flex items-center gap-3 text-gray-900 font-medium bg-gray-50 px-4 py-3 rounded-xl border border-transparent">
-                            <MapPin size={18} className="text-gray-400" />{' '}
+                        <div className="flex items-center gap-3 text-gray-900 font-medium bg-gray-50 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border border-transparent text-sm">
+                            <MapPin size={16} className="text-gray-400 shrink-0" />
                             {user.delivery_address || <span className="text-gray-400 font-normal">Not specified</span>}
                         </div>
                     )}
                 </div>
 
+                {/* Form Actions */}
                 {isEditing && (
-                    <div className="md:col-span-2 flex justify-end gap-3 mt-4 pt-6 border-t border-gray-100">
+                    <div className="md:col-span-2 flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 mt-4 pt-4 sm:pt-6 border-t border-gray-100">
                         <button
                             type="button"
                             onClick={() => {
                                 setIsEditing(false);
                                 setFormData(user);
                             }}
-                            className="px-6 py-3 rounded-xl text-sm font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors">
+                            className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl text-sm font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors text-center">
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={isSaving}
-                            className="px-6 py-3 rounded-xl text-sm font-bold text-white bg-black hover:bg-gray-800 transition-colors">
+                            className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl text-sm font-bold text-white bg-black hover:bg-gray-800 transition-colors disabled:opacity-50 text-center">
                             {isSaving ? 'Saving...' : 'Save Changes'}
                         </button>
                     </div>
