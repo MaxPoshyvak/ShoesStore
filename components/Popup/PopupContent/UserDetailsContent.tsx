@@ -21,113 +21,109 @@ export const UserDetailsContent: React.FC<UserDetailsContentProps> = ({ user, on
     const [orders, setOrders] = React.useState<Order[]>([]);
 
     React.useEffect(() => {
-        if (!user.id) {
-            return;
-        }
-
+        if (!user.id) return;
         getOrdersByUserId(user.id)
             .then((data) => setOrders(data))
             .catch((error) => console.error('Error loading user orders:', error));
     }, [user.id]);
 
+    const totalSpent = orders.reduce((total, order) => total + Number(order.total_amount), 0);
+
     return (
         <div className="space-y-6">
-            <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
-                <div className="w-14 h-14 bg-black text-white rounded-full flex items-center justify-center text-xl font-bold shadow-md">
+            {/* User header */}
+            <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-xl">
+                <div className="w-12 h-12 bg-gray-900 text-white rounded-xl flex items-center justify-center text-lg font-bold">
                     {user.username.charAt(0).toUpperCase()}
                 </div>
-                <div className="flex-1">
-                    <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                <div className="flex-1 min-w-0">
+                    <h3 className="text-[15px] font-bold text-gray-900 flex items-center gap-2">
                         {user.username}
                         <span
-                            className={`text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider ${
-                                user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-200 text-gray-700'
+                            className={`text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider ${
+                                user.role === 'admin' ? 'bg-gray-900 text-white' : 'bg-gray-200 text-gray-600'
                             }`}>
                             {user.role}
                         </span>
                     </h3>
-                    <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
-                        <span className="flex items-center gap-1.5">
-                            <Mail size={14} /> {user.email}
+                    <div className="flex items-center gap-3 mt-1 text-[12px] text-gray-400">
+                        <span className="flex items-center gap-1">
+                            <Mail size={12} /> {user.email}
                         </span>
-                        <span className="flex items-center gap-1.5">
-                            <Calendar size={14} /> {new Date(user.created_at).toLocaleDateString()}
+                        <span className="flex items-center gap-1">
+                            <Calendar size={12} /> {new Date(user.created_at).toLocaleDateString()}
                         </span>
                     </div>
                 </div>
             </div>
 
-            {/* Статистика клієнта */}
-            <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white border border-gray-100 p-4 rounded-xl flex items-center justify-between shadow-sm">
+            {/* Stats */}
+            <div className="grid grid-cols-2 gap-3">
+                <div className="bg-white border border-gray-100 p-4 rounded-xl flex items-center justify-between">
                     <div>
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Spent</p>
-                        <p className="text-2xl font-black text-gray-900">
-                            {orders.reduce((total, order) => total + Number(order.total_amount), 0).toFixed(2)} ₴
-                        </p>
+                        <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Spent</p>
+                        <p className="text-xl font-bold text-gray-900 mt-0.5">{totalSpent.toFixed(2)} ₴</p>
                     </div>
-                    <div className="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center text-green-600">
-                        <ShoppingBag size={20} />
+                    <div className="w-9 h-9 bg-emerald-50 rounded-lg flex items-center justify-center">
+                        <ShoppingBag size={18} className="text-emerald-600" />
                     </div>
                 </div>
-                <div className="bg-white border border-gray-100 p-4 rounded-xl flex items-center justify-between shadow-sm">
+                <div className="bg-white border border-gray-100 p-4 rounded-xl flex items-center justify-between">
                     <div>
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Orders</p>
-                        <p className="text-2xl font-black text-gray-900">{orders.length}</p>
+                        <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Orders</p>
+                        <p className="text-xl font-bold text-gray-900 mt-0.5">{orders.length}</p>
                     </div>
-                    <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-blue-600">
-                        <Package size={20} />
+                    <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center">
+                        <Package size={18} className="text-blue-600" />
                     </div>
                 </div>
             </div>
 
+            {/* Order history */}
             <div>
-                <h4 className="text-sm font-bold text-gray-900 mb-3 border-b pb-2 uppercase tracking-wide">
-                    Order history
+                <h4 className="text-[13px] font-bold text-gray-900 mb-3 border-b border-gray-100 pb-2 uppercase tracking-wide">
+                    Order History
                 </h4>
 
-                <div className="space-y-2 max-h-62.5 overflow-y-auto pr-2 custom-scrollbar">
+                <div className="space-y-2 max-h-[260px] overflow-y-auto pr-1">
                     {orders.length === 0 ? (
-                        <div className="p-6 text-center text-gray-400 text-sm">
+                        <div className="p-8 text-center text-gray-400 text-[13px]">
                             The user has not made any orders yet.
                         </div>
                     ) : (
                         orders.map((order) => (
                             <div
                                 key={order.id}
-                                className="flex items-center justify-between p-3 border border-gray-100 rounded-xl hover:border-black transition-colors group cursor-pointer bg-white">
-                                {/* Ліва частина: Іконка та Інфо */}
-                                <div className="flex items-center gap-4">
-                                    <div className="bg-gray-50 p-2 rounded-lg text-gray-500 group-hover:bg-black group-hover:text-white transition-colors">
-                                        <ShoppingBag size={18} />
+                                className="flex items-center justify-between p-3 border border-gray-100 rounded-xl hover:border-gray-200 transition-colors group cursor-pointer bg-white">
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-gray-50 p-2 rounded-lg text-gray-400 group-hover:bg-gray-900 group-hover:text-white transition-colors">
+                                        <ShoppingBag size={16} />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-bold text-gray-900">Order #{order.id}</p>
-                                        <p className="text-xs text-gray-500">
+                                        <p className="text-[13px] font-semibold text-gray-900">Order #{order.id}</p>
+                                        <p className="text-[11px] text-gray-400">
                                             {new Date(order.created_at).toLocaleDateString()} •{' '}
-                                            {order.items?.length || 0} item(s)
+                                            {order.items?.length ?? 0} item(s)
                                         </p>
                                     </div>
                                 </div>
 
-                                {/* Права частина: Ціна, Статус та Іконка переходу */}
-                                <div className="text-right flex items-center gap-4">
+                                <div className="text-right flex items-center gap-3">
                                     <div>
-                                        {/* Виправили суму на Number() + toLocaleString */}
-                                        <p className="text-sm font-black text-gray-900">
+                                        <p className="text-[13px] font-bold text-gray-900">
                                             {Number(order.total_amount).toLocaleString('en-US')} ₴
                                         </p>
                                         <p
-                                            className={`text-[10px] font-bold uppercase tracking-wider ${
-                                                order.status === 'completed' ? 'text-green-600' : 'text-yellow-600'
+                                            className={`text-[10px] font-semibold uppercase tracking-wider ${
+                                                order.status === 'completed' ? 'text-emerald-600' : 'text-amber-600'
                                             }`}>
                                             {order.status === 'completed' ? 'Completed' : 'In progress'}
                                         </p>
                                     </div>
                                     <ExternalLink
                                         onClick={() => onOpenOrder(order)}
-                                        size={16}
-                                        className="text-gray-300 group-hover:text-black transition-colors"
+                                        size={14}
+                                        className="text-gray-300 group-hover:text-gray-600 transition-colors"
                                     />
                                 </div>
                             </div>
@@ -136,10 +132,10 @@ export const UserDetailsContent: React.FC<UserDetailsContentProps> = ({ user, on
                 </div>
             </div>
 
-            <div className="pt-4 flex justify-end">
+            <div className="pt-3 flex justify-end">
                 <button
                     onClick={onClose}
-                    className="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-bold rounded-xl transition-colors">
+                    className="px-5 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 text-[13px] font-semibold rounded-xl transition-colors">
                     Close
                 </button>
             </div>
