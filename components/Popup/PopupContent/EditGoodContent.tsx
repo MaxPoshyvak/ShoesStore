@@ -11,25 +11,23 @@ interface EditGoodContentProps {
 
 export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose, onSuccess }) => {
     const [activeTab, setActiveTab] = useState<'full' | 'stock'>('full');
-
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const [formData, setFormData] = useState({
-        name: good?.name || '',
-        price: good?.price || '',
-        old_price: good?.old_price || '',
-        category: good?.category || 'Man',
-        stock_quantity: good?.stock_quantity || '',
-        is_new: good?.is_new || false,
-        description: good?.description || '',
-        sizes: Array.isArray(good?.sizes) ? good.sizes.join(', ') : good?.sizes || '',
-        main_image_url: good?.main_image_url || '',
-
-        gallery_urls: Array.isArray(good?.gallery_urls) ? good.gallery_urls.join('\n') : good?.gallery_urls || '',
+        name: good?.name ?? '',
+        price: good?.price ?? '',
+        old_price: good?.old_price ?? '',
+        category: good?.category ?? 'Man',
+        stock_quantity: good?.stock_quantity ?? '',
+        is_new: good?.is_new ?? false,
+        description: good?.description ?? '',
+        sizes: Array.isArray(good?.sizes) ? good.sizes.join(', ') : (good?.sizes ?? ''),
+        main_image_url: good?.main_image_url ?? '',
+        gallery_urls: Array.isArray(good?.gallery_urls) ? good.gallery_urls.join('\n') : (good?.gallery_urls ?? ''),
     });
 
-    const [stockValue, setStockValue] = useState(good?.stock_quantity || 0);
+    const [stockValue, setStockValue] = useState(good?.stock_quantity ?? 0);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
@@ -67,63 +65,64 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
         }
     };
 
+    const inputClass =
+        'w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black/5 focus:border-gray-300 outline-none text-[13px] transition-all placeholder:text-gray-400';
+
     return (
-        <div className="space-y-6">
-            {/* --- ПЕРЕМИКАЧ ВКЛАДОК (TABS) --- */}
+        <div className="space-y-5">
+            {/* Tabs */}
             <div className="flex bg-gray-100 p-1 rounded-xl">
                 <button
                     onClick={() => setActiveTab('full')}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all ${
-                        activeTab === 'full' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-[13px] font-semibold rounded-lg transition-all ${
+                        activeTab === 'full' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
                     }`}>
-                    <Database size={16} /> Full details
+                    <Database size={15} /> Full details
                 </button>
                 <button
                     onClick={() => setActiveTab('stock')}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg transition-all ${
-                        activeTab === 'stock' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-[13px] font-semibold rounded-lg transition-all ${
+                        activeTab === 'stock' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
                     }`}>
-                    <Package size={16} /> Stock only
+                    <Package size={15} /> Stock only
                 </button>
             </div>
 
             {error && (
-                <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100">
+                <div className="bg-red-50 text-red-600 p-3 rounded-xl text-[13px] font-medium border border-red-100">
                     {error}
                 </div>
             )}
 
-            {/* --- ВМІСТ ВСТАВКИ: ПОВНА ФОРМА --- */}
-            {/* --- ВМІСТ ВСТАВКИ: ПОВНА ФОРМА --- */}
             {activeTab === 'full' && (
                 <form onSubmit={handleFullSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="md:col-span-2">
-                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Product name</label>
+                            <label className="block text-[12px] font-semibold text-gray-600 mb-1.5">Product name</label>
                             <input
                                 type="text"
                                 name="name"
                                 value={formData.name}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm"
+                                className={inputClass}
                                 required
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Price (₴)</label>
+                            <label className="block text-[12px] font-semibold text-gray-600 mb-1.5">Price (₴)</label>
                             <input
                                 type="number"
                                 name="price"
                                 value={formData.price}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm"
+                                className={inputClass}
                                 required
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                            <label className="block text-[12px] font-semibold text-gray-600 mb-1.5">
                                 Old price (optional)
                             </label>
                             <input
@@ -131,17 +130,17 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
                                 name="old_price"
                                 value={formData.old_price}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm"
+                                className={inputClass}
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Category</label>
+                            <label className="block text-[12px] font-semibold text-gray-600 mb-1.5">Category</label>
                             <select
                                 name="category"
                                 value={formData.category}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm">
+                                className={`${inputClass} appearance-none`}>
                                 <option value="Man">Men (Man)</option>
                                 <option value="Woman">Women (Woman)</option>
                                 <option value="Boy">Boys (Boy)</option>
@@ -150,7 +149,7 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                            <label className="block text-[12px] font-semibold text-gray-600 mb-1.5">
                                 Stock quantity
                             </label>
                             <input
@@ -158,56 +157,58 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
                                 name="stock_quantity"
                                 value={formData.stock_quantity}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm"
+                                className={inputClass}
                                 required
                             />
                         </div>
 
                         <div className="md:col-span-2">
-                            <label className="block text-sm font-semibold text-gray-700 mb-1.5">Sizes</label>
+                            <label className="block text-[12px] font-semibold text-gray-600 mb-1.5">Sizes</label>
                             <input
                                 type="text"
                                 name="sizes"
                                 value={formData.sizes}
                                 onChange={handleChange}
                                 placeholder="40, 41, 42"
-                                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm"
+                                className={inputClass}
                                 required
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Product description</label>
+                        <label className="block text-[12px] font-semibold text-gray-600 mb-1.5">
+                            Product description
+                        </label>
                         <textarea
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
                             rows={3}
-                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm resize-none"
+                            className={`${inputClass} resize-none`}
                             required
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5">Main image URL</label>
+                        <label className="block text-[12px] font-semibold text-gray-600 mb-1.5">Main image URL</label>
                         <div className="relative">
-                            <UploadCloud className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                            <UploadCloud className="absolute left-3.5 top-3 h-4 w-4 text-gray-400" />
                             <input
                                 type="url"
                                 name="main_image_url"
                                 value={formData.main_image_url}
                                 onChange={handleChange}
-                                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm"
+                                className={`${inputClass} pl-10`}
                                 required
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className="flex justify-between items-center text-sm font-semibold text-gray-700 mb-1.5">
+                        <label className="flex justify-between items-center text-[12px] font-semibold text-gray-600 mb-1.5">
                             <span>Additional images (gallery)</span>
-                            <span className="text-xs text-gray-400 font-normal">One URL per line</span>
+                            <span className="text-[11px] text-gray-400 font-normal">One URL per line</span>
                         </label>
                         <textarea
                             name="gallery_urls"
@@ -215,78 +216,77 @@ export const EditGoodContent: React.FC<EditGoodContentProps> = ({ good, onClose,
                             onChange={handleChange}
                             rows={4}
                             placeholder="https://example.com/image.png"
-                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black outline-none text-sm resize-none"
+                            className={`${inputClass} resize-none`}
                         />
                     </div>
 
-                    <label className="flex items-center gap-3 p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50">
+                    <label className="flex items-center gap-3 p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
                         <input
                             type="checkbox"
                             name="is_new"
                             checked={formData.is_new}
                             onChange={handleChange}
-                            className="w-5 h-5 cursor-pointer accent-black"
+                            className="w-5 h-5 cursor-pointer accent-gray-900"
                         />
-                        <span className="text-sm font-semibold text-gray-900">Mark as new (NEW)</span>
+                        <span className="text-[13px] font-semibold text-gray-900">Mark as new</span>
                     </label>
 
-                    <div className="flex justify-end gap-3 pt-4 border-t mt-4">
+                    <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-5 py-2.5 text-sm font-semibold text-gray-600 bg-white border rounded-xl hover:bg-gray-50 disabled:opacity-50"
+                            className="px-5 py-2.5 text-[13px] font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-50"
                             disabled={isLoading}>
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="px-5 py-2.5 text-sm font-semibold text-white bg-black rounded-xl hover:bg-gray-800 disabled:opacity-70">
-                            {isLoading ? 'Saving...' : 'Update all details'}
+                            className="px-5 py-2.5 text-[13px] font-semibold text-white bg-gray-900 rounded-xl hover:bg-black disabled:opacity-60">
+                            {isLoading ? 'Saving…' : 'Update all details'}
                         </button>
                     </div>
                 </form>
             )}
 
-            {/* --- ВМІСТ ВСТАВКИ: ТІЛЬКИ ЗАЛИШОК --- */}
             {activeTab === 'stock' && (
-                <form onSubmit={handleStockSubmit} className="space-y-6 py-4">
+                <form onSubmit={handleStockSubmit} className="space-y-5 py-2">
                     <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl flex items-center justify-between">
                         <div>
-                            <p className="text-sm text-blue-600 font-medium">Current stock:</p>
+                            <p className="text-[12px] text-blue-600 font-medium">Current stock</p>
                             <p className="text-xl font-bold text-blue-900">{good.stock_quantity} pcs</p>
                         </div>
-                        <Package size={32} className="text-blue-200" />
+                        <Package size={28} className="text-blue-300" />
                     </div>
 
                     <div>
-                        <label className="block text-lg font-semibold text-gray-700 mb-2 text-center">
+                        <label className="block text-[13px] font-semibold text-gray-600 mb-2 text-center">
                             New stock quantity
                         </label>
                         <input
                             type="number"
                             value={stockValue}
                             onChange={(e) => setStockValue(Number(e.target.value))}
-                            className="w-full text-center text-3xl font-bold px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-black outline-none"
+                            className="w-full text-center text-2xl font-bold px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-black/5 focus:border-gray-300 outline-none"
                             required
                             min="0"
                         />
                     </div>
 
-                    <div className="flex justify-end gap-3 pt-4 border-t">
+                    <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-5 py-2.5 text-sm font-semibold text-gray-600 bg-white border rounded-xl hover:bg-gray-50 disabled:opacity-50"
+                            className="px-5 py-2.5 text-[13px] font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-50"
                             disabled={isLoading}>
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="px-5 py-2.5 text-sm font-semibold text-white bg-black rounded-xl hover:bg-gray-800 disabled:opacity-70 flex items-center gap-2">
-                            <CheckCircle2 size={18} />
-                            {isLoading ? 'Updating...' : 'Save stock'}
+                            className="px-5 py-2.5 text-[13px] font-semibold text-white bg-gray-900 rounded-xl hover:bg-black disabled:opacity-60 inline-flex items-center gap-2">
+                            <CheckCircle2 size={16} />
+                            {isLoading ? 'Updating…' : 'Save stock'}
                         </button>
                     </div>
                 </form>
