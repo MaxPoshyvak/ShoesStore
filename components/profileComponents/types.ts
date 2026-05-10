@@ -20,6 +20,7 @@ export interface Review {
     rating: number;
     productName: string;
     date: string;
+    goodId: string;
 }
 
 export interface UserProfileData {

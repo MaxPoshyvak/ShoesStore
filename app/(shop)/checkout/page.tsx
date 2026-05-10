@@ -8,9 +8,18 @@ import { useCartStore } from '@/store/useCartStore';
 import { useCart } from '@/components/context/CartContext';
 import { useAuth } from '@/components/AuthContext';
 import { Reveal } from '@/components/ScrollAnimated/Reveal';
+import { json } from 'stream/consumers';
 
 export default function Checkout() {
     const { clearCart, setIsCartOpen } = useCart();
+    const [localAddress, setLocalAddress] = useState(() => {
+        // Перевіряємо, чи ми зараз в браузері
+        if (typeof window !== 'undefined') {
+            const savedUser = localStorage.getItem('user');
+            return savedUser ? JSON.parse(savedUser).delivery_address : '';
+        }
+        return ''; // Дефолтне значення для сервера
+    });
     const { token: authToken, isAuthenticated, isLoading: authLoading } = useAuth();
 
     const handlePayment = async (payload: {
@@ -60,7 +69,7 @@ export default function Checkout() {
         username: '',
         password: '',
         delivery_method: 'standard_post',
-        shipping_address: '',
+        shipping_address: localAddress || '',
         payment_method: 'card',
         customer_notes: '',
     });
