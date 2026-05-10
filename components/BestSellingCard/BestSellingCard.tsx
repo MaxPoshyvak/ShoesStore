@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import styles from './BestSellingCard.module.css';
 import { addToFavorites, removeFromFavorites } from '@/utils/backendData/backendFavorites';
 import { ArrowUpRight, Heart } from 'lucide-react';
+import { Reveal } from '@/components/ScrollAnimated/Reveal';
 
 interface ProductCardProps {
     id: number;
@@ -146,8 +147,11 @@ export default function BestSellingCard({
                 className={styles.card__imageBox}
                 onClick={handleOpenProduct}
                 style={{ cursor: isOutOfStock ? 'default' : 'pointer' }}>
-                {isNew && <div className={styles.badgeNew}>New</div>}
-
+                {isNew && (
+                    <Reveal effect="scale" delay={0.2} className={styles.badgeNew}>
+                        <div>New</div>
+                    </Reveal>
+                )}
                 {showHeart && (
                     <button
                         className={styles.heartBtn}

@@ -6,6 +6,7 @@ import styles from '../../../components/BestSelling.module.css';
 import BestSellingCard from '../../../components/BestSellingCard/BestSellingCard';
 import { BestSellingCardSkeleton } from '@/components/BestSellingCard/BestSellingCardSkeleton';
 import { useAuth } from '@/components/AuthContext'; // 🔥 Імпортуємо контекст (перевір шлях, якщо він інший)
+import { Reveal } from '@/components/ScrollAnimated/Reveal';
 
 const categories = ['Man', 'Woman', 'Boy', 'Child'];
 
@@ -126,19 +127,20 @@ function ShopContent() {
                     </>
                 ) : filteredGoods.length > 0 ? (
                     filteredGoods.map((product) => (
-                        <BestSellingCard
-                            key={product.id}
-                            id={Number(product.id)}
-                            image={product.main_image_url}
-                            name={product.name}
-                            price={product.price}
-                            oldPrice={product.old_price ? product.old_price : undefined}
-                            stockQuantity={product.stock_quantity}
-                            showHeart={true}
-                            isNew={product.is_new}
-                            sizes={product.sizes}
-                            initialIsFavorite={favoriteIds.includes(Number(product.id))} // 🔥 Передаємо статус лайка
-                        />
+                        <Reveal effect="fade-up" key={product.id} delay={0.1}>
+                            <BestSellingCard
+                                id={Number(product.id)}
+                                image={product.main_image_url}
+                                name={product.name}
+                                price={product.price}
+                                oldPrice={product.old_price ? product.old_price : undefined}
+                                stockQuantity={product.stock_quantity}
+                                showHeart={true}
+                                isNew={product.is_new}
+                                sizes={product.sizes}
+                                initialIsFavorite={favoriteIds.includes(Number(product.id))} // 🔥 Передаємо статус лайка
+                            />
+                        </Reveal>
                     ))
                 ) : (
                     <p style={{ textAlign: 'center', gridColumn: 'span 3', fontFamily: 'Poppins' }}>

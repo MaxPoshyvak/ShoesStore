@@ -6,6 +6,7 @@ import styles from './CartSidebar.module.css';
 import Link from 'next/link';
 // 🔥 Додали ShoppingBag з lucide-react
 import { Trash2, ShoppingBag } from 'lucide-react';
+import { Reveal } from '@/components/ScrollAnimated/Reveal';
 
 export default function CartSidebar() {
     const { isCartOpen, setIsCartOpen, cartItems, removeFromCart, updateQuantity, totalPrice } = useCart();
@@ -42,38 +43,42 @@ export default function CartSidebar() {
                         </div>
                     ) : (
                         cartItems.map((item, index) => (
-                            <div key={`${item.id}-${item.size ?? 'nosize'}-${index}`} className={styles.item}>
-                                <div className={styles.imgWrapper}>
-                                    <Image
-                                        src={item.image}
-                                        alt={item.name}
-                                        width={80}
-                                        height={80}
-                                        style={{ objectFit: 'contain', width: '100%', height: '100%' }}
-                                    />
-                                </div>
-                                <div className={styles.details}>
-                                    <div className={styles.detailsTop}>
-                                        <h4>{item.name}</h4>
-                                        {item.size && <p className={styles.size}>Size: {item.size}</p>}
-                                        <p className={styles.price}>₴ {Number(item.price).toFixed(2)}</p>
+                            <Reveal key={item.id} effect="fade-up">
+                                <div key={`${item.id}-${item.size ?? 'nosize'}-${index}`} className={styles.item}>
+                                    <div className={styles.imgWrapper}>
+                                        <Image
+                                            src={item.image}
+                                            alt={item.name}
+                                            width={80}
+                                            height={80}
+                                            style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+                                        />
                                     </div>
-
-                                    {/* Групуємо кнопки кількості та видалення в один рядок */}
-                                    <div className={styles.actionsRow}>
-                                        <div className={styles.quantityControls}>
-                                            <button onClick={() => updateQuantity(item.id, -1, item.size)}>−</button>
-                                            <span>{item.quantity}</span>
-                                            <button onClick={() => updateQuantity(item.id, 1, item.size)}>+</button>
+                                    <div className={styles.details}>
+                                        <div className={styles.detailsTop}>
+                                            <h4>{item.name}</h4>
+                                            {item.size && <p className={styles.size}>Size: {item.size}</p>}
+                                            <p className={styles.price}>₴ {Number(item.price).toFixed(2)}</p>
                                         </div>
-                                        <button
-                                            className={styles.removeBtn}
-                                            onClick={() => removeFromCart(item.id, item.size)}>
-                                            <Trash2 width={18} height={18} />
-                                        </button>
+
+                                        {/* Групуємо кнопки кількості та видалення в один рядок */}
+                                        <div className={styles.actionsRow}>
+                                            <div className={styles.quantityControls}>
+                                                <button onClick={() => updateQuantity(item.id, -1, item.size)}>
+                                                    −
+                                                </button>
+                                                <span>{item.quantity}</span>
+                                                <button onClick={() => updateQuantity(item.id, 1, item.size)}>+</button>
+                                            </div>
+                                            <button
+                                                className={styles.removeBtn}
+                                                onClick={() => removeFromCart(item.id, item.size)}>
+                                                <Trash2 width={18} height={18} />
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </Reveal>
                         ))
                     )}
                 </div>

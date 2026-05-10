@@ -1,6 +1,7 @@
 import React from 'react';
 import { Heart } from 'lucide-react';
 import BestSellingCard from '@/components/BestSellingCard/BestSellingCard'; // Перевір правильність шляху
+import { Reveal } from '@/components/ScrollAnimated/Reveal';
 
 interface FavoritesTabProps {
     favorites: any[]; // Заміни any на твій тип товару (наприклад, Good), якщо він експортується
@@ -21,18 +22,20 @@ export const FavoritesTab = ({ favorites }: FavoritesTabProps) => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {favorites.map((product) => (
                         <div key={product.id} className="h-full">
-                            <BestSellingCard
-                                id={Number(product.goodId)}
-                                image={product.goodImage} // Залежить від того, як бекенд повертає дані
-                                name={product.goodName}
-                                price={product.goodPrice}
-                                oldPrice={product.oldPrice}
-                                stockQuantity={product.stock_quantity}
-                                isNew={product.is_new}
-                                showHeart={true}
-                                sizes={product.sizes}
-                                initialIsFavorite={true} // Оскільки це вкладка улюблених, серце за замовчуванням зафарбоване
-                            />
+                            <Reveal effect="fade-up">
+                                <BestSellingCard
+                                    id={Number(product.goodId)}
+                                    image={product.goodImage} // Залежить від того, як бекенд повертає дані
+                                    name={product.goodName}
+                                    price={product.goodPrice}
+                                    oldPrice={product.oldPrice}
+                                    stockQuantity={product.stock_quantity}
+                                    isNew={product.is_new}
+                                    showHeart={true}
+                                    sizes={product.sizes}
+                                    initialIsFavorite={true} // Оскільки це вкладка улюблених, серце за замовчуванням зафарбоване
+                                />
+                            </Reveal>
                         </div>
                     ))}
                 </div>

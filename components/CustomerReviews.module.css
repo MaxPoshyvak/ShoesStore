@@ -1,10 +1,13 @@
+/* ========================================
+   REVIEWS SECTION
+   ======================================== */
 .reviewsSection {
     max-width: 1557px;
     margin: 80px auto;
     padding: 0 5%;
 }
 
-/* === ЗАГОЛОВОК === */
+/* === HEADER === */
 .header {
     display: flex;
     align-items: center;
@@ -27,7 +30,52 @@
     margin: 0;
 }
 
-/* === СЛАЙДЕР === */
+/* === SLIDER WRAPPER (arrows + window) === */
+.sliderWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* === ARROWS === */
+.arrow {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 2;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.arrow:hover {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transform: scale(1.05);
+}
+
+.arrow:active {
+    transform: scale(0.95);
+}
+
+.arrowPrev {
+    margin-right: -24px;
+}
+
+.arrowNext {
+    margin-left: -24px;
+}
+
+/* === SLIDER WINDOW === */
 .sliderWindow {
     width: 100%;
     overflow: hidden;
@@ -36,23 +84,35 @@
 
 .sliderTrack {
     display: flex;
-    gap: 30px; /* Відстань між картками на ПК */
-    transition: transform 0.5s ease-in-out;
+    will-change: transform;
+    user-select: none;
 }
 
+/* === CARD === */
 .card {
-    /* На ПК картка займає рівно половину контейнера мінус половину gap */
-    flex: 0 0 calc(50% - 15px);
+    /* Width & margin-right set inline via JS for precise percentage control */
+}
+
+.cardInner {
     background-color: #f8f8f8;
-    border-radius: 12px;
+    border-radius: 16px;
     padding: 30px;
     display: flex;
     align-items: center;
     gap: 25px;
     border: 1px solid #eaeaea;
+    height: 100%;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
 }
 
-/* === НОВА АВАТАРКА === */
+.cardInner:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* === AVATAR === */
 .avatarWrapper {
     flex-shrink: 0;
     width: 80px;
@@ -72,10 +132,12 @@
     text-transform: uppercase;
 }
 
-/* === КОНТЕНТ === */
+/* === CONTENT === */
 .content {
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    flex: 1;
 }
 
 .name {
@@ -84,6 +146,9 @@
     font-weight: 600;
     color: #000;
     margin: 0 0 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .goodName {
@@ -92,13 +157,30 @@
     color: #888;
     margin: 0 0 10px 0;
     line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.goodName:hover {
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .stars {
-    color: #ffc107;
     font-size: 16px;
     margin-bottom: 10px;
     letter-spacing: 2px;
+    display: flex;
+    gap: 2px;
+}
+
+.starFilled {
+    color: #ffc107;
+}
+
+.starEmpty {
+    color: #ddd;
 }
 
 .text {
@@ -107,9 +189,13 @@
     color: #444;
     line-height: 1.6;
     margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-/* === ПАГІНАЦІЯ === */
+/* === PAGINATION === */
 .pagination {
     display: flex;
     justify-content: center;
@@ -125,46 +211,123 @@
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s ease;
+    border: none;
+    padding: 0;
+}
+
+.dot:hover {
+    background-color: #999;
 }
 
 .dotActive {
     background-color: #333333;
-    width: 20px;
-    border-radius: 10px; /* Робимо активну крапочку витягнутою, як у трендових блоках */
+    width: 24px;
+    border-radius: 10px;
 }
 
-/* =========================================
-   RESPONSIVE STYLES
-   ========================================= */
+/* === EMPTY STATE === */
+.emptyText {
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    color: #888;
+    font-size: 16px;
+    padding: 40px 0;
+}
 
-@media (max-width: 1024px) {
-    .card {
-        /* На планшетах і телефонах картка займає 100% ширини */
-        flex: 0 0 100%;
+/* === SKELETON LOADING === */
+.skeletonWrapper {
+    display: flex;
+    gap: 30px;
+}
+
+.skeletonCard {
+    flex: 1;
+    background-color: #f8f8f8;
+    border-radius: 16px;
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    border: 1px solid #eaeaea;
+}
+
+.skeletonAvatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    flex-shrink: 0;
+}
+
+.skeletonContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.skeletonLine {
+    height: 14px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
     }
-    .sliderTrack {
-        gap: 15px; /* Зменшуємо gap на мобільних */
+    100% {
+        background-position: -200% 0;
     }
 }
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
 
 @media (max-width: 768px) {
     .reviewsSection {
         padding: 0 5%;
         margin: 50px auto;
     }
+
     .header {
         flex-direction: column;
         margin-bottom: 30px;
     }
+
     .title {
         font-size: 26px;
         text-align: center;
     }
-    .card {
+
+    .cardInner {
         flex-direction: column;
         text-align: center;
         gap: 20px;
         padding: 24px 20px;
+    }
+
+    .arrow {
+        display: none;
+    }
+
+    .skeletonWrapper {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .skeletonCard {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .stars {
+        justify-content: center;
     }
 }
 
@@ -172,16 +335,20 @@
     .title {
         font-size: 22px;
     }
+
     .name {
         font-size: 18px;
     }
+
     .avatarWrapper {
         width: 70px;
         height: 70px;
     }
+
     .avatarLetter {
         font-size: 28px;
     }
+
     .text {
         font-size: 13px;
     }

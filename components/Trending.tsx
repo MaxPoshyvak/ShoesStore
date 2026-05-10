@@ -7,6 +7,7 @@ import { ServerStatusPopup } from '@/components/ServerStatusPopup/ServerStatusPo
 import BestSellingCard from '@/components/BestSellingCard/BestSellingCard';
 import { BestSellingCardSkeleton } from '@/components/BestSellingCard/BestSellingCardSkeleton';
 import { useAuth } from '@/components/AuthContext'; // 🔥 Імпортуємо контекст для юзера
+import { Reveal } from '@/components/ScrollAnimated/Reveal';
 
 interface Good {
     id: string;
@@ -129,19 +130,21 @@ export default function Trending() {
     return (
         <>
             <section id="trending" className={styles.trending}>
-                <div className={styles.trending__left}>
-                    <div className={styles.trending__subtitle}>
-                        <span className={styles.trending__line}></span>
-                        Our Trending Shoe
+                <Reveal effect="fade-up" delay={0.1}>
+                    <div className={styles.trending__left}>
+                        <div className={styles.trending__subtitle}>
+                            <span className={styles.trending__line}></span>
+                            Our Trending Shoe
+                        </div>
+                        <h2 className={styles.trending__title}>Most Popular Products</h2>
+                        <p className={styles.trending__desc}>
+                            Top-rated sneakers for daily miles,
+                            <br />
+                            gym sessions, and city walks.
+                        </p>
+                        <button className={styles.trending__explore}>Explore</button>
                     </div>
-                    <h2 className={styles.trending__title}>Most Popular Products</h2>
-                    <p className={styles.trending__desc}>
-                        Top-rated sneakers for daily miles,
-                        <br />
-                        gym sessions, and city walks.
-                    </p>
-                    <button className={styles.trending__explore}>Explore</button>
-                </div>
+                </Reveal>
 
                 <div className={styles.trending__right}>
                     <div className={styles.trending__sliderGrid}>
@@ -161,20 +164,22 @@ export default function Trending() {
                             ) : goods.length > 0 ? (
                                 goods.map((product) => (
                                     <div key={product.id} className={styles.cardWrapper}>
-                                        <BestSellingCard
-                                            id={Number(product.id)} /* 🔥 Передаємо як number */
-                                            image={product.main_image_url}
-                                            name={product.name}
-                                            price={product.price}
-                                            oldPrice={product.old_price ? product.old_price : undefined}
-                                            stockQuantity={product.stock_quantity}
-                                            isNew={product.is_new}
-                                            showHeart={true}
-                                            sizes={product.sizes}
-                                            initialIsFavorite={favoriteIds.includes(
-                                                Number(product.id),
-                                            )} /* 🔥 Передаємо лайк */
-                                        />
+                                        <Reveal effect="fade-up" delay={0.1} className="w-full h-full">
+                                            <BestSellingCard
+                                                id={Number(product.id)} /* 🔥 Передаємо як number */
+                                                image={product.main_image_url}
+                                                name={product.name}
+                                                price={product.price}
+                                                oldPrice={product.old_price ? product.old_price : undefined}
+                                                stockQuantity={product.stock_quantity}
+                                                isNew={product.is_new}
+                                                showHeart={true}
+                                                sizes={product.sizes}
+                                                initialIsFavorite={favoriteIds.includes(
+                                                    Number(product.id),
+                                                )} /* 🔥 Передаємо лайк */
+                                            />
+                                        </Reveal>
                                     </div>
                                 ))
                             ) : (

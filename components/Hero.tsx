@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import styles from './Hero.module.css';
 import Link from 'next/link';
+import { Reveal } from '@/components/ScrollAnimated/Reveal';
 
 export default function Hero() {
     return (
@@ -56,14 +57,16 @@ export default function Hero() {
 
                 {/* Кросівок */}
                 <div className={styles.hero__imageContainer}>
-                    <Image
-                        src="/hero-shoe.png"
-                        alt="Trendy Slick Pro shoe"
-                        width={650}
-                        height={550}
-                        className={styles.hero__shoe}
-                        priority
-                    />
+                    <Reveal effect="scale">
+                        <Image
+                            src="/hero-shoe.png"
+                            alt="Trendy Slick Pro shoe"
+                            width={650}
+                            height={550}
+                            className={styles.hero__shoe}
+                            priority
+                        />
+                    </Reveal>
                 </div>
 
                 <div className={styles.hero__priceTag}>

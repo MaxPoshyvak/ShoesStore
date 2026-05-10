@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './BestSelling.module.css';
 import BestSellingCard from './BestSellingCard/BestSellingCard';
 import Link from 'next/link';
 import { BestSellingCardSkeleton } from '@/components/BestSellingCard/BestSellingCardSkeleton';
 import { useAuth } from '@/components/AuthContext';
 import { unauthorized } from '@/utils/backendData/401Error';
+import { Reveal } from '@/components/ScrollAnimated/Reveal';
 
 interface Good {
     id: string;
@@ -83,20 +84,22 @@ export default function BestSelling() {
 
     return (
         <section id="best-selling" className={styles.bestSelling}>
-            <div className={styles.header}>
-                <span className={styles.line}></span>
-                <h2 className={styles.title}>Best Selling</h2>
-                <span className={styles.line}></span>
-            </div>
-
+            <Reveal effect="blur">
+                <div className={styles.header}>
+                    <span className={styles.line}></span>
+                    <h2 className={styles.title}>Best Selling</h2>
+                    <span className={styles.line}></span>
+                </div>
+            </Reveal>
             <div className={styles.filters}>
                 {categories.map((cat) => (
-                    <button
-                        key={cat}
-                        className={`${styles.filterBtn} ${activeCategory === cat ? styles.activeFilter : ''}`}
-                        onClick={() => setActiveCategory(cat)}>
-                        {cat}
-                    </button>
+                    <Reveal key={cat} effect={cat == 'Boy' || cat == 'Child' ? 'fade-left' : 'fade-right'}>
+                        <button
+                            className={`${styles.filterBtn} ${activeCategory === cat ? styles.activeFilter : ''}`}
+                            onClick={() => setActiveCategory(cat)}>
+                            {cat}
+                        </button>
+                    </Reveal>
                 ))}
             </div>
 
@@ -109,19 +112,20 @@ export default function BestSelling() {
                     </>
                 ) : filteredGoods.length > 0 ? (
                     filteredGoods.map((product) => (
-                        <BestSellingCard // Використовуємо новий компонент
-                            key={product.id}
-                            id={Number(product.id)}
-                            image={product.main_image_url}
-                            name={product.name}
-                            price={product.price}
-                            oldPrice={product.old_price ? product.old_price : undefined}
-                            stockQuantity={product.stock_quantity}
-                            showHeart={true}
-                            isNew={product.is_new}
-                            sizes={product.sizes}
-                            initialIsFavorite={favoriteIds.includes(Number(product.id))}
-                        />
+                        <Reveal effect="fade-up" key={product.id} delay={0.1}>
+                            <BestSellingCard
+                                id={Number(product.id)}
+                                image={product.main_image_url}
+                                name={product.name}
+                                price={product.price}
+                                oldPrice={product.old_price ? product.old_price : undefined}
+                                stockQuantity={product.stock_quantity}
+                                showHeart={true}
+                                isNew={product.is_new}
+                                sizes={product.sizes}
+                                initialIsFavorite={favoriteIds.includes(Number(product.id))}
+                            />
+                        </Reveal>
                     ))
                 ) : (
                     <p style={{ textAlign: 'center', gridColumn: '1 / -1', fontFamily: 'Poppins, sans-serif' }}>

@@ -14,6 +14,7 @@ import {
     ProfileSkeleton,
     FavoritesTab,
 } from '@/components/profileComponents';
+import { Reveal } from '@/components/ScrollAnimated/Reveal';
 
 export default function UserProfile() {
     const router = useRouter();
@@ -73,26 +74,35 @@ export default function UserProfile() {
     return (
         <div className="min-h-screen bg-[#F8F9FA] py-30 px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-8">
-                <Sidebar user={user} activeTab={activeTab} setActiveTab={setActiveTab} handleLogout={handleLogout} />
+                <Reveal effect="fade-right">
+                    <Sidebar
+                        user={user}
+                        activeTab={activeTab}
+                        setActiveTab={setActiveTab}
+                        handleLogout={handleLogout}
+                    />
+                </Reveal>
 
                 <div className="flex-1">
-                    {activeTab === 'profile' && (
-                        <ProfileTab
-                            user={user}
-                            formData={formData}
-                            setFormData={setFormData}
-                            isEditing={isEditing}
-                            setIsEditing={setIsEditing}
-                            isSaving={isSaving}
-                            handleSaveProfile={handleSaveProfile}
-                        />
-                    )}
+                    <Reveal effect="fade-left">
+                        {activeTab === 'profile' && (
+                            <ProfileTab
+                                user={user}
+                                formData={formData}
+                                setFormData={setFormData}
+                                isEditing={isEditing}
+                                setIsEditing={setIsEditing}
+                                isSaving={isSaving}
+                                handleSaveProfile={handleSaveProfile}
+                            />
+                        )}
 
-                    {activeTab === 'orders' && <OrdersTab orders={user.orders} />}
-                    {activeTab === 'reviews' && <ReviewsTab reviews={user.reviews} />}
+                        {activeTab === 'orders' && <OrdersTab orders={user.orders} />}
+                        {activeTab === 'reviews' && <ReviewsTab reviews={user.reviews} />}
 
-                    {/* 🔥 Виводимо нову вкладку */}
-                    {activeTab === 'favorites' && <FavoritesTab favorites={user.favorites} />}
+                        {/* 🔥 Виводимо нову вкладку */}
+                        {activeTab === 'favorites' && <FavoritesTab favorites={user.favorites} />}
+                    </Reveal>
                 </div>
             </div>
         </div>

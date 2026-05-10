@@ -11,6 +11,7 @@ import { useAuth } from '@/components/AuthContext';
 import { useRouter } from 'next/navigation';
 import { addToFavorites, removeFromFavorites } from '@/utils/backendData/backendFavorites';
 import router from 'next/router';
+import { Reveal } from '@/components/ScrollAnimated/Reveal';
 
 type Good = {
     id: number;
@@ -43,6 +44,10 @@ export default function ProductDetailPage() {
     const searchParams = useSearchParams();
 
     const handleOpenReview = () => {
+        if (!user) {
+            router.push('/login');
+            return;
+        }
         if (authLoading) return;
 
         setShowReviewModal(true);
@@ -263,154 +268,158 @@ export default function ProductDetailPage() {
                 */}
                 <div className="grid gap-8 md:gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
                     {/* Left: Product Image (Адаптивне фото із меншим заокругленням) */}
-                    <section className="relative w-full aspect-square rounded-xl bg-gray-50 overflow-hidden self-start">
-                        {product.is_new && (
-                            <div className="absolute left-4 top-4 lg:left-6 lg:top-6 z-10 rounded-full bg-black px-3 py-1.5 lg:px-4 text-xs font-bold uppercase tracking-widest text-white shadow-md">
-                                New
-                            </div>
-                        )}
-                        <Image
-                            id={imageId}
-                            src={product.main_image_url}
-                            alt={product.name}
-                            fill
-                            className={`object-cover transition duration-500 ${isOutOfStock ? 'grayscale opacity-50' : ''}`}
-                            sizes="(max-width: 1024px) 100vw, 45vw"
-                            priority
-                        />
-                        {isOutOfStock && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-white/10 backdrop-blur-[2px]">
-                                <span className="rounded-xl bg-white px-5 py-2.5 lg:px-6 lg:py-3 text-xs lg:text-sm font-bold uppercase tracking-widest text-black shadow-lg">
-                                    Out of Stock
-                                </span>
-                            </div>
-                        )}
-                    </section>
+                    <Reveal effect="fade-right">
+                        <section className="relative w-full aspect-square rounded-xl bg-gray-50 overflow-hidden self-start">
+                            {product.is_new && (
+                                <div className="absolute left-4 top-4 lg:left-6 lg:top-6 z-10 rounded-full bg-black px-3 py-1.5 lg:px-4 text-xs font-bold uppercase tracking-widest text-white shadow-md">
+                                    New
+                                </div>
+                            )}
+                            <Image
+                                id={imageId}
+                                src={product.main_image_url}
+                                alt={product.name}
+                                fill
+                                className={`object-cover transition duration-500 ${isOutOfStock ? 'grayscale opacity-50' : ''}`}
+                                sizes="(max-width: 1024px) 100vw, 45vw"
+                                priority
+                            />
+                            {isOutOfStock && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-white/10 backdrop-blur-[2px]">
+                                    <span className="rounded-xl bg-white px-5 py-2.5 lg:px-6 lg:py-3 text-xs lg:text-sm font-bold uppercase tracking-widest text-black shadow-lg">
+                                        Out of Stock
+                                    </span>
+                                </div>
+                            )}
+                        </section>
+                    </Reveal>
 
                     {/* Right: Product Details */}
                     <section className="flex flex-col pt-2 lg:pt-4">
-                        <div className="flex items-center justify-between">
-                            <span className="text-xs lg:text-sm font-bold uppercase tracking-widest text-gray-400">
-                                {product.category || 'Sneakers'}
-                            </span>
-                            <span
-                                className={`text-xs lg:text-sm font-semibold ${remainingStock > 0 ? 'text-gray-500' : 'text-red-500'}`}>
-                                {remainingStock > 0 ? `${remainingStock} left in stock` : 'Unavailable'}
-                            </span>
-                        </div>
-
-                        {/* Адаптивний заголовок */}
-                        <h1 className="mt-3 lg:mt-4 text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-black leading-tight">
-                            {product.name}
-                        </h1>
-
-                        <div className="mt-4 lg:mt-6 flex items-end gap-3 lg:gap-4">
-                            <p className="text-2xl lg:text-3xl font-extrabold text-black">
-                                ₴ {displayPrice.toFixed(2)}
-                            </p>
-                            {displayOldPrice !== null && displayOldPrice > displayPrice && (
-                                <p className="mb-0.5 lg:mb-1 text-base lg:text-lg font-semibold text-gray-400 line-through">
-                                    ₴ {displayOldPrice.toFixed(2)}
-                                </p>
-                            )}
-                        </div>
-
-                        <p className="mt-5 lg:mt-6 text-sm lg:text-base leading-relaxed text-gray-600 max-w-lg">
-                            {product.description ||
-                                'Elevate your daily style with these premium sneakers. Designed for ultimate comfort and durability, whether you are hitting the gym or the city streets.'}
-                        </p>
-
-                        {/* Size Selection */}
-                        <div className="mt-8 lg:mt-10">
-                            <div className="flex items-center justify-between mb-3 lg:mb-4">
-                                <h2 className="text-xs lg:text-sm font-bold uppercase tracking-wider text-black">
-                                    Select Size
-                                </h2>
+                        <Reveal effect="fade-left">
+                            <div className="flex items-center justify-between">
+                                <span className="text-xs lg:text-sm font-bold uppercase tracking-widest text-gray-400">
+                                    {product.category || 'Sneakers'}
+                                </span>
+                                <span
+                                    className={`text-xs lg:text-sm font-semibold ${remainingStock > 0 ? 'text-gray-500' : 'text-red-500'}`}>
+                                    {remainingStock > 0 ? `${remainingStock} left in stock` : 'Unavailable'}
+                                </span>
                             </div>
 
-                            {/* Адаптивна сітка розмірів */}
-                            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-5 gap-2.5 lg:gap-3">
-                                {sizes.length > 0 ? (
-                                    sizes.map((size) => (
-                                        <button
-                                            key={size}
-                                            type="button"
-                                            onClick={() => handleSizeSelect(size)}
-                                            className={`flex h-10 lg:h-12 items-center justify-center rounded-xl border text-sm font-semibold transition-all ${
-                                                selectedSize === size
-                                                    ? 'border-black bg-black text-white'
-                                                    : 'border-gray-200 bg-white text-black hover:border-gray-400'
-                                            }`}>
-                                            {size}
-                                        </button>
-                                    ))
-                                ) : (
-                                    <div className="col-span-full rounded-xl border border-dashed border-gray-300 px-4 py-4 text-sm font-medium text-center text-gray-500">
-                                        One Size
-                                    </div>
+                            {/* Адаптивний заголовок */}
+                            <h1 className="mt-3 lg:mt-4 text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-black leading-tight">
+                                {product.name}
+                            </h1>
+
+                            <div className="mt-4 lg:mt-6 flex items-end gap-3 lg:gap-4">
+                                <p className="text-2xl lg:text-3xl font-extrabold text-black">
+                                    ₴ {displayPrice.toFixed(2)}
+                                </p>
+                                {displayOldPrice !== null && displayOldPrice > displayPrice && (
+                                    <p className="mb-0.5 lg:mb-1 text-base lg:text-lg font-semibold text-gray-400 line-through">
+                                        ₴ {displayOldPrice.toFixed(2)}
+                                    </p>
                                 )}
                             </div>
-                            {showSizeError && (
-                                <p className="mt-3 text-xs lg:text-sm font-semibold text-red-500">
-                                    Please select a size to continue.
-                                </p>
-                            )}
-                        </div>
 
-                        {/* Actions: QTY, Cart, Favorite */}
-                        <div className="mt-8 lg:mt-10 flex flex-wrap sm:flex-nowrap items-center gap-3 lg:gap-4">
-                            {/* Quantity */}
-                            <div className="flex h-12 lg:h-14 w-28 lg:w-32 items-center justify-between rounded-xl border border-gray-200 bg-white px-1 lg:px-2 shrink-0">
+                            <p className="mt-5 lg:mt-6 text-sm lg:text-base leading-relaxed text-gray-600 max-w-lg">
+                                {product.description ||
+                                    'Elevate your daily style with these premium sneakers. Designed for ultimate comfort and durability, whether you are hitting the gym or the city streets.'}
+                            </p>
+
+                            {/* Size Selection */}
+                            <div className="mt-8 lg:mt-10">
+                                <div className="flex items-center justify-between mb-3 lg:mb-4">
+                                    <h2 className="text-xs lg:text-sm font-bold uppercase tracking-wider text-black">
+                                        Select Size
+                                    </h2>
+                                </div>
+
+                                {/* Адаптивна сітка розмірів */}
+                                <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-5 gap-2.5 lg:gap-3">
+                                    {sizes.length > 0 ? (
+                                        sizes.map((size) => (
+                                            <button
+                                                key={size}
+                                                type="button"
+                                                onClick={() => handleSizeSelect(size)}
+                                                className={`flex h-10 lg:h-12 items-center justify-center rounded-xl border text-sm font-semibold transition-all ${
+                                                    selectedSize === size
+                                                        ? 'border-black bg-black text-white'
+                                                        : 'border-gray-200 bg-white text-black hover:border-gray-400'
+                                                }`}>
+                                                {size}
+                                            </button>
+                                        ))
+                                    ) : (
+                                        <div className="col-span-full rounded-xl border border-dashed border-gray-300 px-4 py-4 text-sm font-medium text-center text-gray-500">
+                                            One Size
+                                        </div>
+                                    )}
+                                </div>
+                                {showSizeError && (
+                                    <p className="mt-3 text-xs lg:text-sm font-semibold text-red-500">
+                                        Please select a size to continue.
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Actions: QTY, Cart, Favorite */}
+                            <div className="mt-8 lg:mt-10 flex flex-wrap sm:flex-nowrap items-center gap-3 lg:gap-4">
+                                {/* Quantity */}
+                                <div className="flex h-12 lg:h-14 w-28 lg:w-32 items-center justify-between rounded-xl border border-gray-200 bg-white px-1 lg:px-2 shrink-0">
+                                    <button
+                                        type="button"
+                                        className="p-2 text-gray-500 hover:text-black transition"
+                                        onClick={handleDecreaseQuantity}
+                                        disabled={isOutOfStock}>
+                                        <Minus className="h-4 w-4" />
+                                    </button>
+                                    <span className="text-sm lg:text-base font-bold text-black">{quantity}</span>
+                                    <button
+                                        type="button"
+                                        className="p-2 text-gray-500 hover:text-black transition"
+                                        onClick={handleIncreaseQuantity}
+                                        disabled={isOutOfStock || quantity >= remainingStock}>
+                                        <Plus className="h-4 w-4" />
+                                    </button>
+                                </div>
+
+                                {/* Add to Cart */}
                                 <button
                                     type="button"
-                                    className="p-2 text-gray-500 hover:text-black transition"
-                                    onClick={handleDecreaseQuantity}
-                                    disabled={isOutOfStock}>
-                                    <Minus className="h-4 w-4" />
+                                    onClick={handleAddToCart}
+                                    disabled={isOutOfStock}
+                                    className="flex-1 flex h-12 lg:h-14 items-center justify-center gap-2 lg:gap-3 rounded-xl bg-black px-4 lg:px-8 text-sm lg:text-base font-bold uppercase tracking-wider text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500">
+                                    {isOutOfStock ? 'Notify Me' : isAdded ? 'Added ✓' : 'Add to Cart'}
                                 </button>
-                                <span className="text-sm lg:text-base font-bold text-black">{quantity}</span>
+
+                                {/* Favorite */}
                                 <button
                                     type="button"
-                                    className="p-2 text-gray-500 hover:text-black transition"
-                                    onClick={handleIncreaseQuantity}
-                                    disabled={isOutOfStock || quantity >= remainingStock}>
-                                    <Plus className="h-4 w-4" />
+                                    onClick={toggleFavourite}
+                                    className={`flex h-12 w-12 lg:h-14 lg:w-14 shrink-0 items-center justify-center rounded-xl border transition ${isFavorite ? 'border-black bg-black text-white' : 'border-gray-200 text-gray-400 hover:border-gray-800 hover:text-black'}`}
+                                    aria-label="Add to favorites">
+                                    <Heart className={`h-4 w-4 lg:h-5 lg:w-5 ${isFavorite ? 'fill-current' : ''}`} />
                                 </button>
                             </div>
 
-                            {/* Add to Cart */}
-                            <button
-                                type="button"
-                                onClick={handleAddToCart}
-                                disabled={isOutOfStock}
-                                className="flex-1 flex h-12 lg:h-14 items-center justify-center gap-2 lg:gap-3 rounded-xl bg-black px-4 lg:px-8 text-sm lg:text-base font-bold uppercase tracking-wider text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500">
-                                {isOutOfStock ? 'Notify Me' : isAdded ? 'Added ✓' : 'Add to Cart'}
-                            </button>
-
-                            {/* Favorite */}
-                            <button
-                                type="button"
-                                onClick={toggleFavourite}
-                                className={`flex h-12 w-12 lg:h-14 lg:w-14 shrink-0 items-center justify-center rounded-xl border transition ${isFavorite ? 'border-black bg-black text-white' : 'border-gray-200 text-gray-400 hover:border-gray-800 hover:text-black'}`}
-                                aria-label="Add to favorites">
-                                <Heart className={`h-4 w-4 lg:h-5 lg:w-5 ${isFavorite ? 'fill-current' : ''}`} />
-                            </button>
-                        </div>
-
-                        {/* Secondary Links (Reviews) */}
-                        <div className="mt-8 lg:mt-10 flex items-center gap-4 lg:gap-6 border-t border-gray-100 pt-6 lg:pt-8">
-                            <button
-                                onClick={handleOpenReview}
-                                className="text-xs lg:text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-black transition">
-                                Write a Review
-                            </button>
-                            <div className="h-3 lg:h-4 w-px bg-gray-300"></div>
-                            <Link
-                                href={`/product/${product.id}/reviews`}
-                                className="text-xs lg:text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-black transition">
-                                See All Reviews
-                            </Link>
-                        </div>
+                            {/* Secondary Links (Reviews) */}
+                            <div className="mt-8 lg:mt-10 flex items-center gap-4 lg:gap-6 border-t border-gray-100 pt-6 lg:pt-8">
+                                <button
+                                    onClick={handleOpenReview}
+                                    className="text-xs lg:text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-black transition">
+                                    Write a Review
+                                </button>
+                                <div className="h-3 lg:h-4 w-px bg-gray-300"></div>
+                                <Link
+                                    href={`/product/${product.id}/reviews`}
+                                    className="text-xs lg:text-sm font-bold uppercase tracking-wider text-gray-500 hover:text-black transition">
+                                    See All Reviews
+                                </Link>
+                            </div>
+                        </Reveal>
                     </section>
                 </div>
             </div>

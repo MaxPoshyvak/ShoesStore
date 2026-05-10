@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { Star, ChevronLeft, MessageSquareOff } from 'lucide-react';
 import { Good } from '@/types/backendTypes';
+import { Reveal } from '@/components/ScrollAnimated/Reveal';
 
 type Review = {
     _id?: string;
@@ -73,47 +74,49 @@ export default function ReviewsPage() {
                     {/* Ліва колонка - Інформація про товар (Sticky) */}
                     <aside className="lg:sticky lg:top-32">
                         {product ? (
-                            <div className="flex flex-col">
-                                {/* Фото товару як на головній (Без відступів, object-cover) */}
-                                <div className="relative mb-6 lg:mb-8 aspect-square w-full overflow-hidden rounded-xl bg-gray-50">
-                                    <Image
-                                        src={product.main_image_url}
-                                        alt={product.name}
-                                        fill
-                                        className="object-cover"
-                                        sizes="(max-width: 1024px) 100vw, 40vw"
-                                        priority
-                                    />
-                                </div>
+                            <Reveal effect="fade-right">
+                                <div className="flex flex-col">
+                                    {/* Фото товару як на головній (Без відступів, object-cover) */}
+                                    <div className="relative mb-6 lg:mb-8 aspect-square w-full overflow-hidden rounded-xl bg-gray-50">
+                                        <Image
+                                            src={product.main_image_url}
+                                            alt={product.name}
+                                            fill
+                                            className="object-cover"
+                                            sizes="(max-width: 1024px) 100vw, 40vw"
+                                            priority
+                                        />
+                                    </div>
 
-                                <span className="text-xs lg:text-sm font-bold uppercase tracking-widest text-gray-400 mb-2">
-                                    {product.category || 'Woman'}
-                                </span>
-                                <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight text-black">
-                                    {product.name}
-                                </h2>
-                                <p className="mt-3 text-2xl lg:text-3xl font-extrabold text-black">
-                                    ₴ {Number(product.price).toFixed(2)}
-                                </p>
+                                    <span className="text-xs lg:text-sm font-bold uppercase tracking-widest text-gray-400 mb-2">
+                                        {product.category || 'Woman'}
+                                    </span>
+                                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight text-black">
+                                        {product.name}
+                                    </h2>
+                                    <p className="mt-3 text-2xl lg:text-3xl font-extrabold text-black">
+                                        ₴ {Number(product.price).toFixed(2)}
+                                    </p>
 
-                                {/* Блок із зірками */}
-                                <div className="mt-8 lg:mt-10 flex items-center gap-5 border-t border-gray-100 pt-8">
-                                    <div className="text-5xl font-black tracking-tighter">{avg.toFixed(1)}</div>
-                                    <div className="flex flex-col gap-1">
-                                        <div className="flex items-center gap-1">
-                                            {Array.from({ length: 5 }).map((_, i) => (
-                                                <Star
-                                                    key={i}
-                                                    className={`h-5 w-5 ${i < roundedAvg ? 'fill-black text-black' : 'fill-gray-200 text-gray-200'}`}
-                                                />
-                                            ))}
+                                    {/* Блок із зірками */}
+                                    <div className="mt-8 lg:mt-10 flex items-center gap-5 border-t border-gray-100 pt-8">
+                                        <div className="text-5xl font-black tracking-tighter">{avg.toFixed(1)}</div>
+                                        <div className="flex flex-col gap-1">
+                                            <div className="flex items-center gap-1">
+                                                {Array.from({ length: 5 }).map((_, i) => (
+                                                    <Star
+                                                        key={i}
+                                                        className={`h-5 w-5 ${i < roundedAvg ? 'fill-black text-black' : 'fill-gray-200 text-gray-200'}`}
+                                                    />
+                                                ))}
+                                            </div>
+                                            <span className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
+                                                Based on {reviews.length} reviews
+                                            </span>
                                         </div>
-                                        <span className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
-                                            Based on {reviews.length} reviews
-                                        </span>
                                     </div>
                                 </div>
-                            </div>
+                            </Reveal>
                         ) : (
                             <div className="animate-pulse flex flex-col">
                                 <div className="aspect-square w-full bg-gray-100 rounded-xl mb-6"></div>
@@ -146,57 +149,59 @@ export default function ReviewsPage() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="flex flex-col">
-                                {reviews.length === 0 && (
-                                    <div className="flex flex-col items-center justify-center py-20 lg:py-32 text-center">
-                                        <MessageSquareOff className="mb-4 h-12 w-12 text-gray-300 stroke-[1.5]" />
-                                        <h3 className="text-xl font-bold text-black mb-2">No reviews yet</h3>
-                                        <p className="text-base text-gray-500">
-                                            Be the first to share your thoughts on this product!
-                                        </p>
-                                    </div>
-                                )}
-
-                                {reviews.map((r) => (
-                                    <article
-                                        key={r._id || r.id}
-                                        className="flex flex-col sm:flex-row gap-5 sm:gap-6 py-8 border-b border-gray-100 last:border-0">
-                                        {/* Аватарка */}
-                                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-black text-lg font-bold text-white">
-                                            {r.username ? r.username.charAt(0).toUpperCase() : 'A'}
+                            <Reveal effect="fade-left">
+                                <div className="flex flex-col">
+                                    {reviews.length === 0 && (
+                                        <div className="flex flex-col items-center justify-center py-20 lg:py-32 text-center">
+                                            <MessageSquareOff className="mb-4 h-12 w-12 text-gray-300 stroke-[1.5]" />
+                                            <h3 className="text-xl font-bold text-black mb-2">No reviews yet</h3>
+                                            <p className="text-base text-gray-500">
+                                                Be the first to share your thoughts on this product!
+                                            </p>
                                         </div>
+                                    )}
 
-                                        {/* Контент відгуку */}
-                                        <div className="flex-1">
-                                            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-2">
-                                                <h4 className="font-bold text-lg text-black">
-                                                    {r.username || 'Anonymous'}
-                                                </h4>
-                                                <span className="text-sm font-semibold text-gray-400">
-                                                    {r.createdAt
-                                                        ? new Date(r.createdAt).toLocaleDateString('en-US', {
-                                                              year: 'numeric',
-                                                              month: 'long',
-                                                              day: 'numeric',
-                                                          })
-                                                        : ''}
-                                                </span>
+                                    {reviews.map((r) => (
+                                        <article
+                                            key={r._id || r.id}
+                                            className="flex flex-col sm:flex-row gap-5 sm:gap-6 py-8 border-b border-gray-100 last:border-0">
+                                            {/* Аватарка */}
+                                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-black text-lg font-bold text-white">
+                                                {r.username ? r.username.charAt(0).toUpperCase() : 'A'}
                                             </div>
 
-                                            <div className="mb-4 flex items-center gap-1">
-                                                {Array.from({ length: 5 }).map((_, i) => (
-                                                    <Star
-                                                        key={i}
-                                                        className={`h-4 w-4 ${i < r.rating ? 'fill-black text-black' : 'fill-gray-200 text-gray-200'}`}
-                                                    />
-                                                ))}
-                                            </div>
+                                            {/* Контент відгуку */}
+                                            <div className="flex-1">
+                                                <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 mb-2">
+                                                    <h4 className="font-bold text-lg text-black">
+                                                        {r.username || 'Anonymous'}
+                                                    </h4>
+                                                    <span className="text-sm font-semibold text-gray-400">
+                                                        {r.createdAt
+                                                            ? new Date(r.createdAt).toLocaleDateString('en-US', {
+                                                                  year: 'numeric',
+                                                                  month: 'long',
+                                                                  day: 'numeric',
+                                                              })
+                                                            : ''}
+                                                    </span>
+                                                </div>
 
-                                            <p className="text-base leading-relaxed text-gray-600">{r.comment}</p>
-                                        </div>
-                                    </article>
-                                ))}
-                            </div>
+                                                <div className="mb-4 flex items-center gap-1">
+                                                    {Array.from({ length: 5 }).map((_, i) => (
+                                                        <Star
+                                                            key={i}
+                                                            className={`h-4 w-4 ${i < r.rating ? 'fill-black text-black' : 'fill-gray-200 text-gray-200'}`}
+                                                        />
+                                                    ))}
+                                                </div>
+
+                                                <p className="text-base leading-relaxed text-gray-600">{r.comment}</p>
+                                            </div>
+                                        </article>
+                                    ))}
+                                </div>
+                            </Reveal>
                         )}
                     </section>
                 </div>

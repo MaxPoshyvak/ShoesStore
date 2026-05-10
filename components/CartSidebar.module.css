@@ -185,8 +185,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px;
     flex-shrink: 0;
+    overflow: hidden;
     border: 1px solid #eaeaea;
 }
 
