@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 
 import { AuthProvider } from '@/components/AuthContext';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <body className="min-h-full flex flex-col">
                 {/* AuthProvider залишаємо тут, бо адміну теж потрібен доступ до юзера */}
                 <AuthProvider>{children}</AuthProvider>
+                <GoogleAnalytics gaId="G-2V8STN0VDR" />
             </body>
         </html>
     );
