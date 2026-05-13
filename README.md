@@ -47,38 +47,8 @@ A modern, fully-featured e-commerce platform for shoes built with Next.js, featu
 - **Package Manager**: npm
 - **Environment**: Node.js with dotenv
 
-## 📸 Project Screenshots
 
-### Homepage & Product Pages
-> _Add screenshots here showing the hero section, product grid, and animations_
 
-```
-// Replace with actual screenshots
-![Homepage](./public/screenshots/homepage.png)
-![Products](./public/screenshots/products.png)
-```
-
-### Shopping Experience
-> _Add screenshots showing cart, checkout, and payment flow_
-
-```
-![Cart Sidebar](./public/screenshots/cart.png)
-![Checkout](./public/screenshots/checkout.png)
-```
-
-### User Profiles & Admin Panel
-> _Add screenshots of user profile and admin dashboard_
-
-```
-![User Profile](./public/screenshots/profile.png)
-![Admin Dashboard](./public/screenshots/admin-dashboard.png)
-```
-
-> **How to add screenshots**:
-> 1. Take screenshots of your running app using browser DevTools or screenshot tool
-> 2. Create a `public/screenshots/` folder if it doesn't exist
-> 3. Save images as PNG format (e.g., `homepage.png`, `products.png`)
-> 4. The markdown above will automatically display them
 
 ## 🛠️ Getting Started
 
