@@ -22,6 +22,9 @@ import { OrdersPanel } from '@/components/adminComponents/OrdersPanel';
 import { PaymentsPanel } from '@/components/adminComponents/PaymentsPanel';
 import { FeedbacksPanel } from '@/components/adminComponents/FeedbacksPanel';
 import { SupportChatsPanel } from '@/components/adminComponents/SupportChatsPanel';
+import Popup from '@/components/Popup/Popup';
+import { AllActivitiesContent } from '@/components/Popup/PopupContent/AllActivitiesContent';
+import { s } from 'framer-motion/client';
 
 const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -38,13 +41,14 @@ export default function AdminPage() {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+    const [isActivityPopupOpen, setIsActivityPopupOpen] = useState(false);
 
     const [searchQuery, setSearchQuery] = useState('');
 
     const renderContent = (searchInp: string) => {
         switch (activeTab) {
             case 'dashboard':
-                return <DashboardPanel />;
+                return <DashboardPanel setIsActivityPopupOpen={setIsActivityPopupOpen} />;
             case 'users':
                 return <UsersPanel searchInp={searchInp} />;
             case 'goods':
@@ -58,7 +62,7 @@ export default function AdminPage() {
             case 'support':
                 return <SupportChatsPanel searchInp={searchInp} />;
             default:
-                return <DashboardPanel />;
+                return <DashboardPanel setIsActivityPopupOpen={setIsActivityPopupOpen} />;
         }
     };
 
@@ -67,6 +71,9 @@ export default function AdminPage() {
     return (
         <>
             {/* Mobile overlay */}
+            <Popup isOpen={isActivityPopupOpen} onClose={() => setIsActivityPopupOpen(false)} title="All activities">
+                <AllActivitiesContent />
+            </Popup>
             {mobileSidebarOpen && (
                 <div
                     className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
@@ -215,7 +222,9 @@ export default function AdminPage() {
                         </div>
 
                         {/* Notifications */}
-                        <button className="relative p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors">
+                        <button
+                            onClick={() => setIsActivityPopupOpen(true)}
+                            className="relative p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors">
                             <Bell size={19} />
                             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white" />
                         </button>
