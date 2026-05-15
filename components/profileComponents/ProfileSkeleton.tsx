@@ -27,7 +27,8 @@ export function ProfileSkeleton() {
                 </div>
 
                 {/* Skeleton Main Content */}
-                <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0 flex flex-col gap-5">
+                    {/* 1. Skeleton: Personal Information Card */}
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6 md:p-8">
                         {/* Header */}
                         <div className="flex justify-between items-start mb-6 sm:mb-8">
@@ -47,6 +48,33 @@ export function ProfileSkeleton() {
                                         <div className="w-4 h-4 sm:w-5 sm:h-5 bg-gray-200 rounded shrink-0" />
                                         <div className="w-1/2 sm:w-2/3 h-4 sm:h-5 bg-gray-200 rounded-md" />
                                     </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* 2. Skeleton: Telegram Integrations Card */}
+                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-6 md:p-8">
+                        {/* Header */}
+                        <div className="mb-6 flex flex-col gap-2">
+                            <div className="w-48 sm:w-56 h-6 sm:h-7 bg-gray-200 rounded-lg" />
+                            <div className="w-64 sm:w-80 h-3 sm:h-4 bg-gray-100 rounded-md" />
+                        </div>
+
+                        <div className="flex flex-col gap-4">
+                            {/* BOT 1 & BOT 2 Skeleton Blocks */}
+                            {[1, 2].map((item) => (
+                                <div
+                                    key={item}
+                                    className="bg-gray-50 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-full bg-gray-200 shrink-0" />
+                                        <div className="flex flex-col gap-2">
+                                            <div className="w-32 sm:w-40 h-4 sm:h-5 bg-gray-200 rounded-md" />
+                                            <div className="w-48 sm:w-64 h-3 sm:h-4 bg-gray-200/60 rounded-md" />
+                                        </div>
+                                    </div>
+                                    <div className="w-full sm:w-28 h-10 sm:h-10 bg-gray-200 rounded-lg shrink-0" />
                                 </div>
                             ))}
                         </div>

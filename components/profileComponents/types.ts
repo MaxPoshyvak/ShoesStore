@@ -34,4 +34,5 @@ export interface UserProfileData {
     orders: Order[];
     reviews: Review[];
     favorites: any[];
+    telegram_chat_id: string;
 }
