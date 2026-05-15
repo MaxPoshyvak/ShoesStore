@@ -10,89 +10,97 @@ export default function VerifyPage() {
     const router = useRouter();
     const [token, setToken] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    
+
     const [isResending, setIsResending] = useState(false);
     const [resendCooldown, setResendCooldown] = useState(0); // 0 = available, counts down after click
     const { user, token: authToken } = useAuth();
 
-    const verifyEmail = useCallback(async (verificationToken: string) => {
-        if (!verificationToken.trim()) {
+    const verifyEmail = useCallback(
+        async (verificationToken: string) => {
+            if (!verificationToken.trim()) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please enter your verification code.',
+                    confirmButtonColor: '#000',
+                });
+                return;
+            }
+
+            setIsLoading(true);
+
+            // Показуємо loading alert
             Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Please enter your verification code.',
-                confirmButtonColor: '#000',
-            });
-            return;
-        }
+                title: 'Verifying...',
+                text: 'Please wait',
+                icon: 'info',
+                allowOutsideClick: false,
+                didOpen: async () => {
+                    Swal.showLoading();
 
-        setIsLoading(true);
+                    try {
+                        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/verify-email`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ token: verificationToken }),
+                        });
 
-        // Показуємо loading alert
-        Swal.fire({
-            title: 'Verifying...',
-            text: 'Please wait',
-            icon: 'info',
-            allowOutsideClick: false,
-            didOpen: async () => {
-                Swal.showLoading();
+                        const data = await response.json();
 
-                try {
-                    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/verify-email`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ token: verificationToken }),
-                    });
-
-                    const data = await response.json();
-
-                    if (!response.ok) {
-                        throw new Error(data.message || 'Verification failed');
-                    }
-
-                    // Успіх!
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'Your email has been verified successfully.',
-                        confirmButtonColor: '#000',
-                        timer: 1500,
-                        timerProgressBar: true,
-                    }).then(() => {
-                        // If a next param was provided, redirect there (and keep openReview flag if present)
-                        try {
-                            const params = new URLSearchParams(window.location.search);
-                            const next = params.get('next');
-                            const openReview = params.get('openReview');
-                            if (next) {
-                                const suffix = openReview === '1' ? (next.includes('?') ? '&openReview=1' : '?openReview=1') : '';
-                                router.push(`${next}${suffix}`);
-                                return;
-                            }
-                        } catch {
-                            // fallthrough
+                        if (!response.ok) {
+                            throw new Error(data.message || 'Verification failed');
                         }
 
-                        router.push('/login');
-                    });
-                } catch (error) {
-                    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+                        // Успіх!
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Your email has been verified successfully.',
+                            confirmButtonColor: '#000',
+                            timer: 1500,
+                            timerProgressBar: true,
+                        }).then(() => {
+                            // If a next param was provided, redirect there (and keep openReview flag if present)
+                            try {
+                                const params = new URLSearchParams(window.location.search);
+                                const next = params.get('next');
+                                const openReview = params.get('openReview');
+                                if (next) {
+                                    const suffix =
+                                        openReview === '1'
+                                            ? next.includes('?')
+                                                ? '&openReview=1'
+                                                : '?openReview=1'
+                                            : '';
+                                    router.push(`${next}${suffix}`);
+                                    return;
+                                }
+                            } catch {
+                                // fallthrough
+                            }
 
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Verification error',
-                        text: errorMessage,
-                        confirmButtonColor: '#000',
-                        footer: 'The code may be invalid or expired',
-                    });
-                } finally {
-                    setIsLoading(false);
-                }
-            },
-        });
-    }, [router]);
+                            router.push('/login');
+                        });
+                    } catch (error) {
+                        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Verification error',
+                            text: errorMessage,
+                            confirmButtonColor: '#000',
+                            footer: 'The code may be invalid or expired',
+                        });
+                    } finally {
+                        setIsLoading(false);
+                    }
+                },
+            });
+        },
+        [router],
+    );
 
     // Cooldown timer for resend button
     useEffect(() => {
@@ -116,9 +124,23 @@ export default function VerifyPage() {
         }
     }, [verifyEmail]);
 
+    // Start resend cooldown immediately on mount since email was already sent during registration
+    useEffect(() => {
+        setResendCooldown(60);
+    }, []);
+
     const resendVerification = async () => {
-        // Prefer the authenticated user's email; fall back to prompting if not available
+        // Prefer the authenticated user's email; then URL param; fall back to prompting if not available
         let email = user?.email ?? null;
+
+        if (!email) {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                email = params.get('email');
+            } catch {
+                // ignore
+            }
+        }
 
         if (!email) {
             const { value } = await Swal.fire({
@@ -173,21 +195,32 @@ export default function VerifyPage() {
 
             // Handle common server responses
             if (response.status === 401) {
-                const msg = (data && data.message) ? String(data.message) : 'Token missing. Access denied.';
-                const result = await Swal.fire({ icon: 'error', title: 'Error', text: msg, confirmButtonText: 'Log in', showCancelButton: true });
+                const msg = data && data.message ? String(data.message) : 'Token missing. Access denied.';
+                const result = await Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: msg,
+                    confirmButtonText: 'Log in',
+                    showCancelButton: true,
+                });
                 if (result.isConfirmed) router.push('/login');
                 setIsResending(false);
                 return;
             }
 
             if (response.status === 404) {
-                Swal.fire({ icon: 'error', title: 'User not found', text: (data && data.message) ? String(data.message) : 'User not found', confirmButtonColor: '#000' });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'User not found',
+                    text: data && data.message ? String(data.message) : 'User not found',
+                    confirmButtonColor: '#000',
+                });
                 setIsResending(false);
                 return;
             }
 
             // Generic error
-            const errMsg = (data && data.message) ? String(data.message) : `Error: ${response.status}`;
+            const errMsg = data && data.message ? String(data.message) : `Error: ${response.status}`;
             Swal.fire({ icon: 'error', title: 'Error', text: errMsg, confirmButtonColor: '#000' });
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Unknown error';
@@ -201,8 +234,6 @@ export default function VerifyPage() {
         e.preventDefault();
         verifyEmail(token);
     };
-
-    
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
