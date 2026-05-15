@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 import Navbar from '@/components/Navbar';
 import CartSidebar from '@/components/CartSidebar';
 import Footer from '@/components/Footer';
+import { Reveal } from '@/components/ScrollAnimated/Reveal';
 
 const hideChromeRoutes = ['/login', '/register', '/verify'];
 

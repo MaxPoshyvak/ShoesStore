@@ -9,6 +9,7 @@ import { useAuth } from './AuthContext';
 import { Alata } from 'next/font/google';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useSyncExternalStore } from 'react';
+import { Reveal } from '@/components/ScrollAnimated/Reveal';
 
 const alata = Alata({
     weight: '400',
@@ -46,7 +47,7 @@ export default function Navbar() {
     const isHydrated = useSyncExternalStore(
         () => () => {},
         () => true,
-        () => false
+        () => false,
     );
 
     // Keep menu state bound to the path where it was opened.
@@ -101,25 +102,29 @@ export default function Navbar() {
                 <span></span>
             </button>
 
-            <Link href="/" className={styles.navbar__logo}>
-                Slick
-            </Link>
+            <Reveal effect="fade-right">
+                <Link href="/" className={styles.navbar__logo}>
+                    Slick
+                </Link>
+            </Reveal>
 
             {/* 🔥 НАВІГАЦІЯ З МОБІЛЬНИМ КЛАСОМ */}
-            <nav className={`${styles.navbar__nav} ${isMobileMenuOpen ? styles.navbar__navOpen : ''}`}>
-                <Link href="/" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
-                    Home
-                </Link>
-                <Link href="/#trending" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
-                    Popular
-                </Link>
-                <Link href="/#best-selling" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
-                    Best Selling
-                </Link>
-                <Link href="/#reviews" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
-                    Review
-                </Link>
-            </nav>
+            <Reveal effect="fade-up">
+                <nav className={`${styles.navbar__nav} ${isMobileMenuOpen ? styles.navbar__navOpen : ''}`}>
+                    <Link href="/" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
+                        Home
+                    </Link>
+                    <Link href="/#trending" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
+                        Popular
+                    </Link>
+                    <Link href="/#best-selling" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
+                        Best Selling
+                    </Link>
+                    <Link href="/#reviews" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
+                        Review
+                    </Link>
+                </nav>
+            </Reveal>
 
             <div className={styles.navbar__actions}>
                 {/* ... (Фільтри залишаються без змін) ... */}
@@ -213,26 +218,30 @@ export default function Navbar() {
                         )}
                     </div>
                 )}
-                <button className={styles['navbar__btn-search']}>
-                    <Image src="/search.png" alt="Search" width={21} height={21} />
-                </button>
-
-                <button className={styles['navbar__btn-cart']} onClick={() => setIsCartOpen(true)}>
-                    <div id="cart-icon-target" className={styles.cartWrapper}>
-                        <Image src="/trolley.png" alt="Cart" width={30} height={30} />
-                        <span suppressHydrationWarning className={`${alata.className} ${styles.cartBadge}`}>
-                            {totalItems > 0 ? totalItems : ''}
-                        </span>
-                    </div>
-                </button>
-
-                <Link
-                    href={resolvedUser ? '/profile' : '/login'}
-                    className={styles.userAvatar}
-                    style={{ background: avatarBackground }}
-                    title={resolvedUser?.username || 'Login'}>
-                    {initial}
-                </Link>
+                <Reveal effect="fade-left">
+                    <button className={styles['navbar__btn-search']}>
+                        <Image src="/search.png" alt="Search" width={21} height={21} />
+                    </button>
+                </Reveal>
+                <Reveal effect="fade-left" delay={0.1}>
+                    <button className={styles['navbar__btn-cart']} onClick={() => setIsCartOpen(true)}>
+                        <div id="cart-icon-target" className={styles.cartWrapper}>
+                            <Image src="/trolley.png" alt="Cart" width={30} height={30} />
+                            <span suppressHydrationWarning className={`${alata.className} ${styles.cartBadge}`}>
+                                {totalItems > 0 ? totalItems : ''}
+                            </span>
+                        </div>
+                    </button>
+                </Reveal>
+                <Reveal effect="fade-left" delay={0.2}>
+                    <Link
+                        href={resolvedUser ? '/profile' : '/login'}
+                        className={styles.userAvatar}
+                        style={{ background: avatarBackground }}
+                        title={resolvedUser?.username || 'Login'}>
+                        {initial}
+                    </Link>
+                </Reveal>
             </div>
         </header>
     );

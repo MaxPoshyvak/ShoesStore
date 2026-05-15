@@ -7,19 +7,27 @@ export default function Hero() {
     return (
         <section className={styles.hero}>
             <div className={styles.hero__left}>
-                <h1 className={styles.hero__title}>
-                    Find Your <br />
-                    Sole Mate <br />
-                    With Us
-                </h1>
-                <p className={styles.hero__description}>
-                    Premium sneaker drops, built for speed
-                    <br />
-                    and everyday comfort.
-                </p>
-                <Link href="/shop" className={styles.hero__btn}>
-                    Shop Now
-                </Link>
+                <Reveal effect="fade-up" delay={0}>
+                    <h1 className={styles.hero__title}>
+                        Find Your <br />
+                        Sole Mate <br />
+                        With Us
+                    </h1>
+                </Reveal>
+
+                <Reveal effect="fade-up" delay={0.1}>
+                    <p className={styles.hero__description}>
+                        Premium sneaker drops, built for speed
+                        <br />
+                        and everyday comfort.
+                    </p>
+                </Reveal>
+
+                <Reveal effect="fade-up" delay={0.2}>
+                    <Link href="/shop" className={styles.hero__btn}>
+                        Shop Now
+                    </Link>
+                </Reveal>
             </div>
 
             <div className={styles.hero__right}>
