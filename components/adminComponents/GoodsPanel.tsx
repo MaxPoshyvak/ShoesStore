@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import  { useEffect, useState, useMemo } from 'react';
 import { Plus, Edit, Trash2, Package } from 'lucide-react';
 import { getGoods, deleteGood } from '@/utils/backendData/backendGoods';
 

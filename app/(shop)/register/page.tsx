@@ -48,9 +48,10 @@ export default function RegisterPage() {
                 confirmButtonText: 'Go to verification',
             });
 
-            // Redirect to verification page, preserve any next/openReview query params
+            // Redirect to verification page, pass email so resend doesn't need to ask for it
             const search = typeof window !== 'undefined' ? window.location.search : '';
-            window.location.href = `/verify${search}`;
+            const separator = search ? '&' : '?';
+            window.location.href = `/verify${search}${separator}email=${encodeURIComponent(email)}`;
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);

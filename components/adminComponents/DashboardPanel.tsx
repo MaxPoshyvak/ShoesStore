@@ -126,7 +126,7 @@ export const DashboardPanel = () => {
         },
         {
             label: 'Page Views',
-            value: statsData ? statsData.pageViews.currentViews : 0, // Статичне значення, бо ми його ще не збираємо на бекенді
+            value: statsData && statsData.pageViews.currentViews, // Статичне значення, бо ми його ще не збираємо на бекенді
             change: statsData
                 ? `${statsData.pageViews.trend > 0 ? '+' : ''}${statsData.pageViews.trend} vs last week`
                 : '0 vs last week',
