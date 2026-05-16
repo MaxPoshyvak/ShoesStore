@@ -92,11 +92,12 @@ export default function RegisterPage() {
                             <div className="relative">
                                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                                 <input
+                                    data-testid="username"
                                     type="text"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
                                     required
-                                    placeholder="e.g., john_slick"
+                                    placeholder="e.g. John Doe"
                                     className="w-full border border-gray-200 p-4 pl-12 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all bg-gray-50/50 focus:bg-white"
                                 />
                             </div>

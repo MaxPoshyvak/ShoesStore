@@ -267,6 +267,7 @@ export default function Navbar() {
                     </Reveal>
                     <Reveal effect="fade-left" delay={0.2}>
                         <Link
+                            data-testid="user-avatar"
                             href={resolvedUser ? '/profile' : '/login'}
                             className={styles.userAvatar}
                             style={{ background: avatarBackground }}

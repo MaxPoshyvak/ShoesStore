@@ -83,7 +83,9 @@ export function ProfileTab({
                         ) : (
                             <div className="flex items-center gap-3 text-gray-900 font-medium bg-gray-50 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border border-transparent text-sm">
                                 <Mail size={16} className="text-gray-400 shrink-0" />
-                                <span className="truncate">{user.email}</span>
+                                <span className="truncate" data-testid="email-input">
+                                    {user.email}
+                                </span>
                             </div>
                         )}
                     </div>
