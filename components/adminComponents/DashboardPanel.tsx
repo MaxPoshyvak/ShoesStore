@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { DollarSign, ShoppingCart, Users, ArrowUpRight, ArrowDownRight, Eye, Loader2 } from 'lucide-react';
 import { AllActivitiesContent } from '@/components/Popup/PopupContent/AllActivitiesContent';
 import Popup from '@/components/Popup/Popup';
+import { notadmin } from '@/utils/backendData/403Error';
+import { unauthorized } from '@/utils/backendData/401Error';
 
 interface ActivityItem {
     _id: string;
@@ -76,6 +78,8 @@ export const DashboardPanel = ({ setIsActivityPopupOpen }: { setIsActivityPopupO
                 const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/statistic/get`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
+                if (response.status === 401) unauthorized();
+                if (response.status === 403) notadmin();
 
                 if (response.ok) {
                     const data = await response.json();

@@ -1,5 +1,6 @@
 import { UserProfileData } from '@/components/profileComponents/types';
 import { unauthorized } from './401Error';
+import { notadmin } from '@/utils/backendData/403Error';
 
 export const getUsers = async () => {
     try {
@@ -14,6 +15,7 @@ export const getUsers = async () => {
         if (response.status === 401) {
             unauthorized();
         }
+        if (response.status === 403) notadmin();
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

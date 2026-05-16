@@ -1,3 +1,4 @@
+import { notadmin } from '@/utils/backendData/403Error';
 import { unauthorized } from './401Error';
 
 export const getOrders = async () => {
@@ -12,6 +13,7 @@ export const getOrders = async () => {
     if (response.status === 401) {
         unauthorized();
     }
+    if (response.status === 403) notadmin();
 
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

@@ -1,3 +1,5 @@
+import { notadmin } from '@/utils/backendData/403Error';
+
 export interface Payment {
     id: number;
     transaction_id: string | null;
@@ -21,6 +23,7 @@ export const getPayments = async (): Promise<Payment[]> => {
     if (response.status === 401) {
         throw new Error('Не авторизовано');
     }
+    if (response.status === 403) notadmin();
 
     if (!response.ok) {
         throw new Error('Не вдалося завантажити історію платежів');
