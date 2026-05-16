@@ -10,6 +10,9 @@ import { Alata } from 'next/font/google';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Reveal } from '@/components/ScrollAnimated/Reveal';
+import Popup from '@/components/Popup/Popup';
+import { SearchContent } from '@/components/Popup/PopupContent/SearchContent';
+import { Search } from 'lucide-react';
 
 const alata = Alata({
     weight: '400',
@@ -43,14 +46,14 @@ export default function Navbar() {
     const [isSortOpen, setIsSortOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
 
-    // Avoid hydration mismatch for user-dependent UI without setting state in an effect.
+    const [isSearchPopupOpen, setIsSearchPopupOpen] = useState(false);
+
     const isHydrated = useSyncExternalStore(
         () => () => {},
         () => true,
         () => false,
     );
 
-    // Keep menu state bound to the path where it was opened.
     const [mobileMenuPath, setMobileMenuPath] = useState<string | null>(null);
     const isMobileMenuOpen = mobileMenuPath === pathname;
 
@@ -65,7 +68,23 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Hide Navbar on auth/verification pages
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+                return;
+            }
+
+            if (e.key.toLowerCase() === 's') {
+                e.preventDefault();
+                setIsSearchPopupOpen(true);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
     if (pathname === '/login' || pathname === '/register' || pathname === '/verify') {
         return null;
     }
@@ -91,158 +110,175 @@ export default function Navbar() {
     };
 
     return (
-        <header className={`${styles.navbar} ${navbarThemeClass}`}>
-            {/* 🔥 КНОПКА БУРГЕРА */}
-            <button
-                className={`${styles.burgerBtn} ${isMobileMenuOpen ? styles.burgerBtnOpen : ''}`}
-                onClick={() => setMobileMenuPath((prev) => (prev === pathname ? null : pathname))}
-                aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+        <>
+            <header className={`${styles.navbar} ${navbarThemeClass}`}>
+                {/* 🔥 КНОПКА БУРГЕРА */}
+                <button
+                    className={`${styles.burgerBtn} ${isMobileMenuOpen ? styles.burgerBtnOpen : ''}`}
+                    onClick={() => setMobileMenuPath((prev) => (prev === pathname ? null : pathname))}
+                    aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
 
-            <Reveal effect="fade-right">
-                <Link href="/" className={styles.navbar__logo}>
-                    Slick
-                </Link>
-            </Reveal>
-
-            {/* 🔥 НАВІГАЦІЯ З МОБІЛЬНИМ КЛАСОМ */}
-            <Reveal effect="fade-up">
-                <nav className={`${styles.navbar__nav} ${isMobileMenuOpen ? styles.navbar__navOpen : ''}`}>
-                    <Link href="/" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
-                        Home
+                <Reveal effect="fade-right">
+                    <Link href="/" className={styles.navbar__logo}>
+                        Slick
                     </Link>
-                    <Link href="/#trending" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
-                        Popular
-                    </Link>
-                    <Link href="/#best-selling" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
-                        Best Selling
-                    </Link>
-                    <Link href="/#reviews" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
-                        Review
-                    </Link>
-                </nav>
-            </Reveal>
+                </Reveal>
 
-            <div className={styles.navbar__actions}>
-                {/* ... (Фільтри залишаються без змін) ... */}
-                {pathname === '/shop' && (
-                    <div style={{ position: 'relative' }}>
-                        <button className={styles['navbar__btn-search']} onClick={() => setIsFilterOpen(!isFilterOpen)}>
-                            <Image src="/filter.svg" alt="Filter" width={24} height={24} />
-                        </button>
+                {/* 🔥 НАВІГАЦІЯ З МОБІЛЬНИМ КЛАСОМ */}
+                <Reveal effect="fade-up">
+                    <nav className={`${styles.navbar__nav} ${isMobileMenuOpen ? styles.navbar__navOpen : ''}`}>
+                        <Link href="/" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
+                            Home
+                        </Link>
+                        <Link href="/#trending" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
+                            Popular
+                        </Link>
+                        <Link
+                            href="/#best-selling"
+                            className={styles.navbar__link}
+                            onClick={() => setMobileMenuPath(null)}>
+                            Best Selling
+                        </Link>
+                        <Link href="/#reviews" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
+                            Review
+                        </Link>
+                    </nav>
+                </Reveal>
 
-                        {isFilterOpen && (
-                            <div className={styles.filterWrapper}>
-                                <div className={styles.filterArrow}></div>
+                <div className={styles.navbar__actions}>
+                    {/* ... (Фільтри залишаються без змін) ... */}
+                    {pathname === '/shop' && (
+                        <div style={{ position: 'relative' }}>
+                            <button
+                                className={styles['navbar__btn-search']}
+                                onClick={() => setIsFilterOpen(!isFilterOpen)}>
+                                <Image src="/filter.svg" alt="Filter" width={24} height={24} />
+                            </button>
 
-                                <div className={styles.filterSection}>
-                                    <h4 className={styles.filterTitle}>Size</h4>
-                                    <div className={styles.sizeGrid}>
-                                        <button
-                                            onClick={() => updateFilter('size', null)}
-                                            className={`${styles.sizeBtn} ${!currentSize ? styles.sizeBtnActive : ''}`}>
-                                            All
-                                        </button>
-                                        {availableSizes.map((size) => (
+                            {isFilterOpen && (
+                                <div className={styles.filterWrapper}>
+                                    <div className={styles.filterArrow}></div>
+
+                                    <div className={styles.filterSection}>
+                                        <h4 className={styles.filterTitle}>Size</h4>
+                                        <div className={styles.sizeGrid}>
                                             <button
-                                                key={size}
-                                                onClick={() => updateFilter('size', size)}
-                                                className={`${styles.sizeBtn} ${currentSize === size ? styles.sizeBtnActive : ''}`}>
-                                                {size}
+                                                onClick={() => updateFilter('size', null)}
+                                                className={`${styles.sizeBtn} ${!currentSize ? styles.sizeBtnActive : ''}`}>
+                                                All
                                             </button>
-                                        ))}
+                                            {availableSizes.map((size) => (
+                                                <button
+                                                    key={size}
+                                                    onClick={() => updateFilter('size', size)}
+                                                    className={`${styles.sizeBtn} ${currentSize === size ? styles.sizeBtnActive : ''}`}>
+                                                    {size}
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className={styles.filterBottomRow}>
-                                    <div className={styles.sortWrapper}>
-                                        <h4 className={styles.filterTitle}>Sort by</h4>
-                                        <div onClick={() => setIsSortOpen(!isSortOpen)} className={styles.sortTrigger}>
-                                            {currentSort === 'price_asc'
-                                                ? 'Price: Low to High'
-                                                : currentSort === 'price_desc'
-                                                  ? 'Price: High to Low'
-                                                  : 'Default'}
-                                            <span
-                                                className={styles.sortIcon}
-                                                style={{ transform: isSortOpen ? 'rotate(180deg)' : 'rotate(0)' }}>
-                                                ▼
-                                            </span>
+                                    <div className={styles.filterBottomRow}>
+                                        <div className={styles.sortWrapper}>
+                                            <h4 className={styles.filterTitle}>Sort by</h4>
+                                            <div
+                                                onClick={() => setIsSortOpen(!isSortOpen)}
+                                                className={styles.sortTrigger}>
+                                                {currentSort === 'price_asc'
+                                                    ? 'Price: Low to High'
+                                                    : currentSort === 'price_desc'
+                                                      ? 'Price: High to Low'
+                                                      : 'Default'}
+                                                <span
+                                                    className={styles.sortIcon}
+                                                    style={{ transform: isSortOpen ? 'rotate(180deg)' : 'rotate(0)' }}>
+                                                    ▼
+                                                </span>
+                                            </div>
+
+                                            {isSortOpen && (
+                                                <ul className={styles.sortList}>
+                                                    <li
+                                                        onClick={() => {
+                                                            updateFilter('sort', 'default');
+                                                            setIsSortOpen(false);
+                                                        }}
+                                                        className={`${styles.sortItem} ${currentSort === 'default' ? styles.sortItemActive : ''}`}>
+                                                        Default
+                                                    </li>
+                                                    <li
+                                                        onClick={() => {
+                                                            updateFilter('sort', 'price_asc');
+                                                            setIsSortOpen(false);
+                                                        }}
+                                                        className={`${styles.sortItem} ${currentSort === 'price_asc' ? styles.sortItemActive : ''}`}>
+                                                        Price: Low to High
+                                                    </li>
+                                                    <li
+                                                        onClick={() => {
+                                                            updateFilter('sort', 'price_desc');
+                                                            setIsSortOpen(false);
+                                                        }}
+                                                        className={`${styles.sortItem} ${currentSort === 'price_desc' ? styles.sortItemActive : ''}`}>
+                                                        Price: High to Low
+                                                    </li>
+                                                </ul>
+                                            )}
                                         </div>
 
-                                        {isSortOpen && (
-                                            <ul className={styles.sortList}>
-                                                <li
-                                                    onClick={() => {
-                                                        updateFilter('sort', 'default');
-                                                        setIsSortOpen(false);
-                                                    }}
-                                                    className={`${styles.sortItem} ${currentSort === 'default' ? styles.sortItemActive : ''}`}>
-                                                    Default
-                                                </li>
-                                                <li
-                                                    onClick={() => {
-                                                        updateFilter('sort', 'price_asc');
-                                                        setIsSortOpen(false);
-                                                    }}
-                                                    className={`${styles.sortItem} ${currentSort === 'price_asc' ? styles.sortItemActive : ''}`}>
-                                                    Price: Low to High
-                                                </li>
-                                                <li
-                                                    onClick={() => {
-                                                        updateFilter('sort', 'price_desc');
-                                                        setIsSortOpen(false);
-                                                    }}
-                                                    className={`${styles.sortItem} ${currentSort === 'price_desc' ? styles.sortItemActive : ''}`}>
-                                                    Price: High to Low
-                                                </li>
-                                            </ul>
-                                        )}
+                                        <label className={styles.checkboxLabel}>
+                                            <input
+                                                type="checkbox"
+                                                checked={inStock}
+                                                onChange={(e) =>
+                                                    updateFilter('instock', e.target.checked ? 'true' : null)
+                                                }
+                                                className={styles.checkboxInput}
+                                            />
+                                            <span className={styles.customCheckbox}></span>
+                                            In stock only
+                                        </label>
                                     </div>
-
-                                    <label className={styles.checkboxLabel}>
-                                        <input
-                                            type="checkbox"
-                                            checked={inStock}
-                                            onChange={(e) => updateFilter('instock', e.target.checked ? 'true' : null)}
-                                            className={styles.checkboxInput}
-                                        />
-                                        <span className={styles.customCheckbox}></span>
-                                        In stock only
-                                    </label>
                                 </div>
-                            </div>
-                        )}
-                    </div>
-                )}
-                <Reveal effect="fade-left">
-                    <button className={styles['navbar__btn-search']}>
-                        <Image src="/search.png" alt="Search" width={21} height={21} />
-                    </button>
-                </Reveal>
-                <Reveal effect="fade-left" delay={0.1}>
-                    <button className={styles['navbar__btn-cart']} onClick={() => setIsCartOpen(true)}>
-                        <div id="cart-icon-target" className={styles.cartWrapper}>
-                            <Image src="/trolley.png" alt="Cart" width={30} height={30} />
-                            <span suppressHydrationWarning className={`${alata.className} ${styles.cartBadge}`}>
-                                {totalItems > 0 ? totalItems : ''}
-                            </span>
+                            )}
                         </div>
-                    </button>
-                </Reveal>
-                <Reveal effect="fade-left" delay={0.2}>
-                    <Link
-                        href={resolvedUser ? '/profile' : '/login'}
-                        className={styles.userAvatar}
-                        style={{ background: avatarBackground }}
-                        title={resolvedUser?.username || 'Login'}>
-                        {initial}
-                    </Link>
-                </Reveal>
-            </div>
-        </header>
+                    )}
+                    <Reveal effect="fade-left">
+                        <button
+                            title='Click "S" to open Search'
+                            className={styles['navbar__btn-search']}
+                            onClick={() => setIsSearchPopupOpen(true)}>
+                            <Search strokeWidth={1.5} />
+                        </button>
+                    </Reveal>
+                    <Reveal effect="fade-left" delay={0.1}>
+                        <button className={styles['navbar__btn-cart']} onClick={() => setIsCartOpen(true)}>
+                            <div id="cart-icon-target" className={styles.cartWrapper}>
+                                <Image src="/trolley.png" alt="Cart" width={30} height={30} />
+                                <span suppressHydrationWarning className={`${alata.className} ${styles.cartBadge}`}>
+                                    {totalItems > 0 ? totalItems : ''}
+                                </span>
+                            </div>
+                        </button>
+                    </Reveal>
+                    <Reveal effect="fade-left" delay={0.2}>
+                        <Link
+                            href={resolvedUser ? '/profile' : '/login'}
+                            className={styles.userAvatar}
+                            style={{ background: avatarBackground }}
+                            title={resolvedUser?.username || 'Login'}>
+                            {initial}
+                        </Link>
+                    </Reveal>
+                </div>
+            </header>
+            <Popup isOpen={isSearchPopupOpen} onClose={() => setIsSearchPopupOpen(false)} title="Search" maxWidth="xl">
+                <SearchContent onClose={() => setIsSearchPopupOpen(false)} />
+            </Popup>
+        </>
     );
 }
