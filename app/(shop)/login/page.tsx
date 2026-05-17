@@ -1,9 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-// In the original Next.js, uncomment these lines:
-import { useRouter } from 'next/navigation';
-// import Link from "next/link";
 import { useAuth } from '../../../components/AuthContext';
 
 import { Mail, Lock, AlertCircle, ArrowRight } from 'lucide-react';
@@ -11,8 +8,6 @@ import Link from 'next/link';
 import { Reveal } from '@/components/ScrollAnimated/Reveal';
 
 export default function LoginPage() {
-    // In the original Next.js, uncomment these:
-    const router = useRouter();
     const { login } = useAuth();
 
     const [email, setEmail] = useState('');
@@ -56,6 +51,18 @@ export default function LoginPage() {
         }
     };
 
+    const handleSendVerification = async () => {
+        try {
+            await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/resend-verification-email`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     return (
         <Reveal effect="fade-up">
             <div className="min-h-screen bg-gray-50 font-sans text-black flex items-center justify-center p-4">
@@ -82,7 +89,8 @@ export default function LoginPage() {
                             <span>
                                 Please verify your email first. Click{' '}
                                 <Link
-                                    href="/verify" // In the original Next.js, uncomment this:
+                                    onClick={handleSendVerification}
+                                    href={`/verify?email=${email}`} // In the original Next.js, uncomment this:
                                     // href={`${process.env.NEXT_PUBLIC_FRONTEND_URL}/resend-verification`}
                                     className="underline">
                                     verify my email
@@ -102,7 +110,10 @@ export default function LoginPage() {
                                 <input
                                     type="email"
                                     value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    onChange={(e) => {
+                                        setEmail(e.target.value);
+                                        setError('');
+                                    }}
                                     required
                                     placeholder="your@email.com"
                                     className="w-full border border-gray-200 p-4 pl-12 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all bg-gray-50/50 focus:bg-white"
@@ -120,7 +131,10 @@ export default function LoginPage() {
                                 <input
                                     type="password"
                                     value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    onChange={(e) => {
+                                        setPassword(e.target.value);
+                                        setError('');
+                                    }}
                                     required
                                     placeholder="Enter your password"
                                     className="w-full border border-gray-200 p-4 pl-12 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all bg-gray-50/50 focus:bg-white"
