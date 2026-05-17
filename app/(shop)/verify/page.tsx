@@ -38,13 +38,23 @@ export default function VerifyPage() {
                 didOpen: async () => {
                     Swal.showLoading();
 
+                    let email = user?.email ?? null;
+                    if (!email) {
+                        try {
+                            const params = new URLSearchParams(window.location.search);
+                            email = params.get('email');
+                        } catch {
+                            // ignore
+                        }
+                    }
+
                     try {
                         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/verify-email`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                             },
-                            body: JSON.stringify({ token: verificationToken }),
+                            body: JSON.stringify({ token: verificationToken, email: email }),
                         });
 
                         const data = await response.json();
