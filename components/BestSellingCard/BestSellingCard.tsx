@@ -10,6 +10,7 @@ import styles from './BestSellingCard.module.css';
 import { addToFavorites, removeFromFavorites } from '@/utils/backendData/backendFavorites';
 import { ArrowUpRight, Heart } from 'lucide-react';
 import { Reveal } from '@/components/ScrollAnimated/Reveal';
+import { addToWaitlist } from '@/utils/backendData/backendNotify';
 
 interface ProductCardProps {
     id: number;
@@ -70,36 +71,47 @@ export default function BestSellingCard({
     };
 
     const handleOpenProduct = () => {
-        if (isOutOfStock) return;
         router.push(`/product/${id}`);
     };
 
     const handleNotifyClick = async () => {
-        // ... (Твоя логіка handleNotifyClick залишається БЕЗ ЗМІН)
         if (isNotifying) return;
 
-        if (!user) {
-            Swal.fire({
-                icon: 'info',
-                title: 'Вхід потрібен',
-                text: 'Будь ласка, увійдіть в акаунт, щоб отримувати сповіщення.',
-                confirmButtonText: 'Перейти до входу',
+        let targetEmail = '';
+
+        // Перевіряємо, чи юзер залогінений
+        if (user && user.email) {
+            // Якщо так, беремо його пошту
+            targetEmail = user.email;
+        } else {
+            // Якщо ні, показуємо Swal із полем для вводу
+            const { value: enteredEmail, isDismissed } = await Swal.fire({
+                title: 'Get Notified',
+                text: 'Enter your email to know when this is back in stock:',
+                input: 'email',
+                inputPlaceholder: 'your.email@example.com',
+                showCancelButton: true,
+                confirmButtonText: 'Notify Me',
                 confirmButtonColor: '#000',
+                cancelButtonColor: '#d33',
                 background: '#fff',
                 color: '#000',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    router.push('/login');
-                }
+                validationMessage: 'Please enter a valid email address!', // Кастомна помилка
             });
-            return;
+
+            // Якщо користувач натиснув "Cancel" або закрив вікно
+            if (isDismissed || !enteredEmail) {
+                return;
+            }
+
+            targetEmail = enteredEmail;
         }
 
         setIsNotifying(true);
 
         try {
             Swal.fire({
-                title: 'Додаємо в список очікування...',
+                title: 'Adding to waitlist...',
                 icon: 'info',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
@@ -108,30 +120,21 @@ export default function BestSellingCard({
                 },
             });
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/waitlist`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
-                },
-                body: JSON.stringify({ good_id: id, email: user.email }),
-            });
-
-            if (!response.ok) throw new Error(`API error: ${response.status}`);
+            await addToWaitlist(targetEmail, id);
 
             Swal.fire({
                 icon: 'success',
-                title: 'Готово!',
-                text: `Ми додали "${name}" до вашого списку очікування.`,
-                confirmButtonText: 'Закрити',
+                title: 'Success!',
+                text: `We will notify you at ${targetEmail} when ${name} is back in stock.`,
+                confirmButtonText: 'OK',
                 confirmButtonColor: '#000',
             });
         } catch (error) {
             console.error('Notify error:', error);
             Swal.fire({
                 icon: 'error',
-                title: 'Помилка',
-                text: 'Не вдалося додати до списку очікування. Спробуйте ще раз.',
+                title: 'Error',
+                text: 'Failed to add to waitlist. Please try again.',
                 confirmButtonColor: '#000',
             });
         } finally {
@@ -139,14 +142,9 @@ export default function BestSellingCard({
         }
     };
 
-    useEffect(() => {}, []);
-
     return (
         <div className={`${styles.card} ${isOutOfStock ? styles.outOfStockCard : ''}`}>
-            <div
-                className={styles.card__imageBox}
-                onClick={handleOpenProduct}
-                style={{ cursor: isOutOfStock ? 'default' : 'pointer' }}>
+            <div className={styles.card__imageBox} onClick={handleOpenProduct} style={{ cursor: 'pointer' }}>
                 {isNew && (
                     <Reveal effect="scale" delay={0.2} className={styles.badgeNew}>
                         <div>New</div>

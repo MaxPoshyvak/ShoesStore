@@ -3,15 +3,16 @@
 import { useEffect, useId, useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { unauthorized, useParams, useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { ChevronLeft, Heart, Minus, Plus } from 'lucide-react';
 import ReviewModal from '@/components/ReviewModal';
 import { useCart } from '@/components/context/CartContext';
 import { useAuth } from '@/components/AuthContext';
 import { useRouter } from 'next/navigation';
 import { addToFavorites, removeFromFavorites } from '@/utils/backendData/backendFavorites';
-import router from 'next/router';
 import { Reveal } from '@/components/ScrollAnimated/Reveal';
+import Swal from 'sweetalert2';
+import { addToWaitlist } from '@/utils/backendData/backendNotify';
 
 type Good = {
     id: number;
@@ -40,6 +41,8 @@ export default function ProductDetailPage() {
     const [isFavorite, setIsFavorite] = useState(false);
     const [showReviewModal, setShowReviewModal] = useState(false);
     const [showSizeError, setShowSizeError] = useState(false);
+    const [isNotifying, setIsNotifying] = useState(false);
+
     const { isLoading: authLoading, user } = useAuth();
     const searchParams = useSearchParams();
 
@@ -129,7 +132,77 @@ export default function ProductDetailPage() {
         };
 
         loadData();
-    }, [params.id, user]); // 🔥 Додай `user` в масив залежностей (щоб лайк підтягнувся, якщо юзер залогіниться прямо на сторінці)
+    }, [params.id, user]);
+
+    const handleNotifyClick = async () => {
+        if (isNotifying) return;
+
+        let targetEmail = '';
+
+        // Перевіряємо, чи юзер залогінений
+        if (user && user.email) {
+            // Якщо так, беремо його пошту
+            targetEmail = user.email;
+        } else {
+            // Якщо ні, показуємо Swal із полем для вводу
+            const { value: enteredEmail, isDismissed } = await Swal.fire({
+                title: 'Get Notified',
+                text: 'Enter your email to know when this is back in stock:',
+                input: 'email',
+                inputPlaceholder: 'your.email@example.com',
+                showCancelButton: true,
+                confirmButtonText: 'Notify Me',
+                confirmButtonColor: '#000',
+                cancelButtonColor: '#d33',
+                background: '#fff',
+                color: '#000',
+                validationMessage: 'Please enter a valid email address!', // Кастомна помилка
+            });
+
+            // Якщо користувач натиснув "Cancel" або закрив вікно
+            if (isDismissed || !enteredEmail) {
+                return;
+            }
+
+            targetEmail = enteredEmail;
+        }
+
+        setIsNotifying(true);
+
+        try {
+            Swal.fire({
+                title: 'Adding to waitlist...',
+                icon: 'info',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+            });
+
+            if (product !== null) {
+                await addToWaitlist(targetEmail, product.id);
+            }
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: `We will notify you at ${targetEmail} when ${name} is back in stock.`,
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#000',
+            });
+        } catch (error) {
+            console.error('Notify error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to add to waitlist. Please try again.',
+                confirmButtonColor: '#000',
+            });
+        } finally {
+            setIsNotifying(false);
+        }
+    }; // 🔥 Додай `user` в масив залежностей (щоб лайк підтягнувся, якщо юзер залогіниться прямо на сторінці)
 
     const sizes = useMemo(() => product?.sizes?.map((s) => String(s)) || [], [product]);
 
@@ -389,8 +462,7 @@ export default function ProductDetailPage() {
                                 {/* Add to Cart */}
                                 <button
                                     type="button"
-                                    onClick={handleAddToCart}
-                                    disabled={isOutOfStock}
+                                    onClick={isOutOfStock ? handleNotifyClick : handleAddToCart}
                                     className="flex-1 flex h-12 lg:h-14 items-center justify-center gap-2 lg:gap-3 rounded-xl bg-black px-4 lg:px-8 text-sm lg:text-base font-bold uppercase tracking-wider text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500">
                                     {isOutOfStock ? 'Notify Me' : isAdded ? 'Added ✓' : 'Add to Cart'}
                                 </button>

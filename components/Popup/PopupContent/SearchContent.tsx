@@ -189,7 +189,7 @@ export const SearchContent = ({ onClose }: SearchContentProps) => {
                                         {/* Ціна та стрілка */}
                                         <div className="flex items-center gap-3 pr-2">
                                             <span className="text-[14px] font-bold text-gray-900">
-                                                ${product.price}
+                                                ₴{product.price}
                                             </span>
                                             <ArrowRight className="w-4 h-4 text-gray-300 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
                                         </div>
