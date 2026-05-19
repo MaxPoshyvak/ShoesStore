@@ -129,25 +129,20 @@ export default function Navbar() {
                 </Reveal>
 
                 {/* 🔥 НАВІГАЦІЯ З МОБІЛЬНИМ КЛАСОМ */}
-                <Reveal effect="fade-up">
-                    <nav className={`${styles.navbar__nav} ${isMobileMenuOpen ? styles.navbar__navOpen : ''}`}>
-                        <Link href="/" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
-                            Home
-                        </Link>
-                        <Link href="/#trending" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
-                            Popular
-                        </Link>
-                        <Link
-                            href="/#best-selling"
-                            className={styles.navbar__link}
-                            onClick={() => setMobileMenuPath(null)}>
-                            Best Selling
-                        </Link>
-                        <Link href="/#reviews" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
-                            Review
-                        </Link>
-                    </nav>
-                </Reveal>
+                <nav className={`${styles.navbar__nav} ${isMobileMenuOpen ? styles.navbar__navOpen : ''}`}>
+                    <Link href="/" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
+                        Home
+                    </Link>
+                    <Link href="/#trending" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
+                        Popular
+                    </Link>
+                    <Link href="/#best-selling" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
+                        Best Selling
+                    </Link>
+                    <Link href="/#reviews" className={styles.navbar__link} onClick={() => setMobileMenuPath(null)}>
+                        Review
+                    </Link>
+                </nav>
 
                 <div className={styles.navbar__actions}>
                     {/* ... (Фільтри залишаються без змін) ... */}

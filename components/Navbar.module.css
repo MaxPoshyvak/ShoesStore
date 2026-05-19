@@ -512,11 +512,17 @@
         padding-top: 4px;
         justify-content: flex-start; /* Притискаємо чекбокс до лівого краю */
     }
+    .navbar {
+        padding: 25px 5%;
+    }
 }
 
 /* Для зовсім маленьких екранів (наприклад, iPhone SE) */
 @media (max-width: 380px) {
     .sizeBtn {
         flex: 1 1 calc(33.333% - 8px); /* По 3 кнопки в ряд замість 4 */
+    }
+    .navbar {
+        padding: 20px 5%;
     }
 }
