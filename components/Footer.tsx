@@ -38,7 +38,7 @@ export default function Footer() {
                         <Link href="#" className={styles.socialIcon}>
                             <Image src="/facebook.png" alt="Facebook" width={44} height={44} />
                         </Link>
-                        <Link href="#" className={styles.socialIcon}>
+                        <Link href="https://www.instagram.com/nike/" className={styles.socialIcon}>
                             <Image src="/instagram.png" alt="Instagram" width={44} height={44} />
                         </Link>
                     </div>
