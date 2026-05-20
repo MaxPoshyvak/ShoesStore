@@ -64,11 +64,11 @@ export default function Footer() {
                 <div className={styles.colRight}>
                     <h3 className={styles.title}>Quick Links</h3>
                     <ul className={styles.linksList}>
-                        <li><Link href="#">Home</Link></li>
-                        <li><Link href="#">Shop</Link></li>
-                        <li><Link href="#">Category</Link></li>
-                        <li><Link href="#">Contact</Link></li>
-                        <li><Link href="#">Privacy</Link></li>
+                        <li><Link href="/">Home</Link></li>
+                        <li><Link href="/shop">Shop</Link></li>
+                        <li><Link href="/category">Category</Link></li>
+                        <li><Link href="/contact">Contact</Link></li>
+                        <li><Link href="/privacy">Privacy</Link></li>
                     </ul>
                 </div>
 
