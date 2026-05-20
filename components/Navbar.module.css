@@ -1,17 +1,26 @@
 .navbar {
-    position: fixed; /* Відриваємо шапку від звичайного потоку */
+    position: fixed;
+    /* Відриваємо шапку від звичайного потоку */
     top: 0;
     left: 0;
     right: 0;
-    z-index: 50; /* Робимо так, щоб шапка завжди була НАД усім */
+    z-index: 50;
+    /* Робимо так, щоб шапка завжди була НАД усім */
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     padding: 30px 5%;
-    max-width: 1557px;
+    max-width: 100%;
     margin: 0 auto;
     transition: 0.3s;
+}
+
+@media(max-width: 1280px) {
+    .navbar {
+        max-width: 1900px;
+
+    }
 }
 
 .navbarTransparent {
@@ -41,7 +50,8 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 40px; /* Ось що робить магію! Це відстань між посиланнями */
+    gap: 40px;
+    /* Ось що робить магію! Це відстань між посиланнями */
 }
 
 /* САМІ ПОСИЛАННЯ */
@@ -63,7 +73,8 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 30px; /* Відстань між іконками */
+    gap: 30px;
+    /* Відстань між іконками */
 }
 
 /* КНОПКИ З ІКОНКАМИ */
@@ -89,18 +100,23 @@
 /* Сам кружечок з цифрою */
 .cartBadge {
     position: absolute;
-    top: -8px; /* Піднімаємо вгору */
-    right: -15px; /* Зсуваємо вправо */
+    top: -8px;
+    /* Піднімаємо вгору */
+    right: -15px;
+    /* Зсуваємо вправо */
 
     background-color: #ffffff;
     color: #000000;
-    border: 2px solid #000000; /* Чорна рамка, як на макеті */
-    border-radius: 50%; /* Робимо ідеальне коло */
+    border: 2px solid #000000;
+    /* Чорна рамка, як на макеті */
+    border-radius: 50%;
+    /* Робимо ідеальне коло */
 
     /* Розміри кружечка */
     width: 27px;
     height: 27px;
-    padding: 0 4px; /* Додаємо трохи місця по боках, якщо буде 2 або 3 цифри (напр. 11) */
+    padding: 0 4px;
+    /* Додаємо трохи місця по боках, якщо буде 2 або 3 цифри (напр. 11) */
 
     /* Вирівнюємо цифру рівно по центру кружечка */
     display: flex;
@@ -111,7 +127,8 @@
     font-size: 13px;
     font-weight: 600;
     font-family: 'Alata', sans-serif;
-    z-index: 2; /* Щоб цифра точно була поверх кошика */
+    z-index: 2;
+    /* Щоб цифра точно була поверх кошика */
 }
 
 .cartBadge:empty {
@@ -125,15 +142,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'Poppins', sans-serif; /* Або alata, якщо хочеш */
+    font-family: 'Poppins', sans-serif;
+    /* Або alata, якщо хочеш */
     font-size: 20px;
     font-weight: 400;
-    color: #000000; /* Чорна буква, як на скріншоті */
+    color: #000000;
+    /* Чорна буква, як на скріншоті */
     cursor: pointer;
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Тінь під аватаркою */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    /* Тінь під аватаркою */
     user-select: none;
 }
 
@@ -171,8 +191,10 @@
 
 .filterWrapper {
     position: absolute;
-    top: 50px; /* Відступ від іконки */
-    right: -10px; /* Вирівнювання відносно іконки */
+    top: 50px;
+    /* Відступ від іконки */
+    right: -10px;
+    /* Вирівнювання відносно іконки */
     width: 320px;
     background-color: #ffffff;
     padding: 24px;
@@ -333,11 +355,13 @@
     color: #333;
     cursor: pointer;
     user-select: none;
-    padding-bottom: 10px; /* Вирівнювання по висоті з полем сортування */
+    padding-bottom: 10px;
+    /* Вирівнювання по висоті з полем сортування */
 }
 
 .checkboxInput {
-    display: none; /* Ховаємо стандартний чекбокс */
+    display: none;
+    /* Ховаємо стандартний чекбокс */
 }
 
 .customCheckbox {
@@ -352,7 +376,7 @@
     background: #fff;
 }
 
-.checkboxInput:checked + .customCheckbox {
+.checkboxInput:checked+.customCheckbox {
     background: #000;
     border-color: #000;
 }
@@ -368,7 +392,7 @@
     display: none;
 }
 
-.checkboxInput:checked + .customCheckbox::after {
+.checkboxInput:checked+.customCheckbox::after {
     display: block;
 }
 
@@ -380,12 +404,15 @@
     .navbar__nav {
         gap: 20px;
     }
+
     .navbar__actions {
         gap: 15px;
     }
+
     .navbar__link {
         font-size: 16px;
     }
+
     .navbar__logo {
         font-size: 26px;
     }
@@ -408,7 +435,8 @@
 .burgerBtn span {
     width: 100%;
     height: 2px;
-    background-color: #000; /* Зміни колір під свій дизайн, якщо треба */
+    background-color: #000;
+    /* Зміни колір під свій дизайн, якщо треба */
     border-radius: 2px;
     transition: all 0.3s ease-in-out;
 }
@@ -417,9 +445,11 @@
 .burgerBtnOpen span:nth-child(1) {
     transform: translateY(8px) rotate(45deg);
 }
+
 .burgerBtnOpen span:nth-child(2) {
     opacity: 0;
 }
+
 .burgerBtnOpen span:nth-child(3) {
     transform: translateY(-8px) rotate(-45deg);
 }
@@ -447,19 +477,24 @@
             padding 0.4s ease-in-out;
 
         /* 🔥 ДОДАНО ДЛЯ ВИРІШЕННЯ ПРОБЛЕМИ: */
-        z-index: 1000; /* Змушує меню бути ПОВЕРХ усього сайту */
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); /* Тінь для відриву від фону */
-        border-top: 1px solid #eaeaea; /* Легка лінія відділення від шапки */
+        z-index: 1000;
+        /* Змушує меню бути ПОВЕРХ усього сайту */
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        /* Тінь для відриву від фону */
+        border-top: 1px solid #eaeaea;
+        /* Легка лінія відділення від шапки */
     }
 
     .navbar__navOpen {
-        max-height: 400px; /* Трохи збільшив запас висоти */
+        max-height: 400px;
+        /* Трохи збільшив запас висоти */
         padding: 20px;
     }
 
     .navbar__link {
         width: 100%;
-        padding: 12px 0; /* Трохи більше місця для тапу пальцем */
+        padding: 12px 0;
+        /* Трохи більше місця для тапу пальцем */
         font-size: 18px;
         border-bottom: 1px solid #f0f0f0;
     }
@@ -473,17 +508,21 @@
     .filterWrapper {
         /* Відв'язуємо від іконки пошуку і робимо блок по центру екрана під шапкою */
         position: fixed;
-        top: 80px; /* Зроби відступ таким, щоб фільтр був одразу під навігацією */
+        top: 80px;
+        /* Зроби відступ таким, щоб фільтр був одразу під навігацією */
         left: 50%;
         transform: translateX(-50%);
-        width: 92%; /* Займає майже всю ширину екрана */
+        width: 92%;
+        /* Займає майже всю ширину екрана */
         max-width: 380px;
         padding: 20px;
-        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15); /* Трохи сильніша тінь для виділення */
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+        /* Трохи сильніша тінь для виділення */
     }
 
     .filterArrow {
-        display: none; /* Ховаємо стрілочку, бо блок тепер не прив'язаний до іконки */
+        display: none;
+        /* Ховаємо стрілочку, бо блок тепер не прив'язаний до іконки */
     }
 
     .filterSection {
@@ -504,14 +543,17 @@
     }
 
     .sortWrapper {
-        width: 100%; /* Сортування на всю ширину */
+        width: 100%;
+        /* Сортування на всю ширину */
     }
 
     .checkboxLabel {
         padding-bottom: 0;
         padding-top: 4px;
-        justify-content: flex-start; /* Притискаємо чекбокс до лівого краю */
+        justify-content: flex-start;
+        /* Притискаємо чекбокс до лівого краю */
     }
+
     .navbar {
         padding: 25px 5%;
     }
@@ -520,8 +562,10 @@
 /* Для зовсім маленьких екранів (наприклад, iPhone SE) */
 @media (max-width: 380px) {
     .sizeBtn {
-        flex: 1 1 calc(33.333% - 8px); /* По 3 кнопки в ряд замість 4 */
+        flex: 1 1 calc(33.333% - 8px);
+        /* По 3 кнопки в ряд замість 4 */
     }
+
     .navbar {
         padding: 20px 5%;
     }

@@ -35,6 +35,7 @@ const generateAvatarGradient = (name: string) => {
     return `linear-gradient(180deg, ${color1} 0%, ${color2} 100%)`;
 };
 
+
 export default function Navbar() {
     const { totalItems, setIsCartOpen } = useCart();
     const pathname = usePathname();
